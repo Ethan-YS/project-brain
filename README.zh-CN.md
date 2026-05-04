@@ -213,11 +213,9 @@ brain/
 
 ## 作者
 
-由 **Rebecca**（项目主导）和 **Sage**（她的 AI 思考伙伴）共同开发。8 轮迭代在单日工作日内完成，每一轮都由一个具体的摩擦点触发——不是设计会议。
+由 **Rebecca**（[Ethan](https://ethanflow.com) 在协作语境下使用的工作名——[Sprout Labs](https://ethanflow.com) 背后的人）开发。这套方法论来自一套贾维斯式 AI 协作工作流：8 轮迭代在单日工作日内完成，每一轮都由一个具体的摩擦点触发——不是设计会议。
 
-方法论本身正是我们工作方式的体现：清晰的判断权分工、拒绝把"该由人做的判断"自动化掉、愿意承认 v1 需要变成 v2。
-
-> "Rebecca" 是 [Ethan](https://ethanflow.com) 在协作语境下使用的工作名——[Sprout Labs](https://ethanflow.com) 背后的人。"Sage" 是和 Ethan 跨会话长期协作的 AI 思考伙伴。
+方法论本身正是这套工作方式的体现：清晰的判断权分工、拒绝把"该由人做的判断"自动化掉、愿意承认 v1 需要变成 v2。
 
 由 [Sprout Labs](https://ethanflow.com) 发布。
 
