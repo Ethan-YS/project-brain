@@ -90,7 +90,7 @@ A second round of external review (GPT-based) caught three internal-consistency 
 ### Changed
 - **Authors / LICENSE narrative coordination**:
   - `LICENSE` Copyright clarified to `Ethan-YS (Sprout Labs)` (legal entity matches Sprout Labs / Ethan branding in README header)
-  - `README` / `METHODOLOGY` Authors section unifies under Rebecca / Ethan-YS / Sprout Labs, with an explainer that Rebecca is Ethan's working name in collaboration contexts.
+  - `README` / `METHODOLOGY` Authors section unifies under Ethan-YS / Sprout Labs.
 - `assets/social-preview.png` losslessly compressed (1.4 MB → 650 KB, fits well under GitHub's 1 MB social preview limit)
 
 ### Triggered by

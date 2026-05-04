@@ -575,6 +575,4 @@ What we kept that they didn't have, and what we borrowed from them, is documente
 
 ---
 
-**Maintained by**: Rebecca, working with a Jarvis-style AI collaboration workflow. PRs welcome.
-
-> "Rebecca" is the working name [Ethan](https://ethanflow.com) uses in collaboration contexts — the person behind [Sprout Labs](https://ethanflow.com).
+**Maintained by**: [Ethan](https://ethanflow.com) ([Sprout Labs](https://ethanflow.com)), working with a Jarvis-style AI collaboration workflow. PRs welcome.

@@ -213,7 +213,7 @@ Requirements:
 
 ## Authors
 
-Built by **Rebecca** — the working name [Ethan](https://ethanflow.com) uses in collaboration contexts, the person behind [Sprout Labs](https://ethanflow.com). The methodology came out of a Jarvis-style AI collaboration workflow: eight rounds of iteration in a single working day, each triggered by a specific friction point — not a design session.
+Built by [**Ethan**](https://ethanflow.com), the person behind [Sprout Labs](https://ethanflow.com). The methodology came out of a Jarvis-style AI collaboration workflow: eight rounds of iteration in a single working day, each triggered by a specific friction point — not a design session.
 
 The methodology itself models the working approach: clear judgment division, refusal to automate away decisions that should be made by humans, and willingness to admit when v1 needs to become v2.
 
