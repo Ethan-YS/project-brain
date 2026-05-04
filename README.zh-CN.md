@@ -76,7 +76,7 @@ scaffold 会给你：
 ### 体检（scaffold 完成后随时跑）
 
 ```bash
-./scripts/doctor.sh /path/to/your/project
+./project-brain/scripts/doctor.sh /path/to/your/project
 ```
 
 只读的结构体检：缺核心文件、STATUS 超过 80 行、决策缺"被否决的方案"、topics/ 文件未在 MAP 登记、`⚠️ TODO ⚠️` 占位符残留 等。**只报告问题，不修改**——修不修是你的判断。

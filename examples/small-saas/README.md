@@ -38,4 +38,4 @@ Open the files in this order:
 5. `brain/HANDOFF.md` — See how short and specific a window-switch handoff can be
 6. Browse `brain/topics/` for one of each category to see how problem-dimension classification plays out
 
-This example is **single-workstream** (one main development line). For an example of multi-workstream split mode, see `examples/multi-workstream/` (TODO — not yet written).
+This example is **single-workstream** (one main development line). Multi-workstream examples are intentionally deferred until real-world usage produces one — see [METHODOLOGY §3.5](../../METHODOLOGY.md#35-workstream-split-mode-v21-optional) for when the split mode applies.

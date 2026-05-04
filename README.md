@@ -76,7 +76,7 @@ When a new AI session opens your project, the auto-loaded instruction file direc
 ### Health check (any time after scaffolding)
 
 ```bash
-./scripts/doctor.sh /path/to/your/project
+./project-brain/scripts/doctor.sh /path/to/your/project
 ```
 
 Read-only structural checks: missing core files, STATUS over 80 lines, decisions without "rejected alternatives," topics/ files not registered in MAP, stale `⚠️ TODO ⚠️` placeholders, etc. Reports issues but never fixes them — that's still your call. See [scripts/doctor.sh](./scripts/doctor.sh).

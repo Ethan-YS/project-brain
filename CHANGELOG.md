@@ -5,6 +5,19 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.3.1] — 2026-05-04
+
+### Fixed
+
+- **`README.md` / `README.zh-CN.md` Quick start**: the `Health check` block used `./scripts/doctor.sh /path/...` while the scaffold examples directly above used `./project-brain/scripts/...`. Copy-pasting both consecutively would file-not-found on the doctor line. Unified to `./project-brain/scripts/doctor.sh`.
+- **`examples/small-saas/README.md`**: footer pointed to `examples/multi-workstream/` with `(TODO — not yet written)`. That directory is **intentionally deferred** until real-world multi-workstream usage produces one (per the project's "real friction tells you what's worth building" principle), not unfinished work. Reworded as deferred and linked to METHODOLOGY §3.5 instead.
+
+### Triggered by
+
+A third round of external review (GPT-based) after v2.3.0 release. Three suggestions raised; first two were the consistency bugs above (fixed). The third (appending `doctor` to `scaffold.sh` "Next steps" output) was deferred — doctor's design intent is periodic health-check on evolving `brain/`, not install-time validation; placing it as scaffold step 5 would fire false-positive warnings on fresh-scaffold placeholders and reframe the tool's mental model. Reasoning recorded in the maintainer's local DECISIONS for future-proofing.
+
+---
+
 ## [2.3.0] — 2026-05-04
 
 ### Added
