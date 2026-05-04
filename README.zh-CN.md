@@ -34,22 +34,44 @@
 
 ## 快速开始
 
+### 方式 A —— 作为 Claude Code skill 安装（Claude Code 用户推荐）
+
 ```bash
-# Clone 或下载
-git clone https://github.com/Ethan-YS/project-brain.git
-
-# 把模板拷进你的项目
-cp -r project-brain/templates/brain   <你的项目根>/brain
-cp    project-brain/templates/CLAUDE.md  <你的项目根>/CLAUDE.md
-
-# 第一天就填 PROJECT.md（一句话定义 + 刻意不做什么）
-# 然后读 METHODOLOGY.md 了解其余的。
+git clone https://github.com/Ethan-YS/project-brain.git ~/.claude/skills/project-brain
 ```
 
-新 AI 会话打开你的项目时：
-1. 项目根的 `CLAUDE.md`（被 Claude Code 自动加载）引导它读 `brain/MAP.md` + `brain/STATUS.md`
-2. 如果存在 `brain/HANDOFF.md`，它能拿到上一次会话"还热着但没写下"的内容
-3. AI 简短回报理解到的状态，然后你说接着做什么
+之后在任何项目里说"建项目脑"或"set up project brain"——Claude Code 会自动加载 `SKILL.md` 走流程。这个 skill 知道：
+- 新项目 kick-off（scaffold + 走 PROJECT.md）
+- 接续已有 brain/（读 MAP + STATUS + HANDOFF）
+- 切窗口 handoff（写 HANDOFF + 归档上一份）
+- "更新项目脑" 流程（带理由的清单，你认可）
+
+### 方式 B —— 手动 scaffold（任何 AI 助手都能用）
+
+```bash
+git clone https://github.com/Ethan-YS/project-brain.git
+
+# Scaffold 到你的项目（默认拷入 4 种 AI 适配文件）
+./project-brain/scripts/scaffold.sh /path/to/your/project
+
+# 或指定特定的：
+./project-brain/scripts/scaffold.sh /path/to/your/project --tools claude,cursor
+
+# 第一天就填 brain/PROJECT.md
+# 走查 ⚠️ TODO ⚠️ 占位符
+```
+
+scaffold 会给你：
+
+| 文件 | 工具 |
+|---|---|
+| `brain/` | 项目脑（PROJECT/MAP/STATUS/DECISIONS/HANDOFF + topics/） |
+| `CLAUDE.md` | Claude Code 指令文件 |
+| `.cursorrules` | Cursor 指令文件 |
+| `.github/copilot-instructions.md` | GitHub Copilot Chat |
+| `AGENTS.md` | Codex CLI / Aider / Continue（AGENTS.md 约定） |
+
+新 AI 会话打开你的项目时，自动加载的指令文件引导它读 `brain/MAP.md` + `brain/STATUS.md`。如果存在 `brain/HANDOFF.md`，它能拿到上一次会话"还热着但没写下"的内容。
 
 ## 结构
 
@@ -156,11 +178,14 @@ brain/
 
 ## 兼容性
 
-方法论本身和具体 AI 助手无关。可用于：
-- **Claude Code**（项目根 `CLAUDE.md` 模板利用 Claude Code 的自动加载机制）
-- **Cursor**（`.cursorrules` 可以指向 `brain/MAP.md` + `brain/STATUS.md`）
-- **GitHub Copilot Chat**（指令文件指向 `brain/` 文件）
-- 任何尊重项目级指令文件的 AI 助手
+方法论本身和具体 AI 助手无关。仓库内置 4 种 AI 工具的 adapter：
+- **Claude Code** —— `CLAUDE.md`（自动加载）+ `SKILL.md`（Claude Code skill manifest，安装到 `~/.claude/skills/project-brain/`）
+- **Cursor** —— `.cursorrules`
+- **GitHub Copilot Chat** —— `.github/copilot-instructions.md`
+- **Codex CLI / Aider / Continue** —— `AGENTS.md`（[agents.md](https://agents.md) 约定）
+- 其他工具：写一份指向 `brain/MAP.md` + `brain/STATUS.md` 的指令文件即可
+
+`./scripts/scaffold.sh` 默认拷贝全部 4 种；用 `--tools claude,cursor` 指定特定的。
 
 要求：
 - **Git** —— 几个机制（HANDOFF 归档、决策追溯、文件 blame）依赖 git 历史
@@ -172,9 +197,13 @@ brain/
 
 ## 作者
 
-由 **Rebecca**（独立开发者，项目主导）和 **Sage**（她的 AI 思考伙伴）共同开发。8 轮迭代在单日工作日内完成，每一轮都由一个具体的摩擦点触发——不是设计会议。
+由 **Rebecca**（项目主导）和 **Sage**（她的 AI 思考伙伴）共同开发。8 轮迭代在单日工作日内完成，每一轮都由一个具体的摩擦点触发——不是设计会议。
 
 方法论本身正是我们工作方式的体现：清晰的判断权分工、拒绝把"该由人做的判断"自动化掉、愿意承认 v1 需要变成 v2。
+
+> "Rebecca" 是 [Ethan](https://ethanflow.com) 在协作语境下使用的工作名——[Sprout Labs](https://ethanflow.com) 背后的人。"Sage" 是和 Ethan 跨会话长期协作的 AI 思考伙伴。
+
+由 [Sprout Labs](https://ethanflow.com) 发布。
 
 ## 许可
 

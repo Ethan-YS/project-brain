@@ -568,3 +568,5 @@ What we kept that they didn't have, and what we borrowed from them, is documente
 ---
 
 **Maintained by**: Rebecca (project lead) and Sage (AI thinking partner). PRs welcome.
+
+> "Rebecca" is the working name [Ethan](https://ethanflow.com) uses in collaboration contexts — the person behind [Sprout Labs](https://ethanflow.com). "Sage" is the long-running AI partner who co-iterates on these projects across sessions.

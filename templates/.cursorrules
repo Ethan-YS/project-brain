@@ -1,0 +1,57 @@
+# [Project Name] — Cursor Rules
+
+# This is the project-level instruction file for Cursor.
+# Layered above your global Cursor rules.
+# Write only what's specific to THIS project here.
+
+## First 30 seconds of a new session
+
+Decide single- or multi-workstream (look at file naming under `brain/`):
+- Only `STATUS.md` / `HANDOFF.md` → single-workstream branch
+- Multiple `STATUS_<workstream>.md` → multi-workstream branch (v2.1)
+
+### Single-workstream (default)
+
+Must read (under `brain/`):
+1. `brain/MAP.md` — project map
+2. `brain/STATUS.md` — current state
+3. `brain/HANDOFF.md` if it exists — previous session's still-warm thoughts
+
+Then briefly report: project recognized + current progress + last blocker.
+Don't silently start working — confirm understanding first.
+
+### Multi-workstream (v2.1)
+
+First read shared files: `brain/MAP.md` + `brain/PROJECT.md`.
+Don't guess this window's workstream — ask the user:
+"I see this is a multi-workstream project with [list workstreams]. Which one does this window work on?"
+After the user says, read `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`.
+
+If the user switches workstreams mid-session, re-read the new one's files and don't carry over memory.
+
+## Update responsibility
+
+The AI doesn't silently modify any file in `brain/` — propose, then user approves.
+
+Judgment division:
+- The user decides "should we record now" (high-level pacing)
+- The AI decides "specifically what to record / how to write each entry"
+- The user has approval/rejection authority
+
+Specific rhythm:
+- User says "update the project brain" → propose a list with reasons; user reviews
+- AI senses a decision was just made → gently inquire ("does this count as decided?"), don't assert
+- Module added/removed → propose updating `brain/MAP.md` §2
+- New doc added/removed → propose updating `brain/MAP.md` §5
+- User signals end-of-session → draft `brain/STATUS.md` for review (soft cap 80 lines)
+- User signals window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`
+
+For multi-workstream (v2.1): scope STATUS / HANDOFF / handoffs to the current workstream — `STATUS_<current>.md`, etc. PROJECT / MAP / DECISIONS / topics are shared.
+
+## Project red lines (read before writing code)
+
+⚠️ TODO ⚠️ — fill in red lines, or confirm "no explicit red lines for this project"
+
+## Reference
+
+Full methodology: https://github.com/Ethan-YS/project-brain/blob/main/METHODOLOGY.md

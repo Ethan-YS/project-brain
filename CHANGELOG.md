@@ -5,6 +5,32 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.2.0] — 2026-05-04
+
+### Added
+- **`SKILL.md`** at repo root — Anthropic-style skill manifest with frontmatter (name / description / allowed-tools), making project-brain installable as a Claude Code skill via `git clone … ~/.claude/skills/project-brain/`
+- **Adapter templates** for AI tools beyond Claude Code:
+  - `templates/.cursorrules` — Cursor
+  - `templates/.github/copilot-instructions.md` — GitHub Copilot Chat
+  - `templates/AGENTS.md` — Codex CLI, Aider, Continue (AGENTS.md convention)
+- **`scripts/scaffold.sh`** — mechanical scaffolding script (no judgment logic by design). One command copies `brain/` + selected adapters into a target project
+- **README two-option Quick start**: install as Claude skill OR manual scaffold for any AI tool
+- **README compatibility table** listing all 4 adapter files
+
+### Fixed
+- `templates/brain/README.md` — broken relative link `../METHODOLOGY.md` (would dangle once the template is copied into a user's project) → replaced with absolute GitHub URL
+
+### Changed
+- **Authors / LICENSE narrative coordination**:
+  - `LICENSE` Copyright: `Rebecca and Sage` → `Ethan-YS (Sprout Labs)` (legal entity now matches Sprout Labs / Ethan branding in README header)
+  - `README` / `METHODOLOGY` Authors section keeps the "Rebecca + Sage" collaboration narrative, with an explainer that Rebecca is Ethan's working name in collaboration contexts. Both layers coexist: business identity (Sprout Labs / Ethan) for legal / commercial; collaboration narrative (Rebecca + Sage) for project storytelling.
+- `assets/social-preview.png` losslessly compressed (1.4 MB → 650 KB, fits well under GitHub's 1 MB social preview limit)
+
+### Triggered by
+External review feedback (GPT-based) flagged: (a) project sells itself as "AI-tool agnostic" but only ships a Claude adapter; (b) repo claims "skill" without a SKILL.md manifest; (c) header / authors / LICENSE narratives don't agree; (d) `templates/brain/README.md` has a relative link that breaks when copied. v2.2.0 addresses all four — turning project-brain from "methodology + templates" into an actually distributable, multi-tool, install-and-go skill.
+
+---
+
 ## [2.1.0] — 2026-04-30
 
 ### Added

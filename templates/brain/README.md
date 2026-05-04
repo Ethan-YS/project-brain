@@ -54,4 +54,6 @@ See METHODOLOGY §3.5.
 
 ## Full methodology
 
-See [`../METHODOLOGY.md`](../METHODOLOGY.md) (or wherever `project-brain` is located).
+See [METHODOLOGY.md on GitHub](https://github.com/Ethan-YS/project-brain/blob/main/METHODOLOGY.md).
+
+(This file lives in `<your-project>/brain/`, so a relative link won't reach the methodology — always use the GitHub URL.)

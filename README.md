@@ -34,22 +34,44 @@ Symptoms you'll recognize:
 
 ## Quick start
 
+### Option A — install as a Claude Code skill (recommended for Claude Code users)
+
 ```bash
-# Clone or download
-git clone https://github.com/Ethan-YS/project-brain.git
-
-# Copy templates into your project
-cp -r project-brain/templates/brain   <your-project-root>/brain
-cp    project-brain/templates/CLAUDE.md  <your-project-root>/CLAUDE.md
-
-# Fill in PROJECT.md on day one (one-line definition + what you explicitly will NOT do)
-# That's it. Read METHODOLOGY.md for the rest.
+git clone https://github.com/Ethan-YS/project-brain.git ~/.claude/skills/project-brain
 ```
 
-When a new AI session opens your project:
-1. The project root `CLAUDE.md` (auto-loaded by Claude Code) directs it to read `brain/MAP.md` + `brain/STATUS.md`
-2. If a `brain/HANDOFF.md` exists, it picks up the previous session's "still-warm-not-yet-written-down" thoughts
-3. Reports back what it understood. Then you say what to work on.
+Then in any project, just say "set up project brain" / "建项目脑" — Claude Code auto-loads `SKILL.md` and walks you through scaffolding. The skill knows:
+- New project kick-off (scaffold + walk PROJECT.md)
+- Resuming an existing brain/ folder (read MAP + STATUS + HANDOFF)
+- Window-switch handoff (write HANDOFF + archive previous)
+- "Update the project brain" workflow (propose with reasons, you approve)
+
+### Option B — manual scaffold (works with any AI assistant)
+
+```bash
+git clone https://github.com/Ethan-YS/project-brain.git
+
+# Scaffold into your project (defaults to all four AI adapters)
+./project-brain/scripts/scaffold.sh /path/to/your/project
+
+# Or pick specific adapters:
+./project-brain/scripts/scaffold.sh /path/to/your/project --tools claude,cursor
+
+# Fill in brain/PROJECT.md on day one
+# Walk through ⚠️ TODO ⚠️ placeholders
+```
+
+What the scaffold gives you:
+
+| File | Tool |
+|---|---|
+| `brain/` | The project brain (PROJECT/MAP/STATUS/DECISIONS/HANDOFF + topics/) |
+| `CLAUDE.md` | Claude Code instruction file |
+| `.cursorrules` | Cursor instruction file |
+| `.github/copilot-instructions.md` | GitHub Copilot Chat |
+| `AGENTS.md` | Codex CLI / Aider / Continue (AGENTS.md convention) |
+
+When a new AI session opens your project, the auto-loaded instruction file directs it to read `brain/MAP.md` + `brain/STATUS.md`. If `brain/HANDOFF.md` exists, it picks up the previous session's "still-warm-not-yet-written-down" thoughts.
 
 ## Structure
 
@@ -156,13 +178,16 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Compatibility
 
-This methodology is AI-agnostic. It works with:
-- **Claude Code** (the project-root `CLAUDE.md` template uses Claude Code's auto-load behavior)
-- **Cursor** (`.cursorrules` can point to `brain/MAP.md` + `brain/STATUS.md`)
-- **GitHub Copilot Chat** (instruction file pointing to brain/ files)
-- Any other AI assistant that respects a project-level instruction file
+This methodology is AI-agnostic. The repo includes adapter templates for:
+- **Claude Code** — `CLAUDE.md` (auto-loaded) + `SKILL.md` (Claude Code skill manifest, install at `~/.claude/skills/project-brain/`)
+- **Cursor** — `.cursorrules`
+- **GitHub Copilot Chat** — `.github/copilot-instructions.md`
+- **Codex CLI / Aider / Continue** — `AGENTS.md` (the [agents.md](https://agents.md) convention)
+- Any other AI assistant that respects a project-level instruction file (write your own pointer to `brain/MAP.md` + `brain/STATUS.md`)
 
-What it requires:
+`./scripts/scaffold.sh` copies all four by default; use `--tools claude,cursor` to pick specific ones.
+
+Requirements:
 - **Git** — several mechanisms (HANDOFF archival, decision traceability, file blame) assume git history
 - That's it.
 
@@ -172,9 +197,13 @@ What it requires:
 
 ## Authors
 
-Co-developed by **Rebecca** (independent developer, project lead) and **Sage** (her AI thinking partner). Eight rounds of iteration in a single working day, each triggered by a specific friction point — not a design session.
+Co-developed by **Rebecca** (project lead) and **Sage** (her AI thinking partner). Eight rounds of iteration in a single working day, each triggered by a specific friction point — not a design session.
 
 The methodology itself models how we work: clear judgment division, refusal to automate away decisions that should be made by humans, and willingness to admit when v1 needs to become v2.
+
+> "Rebecca" is the working name [Ethan](https://ethanflow.com) uses in collaboration contexts — the person behind [Sprout Labs](https://ethanflow.com). "Sage" is the long-running AI partner who co-iterates on these projects across sessions.
+
+Released under [Sprout Labs](https://ethanflow.com).
 
 ## License
 
