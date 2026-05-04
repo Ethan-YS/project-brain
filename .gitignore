@@ -19,7 +19,11 @@ Thumbs.db
 *.log
 *.tmp
 
-# If contributors test the templates locally inside this repo, ignore their actual brain/ instances
-# (templates/ is the canonical source; brain/ at repo root would be a test instance)
+# Repo-root brain/ and CLAUDE.md are local-only:
+# (1) Maintainers dogfood project-brain to manage project-brain itself —
+#     ./brain/ is our own project state, not for the public repo.
+# (2) Contributors testing the templates locally inside this repo
+#     would also produce a ./brain/ they shouldn't commit.
+# Either way: templates/brain/ is the canonical source; ./brain/ is private.
 /brain/
 /CLAUDE.md
