@@ -73,6 +73,18 @@ scaffold 会给你：
 
 新 AI 会话打开你的项目时，自动加载的指令文件引导它读 `brain/MAP.md` + `brain/STATUS.md`。如果存在 `brain/HANDOFF.md`，它能拿到上一次会话"还热着但没写下"的内容。
 
+### 体检（scaffold 完成后随时跑）
+
+```bash
+./scripts/doctor.sh /path/to/your/project
+```
+
+只读的结构体检：缺核心文件、STATUS 超过 80 行、决策缺"被否决的方案"、topics/ 文件未在 MAP 登记、`⚠️ TODO ⚠️` 占位符残留 等。**只报告问题，不修改**——修不修是你的判断。
+
+### 看完整填好的例子
+
+如果空模板感觉抽象，看 [examples/small-saas/](./examples/small-saas/) —— 一个虚构的 SaaS 项目（"Quill"，一个 local-first 笔记 app 在 v0.3 阶段），每个文件都填好。读它是最快理解"brain/ 各文件实际填出来长什么样"的方式。
+
 ## 结构
 
 ```
@@ -174,7 +186,11 @@ brain/
 
 - **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 14 条陷阱、判断权分工机制细节、工作流分裂细节、迁移路径）
 - **[CHANGELOG.md](./CHANGELOG.md)** — 版本历史
-- **[templates/](./templates/)** — `brain/` + 项目根 `CLAUDE.md` 的可拷贝模板
+- **[SKILL.md](./SKILL.md)** — Claude Code skill manifest（安装到 `~/.claude/skills/project-brain/` 后的 entry）
+- **[templates/](./templates/)** — `brain/` + 4 种 AI 工具的 adapter 模板
+- **[examples/small-saas/](./examples/small-saas/)** — 一个完整填好的 brain/ 示例
+- **[scripts/scaffold.sh](./scripts/scaffold.sh)** — 一条命令 scaffold 到任何项目
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（catch 6 种最常见陷阱）
 
 ## 兼容性
 
@@ -193,7 +209,7 @@ brain/
 
 ## 状态
 
-🌱 v2.2 —— 方法论稳定，2 个项目在生产中跑 n=1 和 n=2。v2.2 让它能作为 Claude Code skill 安装（`SKILL.md`），并加入 Cursor / Copilot Chat / AGENTS.md 的 adapter 模板。还没被广泛使用；可以理解为"被 2 个高强度用户验证过，等待社区检验"。
+🌱 v2.3 —— 方法论稳定，2 个项目在生产中跑 n=1 和 n=2。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。还没被广泛使用；可以理解为"被 2 个高强度用户验证过，等待社区检验"。
 
 ## 作者
 

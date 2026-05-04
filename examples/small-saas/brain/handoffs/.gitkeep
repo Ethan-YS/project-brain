@@ -1,0 +1,3 @@
+# Historical HANDOFF archive
+
+(Empty in this example, but in a real project this would contain past `HANDOFF.md` snapshots, named like `2026-04-20-1430.md`, archived each time the user signaled a window-switch and a fresh `HANDOFF.md` was written.)

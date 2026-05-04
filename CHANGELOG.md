@@ -5,6 +5,48 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.3.0] — 2026-05-04
+
+### Added
+
+- **`scripts/doctor.sh`** — read-only structural health check covering 6 of the methodology's documented traps:
+  1. brain/ structure completeness (required core files exist)
+  2. STATUS.md soft cap (80 lines)
+  3. `⚠️ TODO ⚠️` placeholder residue (PROJECT.md flagged as warning, others as info)
+  4. DECISIONS entries missing "Rejected alternatives"
+  5. MAP §5 ↔ topics/ consistency (unregistered files / stale entries)
+  6. HANDOFF freshness (via `git log`, flags HANDOFFs > 14 days old)
+
+  Reports issues with severity (❌ critical / ⚠️ warning / ℹ️ info) but **never modifies anything and never decides what should be fixed** — aligns with the "AI proposes, user decides" principle. Exit code 0 unless critical issues exist.
+
+- **`examples/small-saas/`** — a fully-filled example project ("Quill," a fictional local-first markdown notes SaaS at v0.3). Every file in `brain/` populated with real-shaped content:
+  - `PROJECT.md` with 4 explicit non-goals
+  - `MAP.md` with module list, dependencies, topic doc index
+  - `STATUS.md` mid-feature snapshot
+  - `DECISIONS.md` with 4 entries (SQLite vs Postgres / Workers vs Lambda / no Vim mode / one-time purchase vs subscription) — each with concrete "Rejected alternatives"
+  - `HANDOFF.md` showing a short, specific window-switch handoff
+  - 4 topic docs (`SYNC_PROTOCOL`, `RELEASE_CHECKLIST`, `MOBILE_ROADMAP`, `BUG_TRACKER`)
+
+  Validates against `doctor.sh` with 0 warnings. Designed to be the fastest way to understand "what filled-in `brain/` content actually looks like."
+
+- **`examples/README.md`** — index for examples (more coming as the methodology is used in more contexts; PRs welcome).
+
+### Changed
+
+- README adds a "Health check" subsection in Quick start pointing to `doctor.sh`
+- README adds an "See a fully-filled example" pointer to `examples/small-saas/`
+- README Documentation section now lists all 7 entry-point files (METHODOLOGY / CHANGELOG / SKILL / templates / examples / scaffold.sh / doctor.sh)
+
+### Triggered by
+
+External review (GPT) suggested 6 enhancements after v2.2.1; we evaluated each against the "real friction tells you what's worth building" principle and chose the 2 with concrete user value:
+- `doctor.sh` — auto-catches 6 of the documented traps; aligns with the "structure-only checks, no judgment" design principle
+- `small-saas/` example — addresses the most common new-user feedback ("the templates are abstract; what does filled-in look like?")
+
+Deferred (not in v2.3): adapter auto-generation (no real drift yet), Lite mode (no user pain reported), migration assistant script (LLM territory, not bash territory), DECISIONS-as-ADR-folder (no project has hit the 30+ entry threshold).
+
+---
+
 ## [2.2.1] — 2026-05-04
 
 ### Fixed

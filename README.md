@@ -73,6 +73,18 @@ What the scaffold gives you:
 
 When a new AI session opens your project, the auto-loaded instruction file directs it to read `brain/MAP.md` + `brain/STATUS.md`. If `brain/HANDOFF.md` exists, it picks up the previous session's "still-warm-not-yet-written-down" thoughts.
 
+### Health check (any time after scaffolding)
+
+```bash
+./scripts/doctor.sh /path/to/your/project
+```
+
+Read-only structural checks: missing core files, STATUS over 80 lines, decisions without "rejected alternatives," topics/ files not registered in MAP, stale `⚠️ TODO ⚠️` placeholders, etc. Reports issues but never fixes them — that's still your call. See [scripts/doctor.sh](./scripts/doctor.sh).
+
+### See a fully-filled example
+
+If the empty templates feel abstract, see [examples/small-saas/](./examples/small-saas/) — a fictional SaaS project ("Quill," a local-first notes app at v0.3) with every file filled in. Reading it is the fastest way to understand what each `brain/` file looks like in real use.
+
 ## Structure
 
 ```
@@ -174,7 +186,11 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 - **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 14 traps, judgment division mechanics, workstream split details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
-- **[templates/](./templates/)** — drop-in templates for `brain/` + project-root `CLAUDE.md`
+- **[SKILL.md](./SKILL.md)** — Claude Code skill manifest (the entry point when installed at `~/.claude/skills/project-brain/`)
+- **[templates/](./templates/)** — drop-in templates for `brain/` + 4 AI tool adapters
+- **[examples/small-saas/](./examples/small-saas/)** — a fully-filled example brain/ folder
+- **[scripts/scaffold.sh](./scripts/scaffold.sh)** — one-command scaffold into any project
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (catches the most common 6 traps)
 
 ## Compatibility
 
@@ -193,7 +209,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.2 — methodology stable, two projects running n=1 and n=2 in production. v2.2 makes it installable as a Claude Code skill (`SKILL.md`) and adds adapter templates for Cursor, Copilot Chat, and AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
+🌱 v2.3 — methodology stable, two projects running n=1 and n=2 in production. v2.3 adds `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 made it installable as a Claude Code skill and added adapter templates for Cursor / Copilot / AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
 
 ## Authors
 
