@@ -10,6 +10,9 @@
 
 [English →](./README.md)
 
+**[Sprout Labs](https://ethanflow.com) 出品** — 本地优先的 AI 记忆系统与 Agent 安全研究，由 Ethan（独立产品设计师 & AI Builder，since 2016）独立打造。
+[ethanflow.com](https://ethanflow.com) · [LinkedIn](https://www.linkedin.com/in/ethan-ys/) · [@ethanflow_lab](https://x.com/ethanflow_lab) · [GitHub](https://github.com/Ethan-YS)
+
 ---
 
 ## 它解决什么问题

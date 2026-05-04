@@ -10,6 +10,9 @@
 
 [中文版 →](./README.zh-CN.md)
 
+**Part of [Sprout Labs](https://ethanflow.com)** — Local-first AI memory & agent safety, built independently by Ethan (Independent Product Designer & AI Builder, since 2016).
+[ethanflow.com](https://ethanflow.com) · [LinkedIn](https://www.linkedin.com/in/ethan-ys/) · [@ethanflow_lab](https://x.com/ethanflow_lab) · [GitHub](https://github.com/Ethan-YS)
+
 ---
 
 ## The problem
