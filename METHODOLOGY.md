@@ -212,11 +212,19 @@ HANDOFF is consume-and-discard — when the next switch comes, the previous one 
 
 **Why not by module?** Modules grow, shrink, get renamed, get merged, get split. The four problem dimensions are far more stable.
 
-### 3.4 The role of project-root `CLAUDE.md`
+### 3.4 Continuity entry points (project instruction file / skill manifest)
 
-The project-root `CLAUDE.md` is the **continuity protocol entry point** — and the methodology's only reliable triggering point (auto-loaded by Claude Code).
+A project-level instruction file is the **continuity protocol entry point** — what the AI tool auto-loads when a new session opens this project. As of v2.2, this can be:
 
-It tells the new session AI: "**First read `brain/MAP.md` and `brain/STATUS.md`.**"
+- `CLAUDE.md` (Claude Code, auto-loaded from project root)
+- `SKILL.md` (Claude Code skill, installed at `~/.claude/skills/project-brain/`)
+- `.cursorrules` (Cursor)
+- `.github/copilot-instructions.md` (GitHub Copilot Chat)
+- `AGENTS.md` (Codex CLI / Aider / Continue, the [agents.md](https://agents.md) convention)
+
+All of them serve the same purpose: tell the new-session AI **"First read `brain/MAP.md` and `brain/STATUS.md`."**
+
+Use the `scripts/scaffold.sh` script to copy whichever entry files match your tooling. The methodology itself is tool-agnostic — what matters is that *some* project-level instruction file is auto-loaded and points at `brain/`.
 
 **Stacking order** (Claude Code's behavior):
 

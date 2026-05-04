@@ -1,13 +1,14 @@
 ---
 name: project-brain
 description: |
-  Use this skill when an AI coding session needs persistent context across sessions, window switches, or context compaction.
-  Triggers:
+  Use this skill when the user explicitly asks to set up, resume, update, or hand off persistent project context for AI-assisted work.
+  Triggers (all require an explicit user request — do NOT activate just because a brain/ folder exists):
   (1) The user wants to set up project-level memory ("set up project brain", "scaffold project context", "init project brain", "建项目脑").
-  (2) The user opens a directory containing a brain/ folder — read the existing project brain to resume work.
-  (3) The user signals window switch / context compaction — write a HANDOFF before they leave so the next session can resume.
-  (4) The user says "update the project brain" — propose a list of what to record and let them approve.
-  This skill provides a folder structure (brain/), a copy-able template, and a four-workflow protocol (startup / kick-off / update / handoff). Methodology details in METHODOLOGY.md alongside this file.
+  (2) The user is in a directory containing brain/ AND explicitly asks to resume / continue / load the project / check status / "what's the state of this project".
+  (3) The user signals window switch / context compaction ("switch windows", "context's getting full", "I'll head out", "压缩了") — write a HANDOFF before they leave.
+  (4) The user says "update the project brain" / "let's record this" / "更新项目脑" — propose a list with reasons; user approves per item.
+  Do NOT auto-activate during casual conversation that happens to occur inside a brain/-bearing directory. The methodology's "activation boundary" requires an explicit user request.
+  This skill provides a folder structure (brain/), copy-able templates for multiple AI tools, and a four-workflow protocol (startup / kick-off / update / handoff). Methodology details in METHODOLOGY.md alongside this file.
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 
@@ -20,9 +21,11 @@ A folder structure + collaboration protocol for persistent project context acros
 | User signal | Workflow |
 |---|---|
 | "set up project brain" / "scaffold project" / "建项目脑" / "init project context" | **Kick-off** — see §1 |
-| User is in a directory containing `brain/` and asks the AI to "load" / "resume" / "what's the status" | **Startup** — see §2 |
+| User is in a directory containing `brain/` **AND** explicitly says "load" / "resume" / "what's the status" / "继续这个项目" | **Startup** — see §2 |
 | User says "switch windows" / "context's getting full" / "I'll head out" / "压缩了" | **Handoff** — see §3 |
 | User says "update the project brain" / "let's record this" / "更新项目脑" | **Update** — see §4 |
+
+**Activation boundary** (important): Do **not** activate just because a `brain/` folder exists in the current directory. Casual conversation that happens to occur inside a project does not require this skill — only explicit user requests do. This is intentional: the methodology refuses to auto-monitor or auto-trigger; user judgment decides when to engage.
 
 ## Core principles (always honored)
 

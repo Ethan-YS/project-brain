@@ -193,7 +193,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.1 — methodology stable, two projects running n=1 and n=2 in production. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
+🌱 v2.2 — methodology stable, two projects running n=1 and n=2 in production. v2.2 makes it installable as a Claude Code skill (`SKILL.md`) and adds adapter templates for Cursor, Copilot Chat, and AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
 
 ## Authors
 

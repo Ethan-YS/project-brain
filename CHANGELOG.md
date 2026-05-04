@@ -5,6 +5,18 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.2.1] — 2026-05-04
+
+### Fixed
+- **`README.md` and `README.zh-CN.md` Status section**: still showed `v2.1` even though the repo had bumped to `v2.2.0` — now reflects v2.2.
+- **`METHODOLOGY.md` §3.4**: still claimed `CLAUDE.md` was the methodology's "only reliable triggering point" — outdated since v2.2.0 added SKILL.md and three other adapter formats. Rewritten to list all five entry points (CLAUDE.md / SKILL.md / .cursorrules / .github/copilot-instructions.md / AGENTS.md) and clarify that the methodology is tool-agnostic.
+- **`SKILL.md` description** trigger condition (2): "user opens a directory containing brain/" was over-broad and contradicted the methodology's activation boundary (don't auto-activate during casual conversation). Tightened to require an explicit user request to resume / continue / load / check status. Added an explicit "Activation boundary" section restating the rule.
+
+### Triggered by
+A second round of external review (GPT-based) caught three internal-consistency bugs that v2.2.0 missed: stale version statement, outdated "only entry point" claim, and an SKILL.md trigger that would cause the methodology's own activation boundary to be violated by Claude Code.
+
+---
+
 ## [2.2.0] — 2026-05-04
 
 ### Added
