@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code worktrees / local state
+.claude/
+
+# OS / temp
+Thumbs.db
+*.log
+*.tmp
+
+# If contributors test the templates locally inside this repo, ignore their actual brain/ instances
+# (templates/ is the canonical source; brain/ at repo root would be a test instance)
+/brain/
+/CLAUDE.md

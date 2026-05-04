@@ -1,0 +1,9 @@
+# Historical HANDOFF archive
+
+When the user says "switch windows" and the AI writes a new `HANDOFF.md`, the previous `HANDOFF.md` is moved here, named `YYYY-MM-DD-HHMM.md`.
+
+The main file `brain/HANDOFF.md` always represents the most recent window-switch; this directory holds the historical chain — useful for tracing "where was the project last time we switched windows."
+
+If the project just kicked off and no window-switch has happened, this directory is empty.
+
+For multi-workstream projects (v2.1): use per-workstream subdirectories, e.g., `handoffs/dev/2026-04-30-1430.md`.
