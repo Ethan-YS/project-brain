@@ -40,7 +40,7 @@ When the user wants to scaffold:
 
 1. **Confirm applicability**: multi-module / long-lived / cross-session work? If a one-off script — say "this might be over-engineering for this project" and let the user override.
 2. **Confirm single or multi-workstream**: most projects are single-workstream (default). If the project has parallel independent workstreams (dev + ops + outreach kind of project), ask the user to list workstream names.
-3. **Run scaffold**: `bash <skill-path>/scripts/scaffold.sh <user-project-root>` (defaults to all four AI adapters: Claude, Cursor, Copilot, AGENTS.md).
+3. **Run scaffold**: `bash "${CLAUDE_PLUGIN_ROOT}/scripts/scaffold.sh" <user-project-root>` (defaults to all four AI adapters: Claude, Cursor, Copilot, AGENTS.md).
 4. **Walk the user through `brain/PROJECT.md`** on day one — fill the one-line definition + "what we explicitly DON'T do." Don't let this drift into the future.
 5. **Scan placeholders**: `grep -rn "⚠️ TODO ⚠️" <user-project>/brain/` — go through with the user. Empty fields should be intentional.
 6. **First DECISIONS entry**: append "establishing project-brain" with rejected alternatives, so this file is used from day one.
@@ -96,6 +96,7 @@ When the user says "update the project brain":
 
 ## Reference
 
-- **Full methodology** (the why, all 14 traps, evolution story): `METHODOLOGY.md` (alongside this file)
-- **Templates**: `templates/` (what `scaffold.sh` copies)
+- **Full methodology** (the why, all 14 traps, evolution story): `${CLAUDE_PLUGIN_ROOT}/METHODOLOGY.md`
+- **Templates** (what `scaffold.sh` copies): `${CLAUDE_PLUGIN_ROOT}/templates/`
+- **Doctor (structural health check)**: `bash "${CLAUDE_PLUGIN_ROOT}/scripts/doctor.sh" <user-project-root>`
 - **Public repo**: https://github.com/Ethan-YS/project-brain
