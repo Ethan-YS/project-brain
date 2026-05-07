@@ -1,0 +1,21 @@
+{
+  "name": "project-brain",
+  "version": "2.4.0",
+  "description": "Folder structure + collaboration protocol so AI sessions can resume project context after compaction or window switch. One brain/ folder, 5 core files (PROJECT/MAP/STATUS/DECISIONS/HANDOFF), and a topic taxonomy.",
+  "author": {
+    "name": "Ethan",
+    "url": "https://ethanflow.com"
+  },
+  "homepage": "https://github.com/Ethan-YS/project-brain",
+  "repository": "https://github.com/Ethan-YS/project-brain",
+  "license": "MIT",
+  "keywords": [
+    "context",
+    "memory",
+    "session-handoff",
+    "project-management",
+    "ai-collaboration",
+    "claude-code",
+    "skill"
+  ]
+}

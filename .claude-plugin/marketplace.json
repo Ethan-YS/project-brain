@@ -1,0 +1,15 @@
+{
+  "name": "sprout-labs",
+  "owner": {
+    "name": "Sprout Labs",
+    "url": "https://ethanflow.com"
+  },
+  "description": "Sprout Labs — local-first AI memory systems and agent workflow research by Ethan.",
+  "plugins": [
+    {
+      "name": "project-brain",
+      "source": "./",
+      "description": "Folder structure + protocol so AI sessions resume project context across windows."
+    }
+  ]
+}
