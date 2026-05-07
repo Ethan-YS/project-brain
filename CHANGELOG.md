@@ -5,6 +5,40 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.4.1] — 2026-05-07
+
+Same-day point release. v2.4.0 was the structural switch to plugin distribution; v2.4.1 lands the fixes that surfaced during local install on Claude Code 2.1.89.
+
+### Fixed
+
+- **`marketplace.json` schema**: top-level `description` field is rejected by `claude plugin validate` (`✘ root: Unrecognized key: "description"`). Moved to `metadata.description`, the validator-recognized location. v2.4.0's marketplace manifest accepted `marketplace add` but failed strict validation — now passes cleanly with zero warnings.
+
+### Added
+
+- **README Option A CLI fallback** (en + zh): the `/plugin` slash command isn't exposed in every Claude Code environment (some embedded / SDK contexts strip it). Added the `claude plugin marketplace add ...` / `claude plugin install ...` CLI subcommand form, framed as fallback-not-primary. Confirmed working via Claude Code 2.1.89.
+
+### Maintainer notes — lessons learned shipping a Claude Code plugin
+
+Real product behavior surfaced during local validation that future plugin maintainers should know. None of this is in our methodology — it's plugin-distribution infrastructure, recorded here so it's traceable.
+
+- **`plugin update` checks `plugin.json` version, not git commit sha.** A plugin installed at commit A and the same plugin pushed at commit B that both declare `version: 2.4.0` will not trigger an update — Claude Code reports "already at the latest version (2.4.0)". To ship any plugin content change (even a docs-only fix), **bump `plugin.json` version**.
+- **`marketplace update` syncs only the top-level `marketplace.json`, not the plugin source files inside.** Plugin source files (`SKILL.md` / `README.md` / `scripts/`) are pulled at install time and only refresh on a real `plugin update` (which requires the version bump above). To roll a stale install forward without a version bump, the user must `uninstall` then `install` again.
+- **Maintainer release flow**: edit → bump `plugin.json` version → commit → push → users run `claude plugin marketplace update <name>` then `claude plugin update <plugin>`. The two-step (marketplace, then plugin) matters: the second step is what actually rotates the user's installed files.
+
+### Triggered by
+
+Local install verification of v2.4.0 on Claude Code 2.1.89 turned up two real issues and one observed behavior:
+1. `claude plugin validate` rejected the v2.4.0 marketplace.json — fixed
+2. `/plugin` slash command returned "isn't available in this environment" in the local environment — CLI fallback added to README
+3. After fixing both, `claude plugin update project-brain@sprout-labs` reported "already at the latest version (2.4.0)" because `plugin.json` version hadn't moved — confirms the bump-version-to-ship rule above. v2.4.1 is the test of this exact pipeline.
+
+### Considered and deferred
+
+- **Calling this v2.5** — no, methodology unchanged; only distribution mechanics shifted within v2.4.x. Stay precise about what "minor" means
+- **Adding a pre-publish version-bump check to `scripts/doctor.sh`** — `doctor.sh`'s scope is "structural health of `brain/`," not plugin-distribution housekeeping. Lives in two different layers. Defer
+
+---
+
 ## [2.4.0] — 2026-05-07
 
 ### Changed
