@@ -4,7 +4,9 @@
     "name": "Sprout Labs",
     "url": "https://ethanflow.com"
   },
-  "description": "Sprout Labs — local-first AI memory systems and agent workflow research by Ethan.",
+  "metadata": {
+    "description": "Sprout Labs — local-first AI memory systems and agent workflow research by Ethan."
+  },
   "plugins": [
     {
       "name": "project-brain",
