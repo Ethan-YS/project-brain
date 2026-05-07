@@ -39,19 +39,31 @@
 
 ## 快速开始
 
-### 方式 A —— 作为 Claude Code skill 安装（Claude Code 用户推荐）
+### 方式 A —— 作为 Claude Code plugin 安装（Claude Code 用户推荐）
 
-```bash
-git clone https://github.com/Ethan-YS/project-brain.git ~/.claude/skills/project-brain
+在 Claude Code 里跑两条命令：
+
+```
+/plugin marketplace add Ethan-YS/project-brain
+/plugin install project-brain@sprout-labs
 ```
 
-之后在任何项目里说"建项目脑"或"set up project brain"——Claude Code 会自动加载 `SKILL.md` 走流程。这个 skill 知道：
-- 新项目 kick-off（scaffold + 走 PROJECT.md）
-- 接续已有 brain/（读 MAP + STATUS + HANDOFF）
-- 切窗口 handoff（写 HANDOFF + 归档上一份）
-- "更新项目脑" 流程（带理由的清单，你认可）
+装好之后，在任何项目里直接说：
+
+- **"建项目脑"** / **"set up project brain"** —— 启动一个新项目脑
+- **"继续这个项目"** / **"resume this project"** —— 读 `MAP.md` + `STATUS.md` +（如果有）`HANDOFF.md`
+- **"压缩了"** / **"切窗口"** / **"context's getting full"** —— 在上下文死掉之前写一份 HANDOFF
+- **"更新项目脑"** / **"update the project brain"** —— skill 会带理由提议清单，你逐项认可
+
+skill 内置 4 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff / 更新。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
+
+> **之前用旧方式装过？** 如果你之前 `git clone` 到了 `~/.claude/skills/project-brain`，先 `rm -rf ~/.claude/skills/project-brain` 再装 plugin。plugin 路径是从此往后唯一支持的安装路径。
+
+> **之后更新**：跑 `/plugin marketplace update sprout-labs` 拉最新版本。
 
 ### 方式 B —— 手动 scaffold（任何 AI 助手都能用）
+
+如果你不用 Claude Code，或者只想拿 scaffold 脚本：
 
 ```bash
 git clone https://github.com/Ethan-YS/project-brain.git
@@ -191,7 +203,8 @@ brain/
 
 - **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 14 条陷阱、判断权分工机制细节、工作流分裂细节、迁移路径）
 - **[CHANGELOG.md](./CHANGELOG.md)** — 版本历史
-- **[SKILL.md](./SKILL.md)** — Claude Code skill manifest（安装到 `~/.claude/skills/project-brain/` 后的 entry）
+- **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest（plugin 装好后自动加载）
+- **[.claude-plugin/](./.claude-plugin/)** — `plugin.json`（manifest）+ `marketplace.json`（Sprout Labs marketplace 入口）
 - **[templates/](./templates/)** — `brain/` + 4 种 AI 工具的 adapter 模板
 - **[examples/small-saas/](./examples/small-saas/)** — 一个完整填好的 brain/ 示例
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — 一条命令 scaffold 到任何项目
@@ -200,7 +213,7 @@ brain/
 ## 兼容性
 
 方法论本身和具体 AI 助手无关。仓库内置 4 种 AI 工具的 adapter：
-- **Claude Code** —— `CLAUDE.md`（自动加载）+ `SKILL.md`（Claude Code skill manifest，安装到 `~/.claude/skills/project-brain/`）
+- **Claude Code** —— 推荐用方式 A 装成 plugin，自动加载 skill；或者只把 `CLAUDE.md` 放到项目里当项目级指令文件
 - **Cursor** —— `.cursorrules`
 - **GitHub Copilot Chat** —— `.github/copilot-instructions.md`
 - **Codex CLI / Aider / Continue** —— `AGENTS.md`（[agents.md](https://agents.md) 约定）
@@ -214,7 +227,7 @@ brain/
 
 ## 状态
 
-🌱 v2.3 —— 方法论稳定，2 个项目在生产中跑 n=1 和 n=2。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。还没被广泛使用；可以理解为"被 2 个高强度用户验证过，等待社区检验"。
+🌱 v2.4 —— 方法论稳定，2 个项目在生产中跑 n=1 和 n=2。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。还没被广泛使用；可以理解为"被 2 个高强度用户验证过，等待社区检验"。
 
 ## 作者
 

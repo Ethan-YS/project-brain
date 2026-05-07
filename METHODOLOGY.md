@@ -214,10 +214,10 @@ HANDOFF is consume-and-discard — when the next switch comes, the previous one 
 
 ### 3.4 Continuity entry points (project instruction file / skill manifest)
 
-A project-level instruction file is the **continuity protocol entry point** — what the AI tool auto-loads when a new session opens this project. As of v2.2, this can be:
+A project-level instruction file is the **continuity protocol entry point** — what the AI tool auto-loads when a new session opens this project. As of v2.4, this can be:
 
 - `CLAUDE.md` (Claude Code, auto-loaded from project root)
-- `SKILL.md` (Claude Code skill, installed at `~/.claude/skills/project-brain/`)
+- The `project-brain` Claude Code plugin (installed via `/plugin install project-brain@sprout-labs`; provides the `skills/project-brain/SKILL.md` workflows on top of `CLAUDE.md`)
 - `.cursorrules` (Cursor)
 - `.github/copilot-instructions.md` (GitHub Copilot Chat)
 - `AGENTS.md` (Codex CLI / Aider / Continue, the [agents.md](https://agents.md) convention)

@@ -39,19 +39,31 @@ Symptoms you'll recognize:
 
 ## Quick start
 
-### Option A — install as a Claude Code skill (recommended for Claude Code users)
+### Option A — install as a Claude Code plugin (recommended for Claude Code users)
 
-```bash
-git clone https://github.com/Ethan-YS/project-brain.git ~/.claude/skills/project-brain
+In Claude Code, run these two slash commands:
+
+```
+/plugin marketplace add Ethan-YS/project-brain
+/plugin install project-brain@sprout-labs
 ```
 
-Then in any project, just say "set up project brain" / "建项目脑" — Claude Code auto-loads `SKILL.md` and walks you through scaffolding. The skill knows:
-- New project kick-off (scaffold + walk PROJECT.md)
-- Resuming an existing brain/ folder (read MAP + STATUS + HANDOFF)
-- Window-switch handoff (write HANDOFF + archive previous)
-- "Update the project brain" workflow (propose with reasons, you approve)
+That's it. From any project after that, just say:
+
+- **"set up project brain"** / **"建项目脑"** — kick off a new brain
+- **"resume this project"** / **"继续这个项目"** — load `MAP.md` + `STATUS.md` + (if exists) `HANDOFF.md`
+- **"I'm switching windows"** / **"压缩了"** / **"context's getting full"** — write a HANDOFF before context dies
+- **"update the project brain"** / **"更新项目脑"** — propose updates with reasons, you approve per item
+
+The skill handles four workflows: new-project kick-off, startup resume, window-switch handoff, and updates. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
+
+> **Already installed the old way?** If you previously cloned to `~/.claude/skills/project-brain`, remove it first: `rm -rf ~/.claude/skills/project-brain`. The plugin install is the supported path going forward.
+
+> **Update later**: `/plugin marketplace update sprout-labs` to fetch the latest version.
 
 ### Option B — manual scaffold (works with any AI assistant)
+
+If you don't use Claude Code, or you just want the scaffold script:
 
 ```bash
 git clone https://github.com/Ethan-YS/project-brain.git
@@ -191,7 +203,8 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 - **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 14 traps, judgment division mechanics, workstream split details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
-- **[SKILL.md](./SKILL.md)** — Claude Code skill manifest (the entry point when installed at `~/.claude/skills/project-brain/`)
+- **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
+- **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)
 - **[templates/](./templates/)** — drop-in templates for `brain/` + 4 AI tool adapters
 - **[examples/small-saas/](./examples/small-saas/)** — a fully-filled example brain/ folder
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — one-command scaffold into any project
@@ -200,7 +213,7 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 ## Compatibility
 
 This methodology is AI-agnostic. The repo includes adapter templates for:
-- **Claude Code** — `CLAUDE.md` (auto-loaded) + `SKILL.md` (Claude Code skill manifest, install at `~/.claude/skills/project-brain/`)
+- **Claude Code** — install as a plugin (Option A above) for the full skill experience, or just drop in `CLAUDE.md` for project-level instructions
 - **Cursor** — `.cursorrules`
 - **GitHub Copilot Chat** — `.github/copilot-instructions.md`
 - **Codex CLI / Aider / Continue** — `AGENTS.md` (the [agents.md](https://agents.md) convention)
@@ -214,7 +227,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.3 — methodology stable, two projects running n=1 and n=2 in production. v2.3 adds `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 made it installable as a Claude Code skill and added adapter templates for Cursor / Copilot / AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
+🌱 v2.4 — methodology stable, two projects running n=1 and n=2 in production. v2.4 ships as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
 
 ## Authors
 

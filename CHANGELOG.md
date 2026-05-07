@@ -5,6 +5,54 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.4.0] — 2026-05-07
+
+### Changed
+
+- **Distribution form**: `project-brain` now ships as a one-command Claude Code plugin via the `sprout-labs` marketplace. Users install with two slash commands inside Claude Code:
+
+  ```
+  /plugin marketplace add Ethan-YS/project-brain
+  /plugin install project-brain@sprout-labs
+  ```
+
+  Replaces the previous `git clone https://github.com/Ethan-YS/project-brain.git ~/.claude/skills/project-brain` flow.
+
+- **Repository layout** (Claude Code plugin convention):
+  - `SKILL.md` → `skills/project-brain/SKILL.md` (preserved via `git mv` for blame continuity)
+  - Internal `<skill-path>/scripts/scaffold.sh` references → `${CLAUDE_PLUGIN_ROOT}/scripts/scaffold.sh`
+  - "alongside this file" cross-references → absolute `${CLAUDE_PLUGIN_ROOT}/...` paths (METHODOLOGY.md, templates/, scripts/doctor.sh)
+
+- **README.md / README.zh-CN.md** Quick start rewritten:
+  - **Option A** flips from manual `git clone` to plugin install, with the four user-facing trigger phrases listed inline (kick-off / startup / handoff / update) so a first-time user knows what to say after install
+  - Old-user migration note added: `rm -rf ~/.claude/skills/project-brain` before installing the plugin (plugin install would otherwise shadow the standalone copy)
+  - **Option B** (manual `scaffold.sh`) preserved unchanged for non-Claude-Code users (Cursor / Copilot / Codex / Aider) and for users who only want the bash scaffold without AI orchestration
+
+### Added
+
+- **`.claude-plugin/plugin.json`** — plugin manifest declaring `name`, `version: 2.4.0`, description, author (Ethan), homepage, repository, license, keywords
+- **`.claude-plugin/marketplace.json`** — marketplace entry under `name: sprout-labs`, source `"./"` (the marketplace and the plugin live in the same repo). Marketplace name is brand-level rather than plugin-level, so future Sprout Labs plugins can list under the same marketplace without renaming
+
+### Not changed
+
+- `METHODOLOGY.md` — methodology itself unchanged. This release is distribution mechanics only
+- `scripts/scaffold.sh` / `scripts/doctor.sh` — both still standalone-executable for non-plugin users
+- `templates/` — unchanged
+- `examples/small-saas/` — unchanged
+- The methodology's **activation boundary** (no auto-trigger just because `brain/` exists; explicit user request required) — explicitly preserved in plugin form. The plugin format does not introduce auto-detection; plugin install only changes how the SKILL.md gets onto the user's machine, not when it activates
+
+### Triggered by
+
+Maintainer ask: "make this open-the-box installable as a skill." The previous flow required users to know the exact `~/.claude/skills/<name>/` path convention and run a `git clone` with a specific destination — high enough friction that real users would skip it. Claude Code's plugin marketplace system (officially supported as of late 2026) reduces install to two slash commands the user can copy-paste.
+
+### Considered and deferred
+
+- **Submitting to Anthropic's official `claude-plugins-official` marketplace** (https://claude.ai/settings/plugins/submit) — deferred until the project has n=3 real third-party users. Aligns with the "wait for real friction" stance set in v2.3.1's STATUS. The self-hosted `sprout-labs` marketplace works without that submission
+- **Auto-trigger on directory entry** (e.g., detecting a `brain/` folder and activating without an explicit user request) — refused. This was already settled in v2 ("Judgment Division Principle"). Rebooting the auto-trigger debate inside a plugin context would re-litigate a closed question
+- **Removing the standalone `git clone` install path entirely** — kept Option B for Cursor / Copilot / Codex users. The plugin path is for Claude Code only; the bash scaffold is the AI-agnostic fallback
+
+---
+
 ## [2.3.1] — 2026-05-04
 
 ### Fixed
