@@ -48,6 +48,13 @@ In Claude Code, run these two slash commands:
 /plugin install project-brain@sprout-labs
 ```
 
+If `/plugin` isn't exposed in your Claude Code environment (some embedded / SDK contexts strip it), the CLI form does the exact same thing — run from any terminal:
+
+```bash
+claude plugin marketplace add Ethan-YS/project-brain
+claude plugin install project-brain@sprout-labs
+```
+
 That's it. From any project after that, just say:
 
 - **"set up project brain"** / **"建项目脑"** — kick off a new brain

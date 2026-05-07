@@ -48,6 +48,13 @@
 /plugin install project-brain@sprout-labs
 ```
 
+如果你的 Claude Code 环境不暴露 `/plugin` 斜杠命令（某些 embedded / SDK 上下文会去掉），用 CLI 形式效果一致 —— 在任何 terminal 里跑：
+
+```bash
+claude plugin marketplace add Ethan-YS/project-brain
+claude plugin install project-brain@sprout-labs
+```
+
 装好之后，在任何项目里直接说：
 
 - **"建项目脑"** / **"set up project brain"** —— 启动一个新项目脑
