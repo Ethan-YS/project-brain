@@ -57,10 +57,10 @@ claude plugin install project-brain@sprout-labs
 
 装好之后，在任何项目里直接说：
 
-- **"建项目脑"** / **"set up project brain"** —— 启动一个新项目脑
-- **"继续这个项目"** / **"resume this project"** —— 读 `MAP.md` + `STATUS.md` +（如果有）`HANDOFF.md`
-- **"压缩了"** / **"切窗口"** / **"context's getting full"** —— 在上下文死掉之前写一份 HANDOFF
-- **"更新项目脑"** / **"update the project brain"** —— skill 会带理由提议清单，你逐项认可
+- **"建项目脑"** —— 启动一个新项目脑
+- **"继续这个项目"** —— 读 `MAP.md` + `STATUS.md` +（如果有）`HANDOFF.md`
+- **"压缩了"** / **"切窗口"** —— 在上下文死掉之前写一份 HANDOFF
+- **"更新项目脑"** —— skill 会带理由提议清单，你逐项认可
 
 skill 内置 4 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff / 更新。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
 

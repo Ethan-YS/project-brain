@@ -5,6 +5,46 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.4.2] — 2026-05-07
+
+Same-day point release. v2.4.1 surfaced the right release pipeline; v2.4.2 fixes
+two real trigger-coverage bugs that would have caused Chinese-language users to
+hit silent miss on `Startup` and `Handoff` workflows, and cleans up README
+language consistency (English-only triggers in English README, Chinese-only in
+zh-CN README).
+
+### Fixed
+
+- **`SKILL.md` `description` trigger (2) Startup was missing the Chinese variant**: the README (zh-CN) told users to say "继续这个项目" and the SKILL.md body table listed it, but the **`description` frontmatter field** — which is the only thing Claude Code's trigger matcher actually reads — did not contain it. So Chinese users saying "继续这个项目" could miss the skill entirely. Added it.
+- **`SKILL.md` `description` trigger (3) Handoff was missing "切窗口"**: same pattern. The Chinese README listed "切窗口" alongside "压缩了" as a handoff trigger, but the `description` only had "压缩了". Chinese users saying "切窗口" could miss. Added it; also added it to the SKILL.md body table for symmetry.
+
+### Changed
+
+- **README.md and README.zh-CN.md Quick start trigger lists now language-pure**: previously both English and Chinese READMEs listed every trigger in both languages side-by-side ("set up project brain" / "建项目脑" — kick off a new brain). This is noise for the reader of either language alone. English README now lists only English triggers; Chinese README only Chinese. The SKILL.md description field still carries the full bilingual coverage (it's the matcher's source of truth).
+
+### Maintainer notes — source-of-truth layering
+
+Four places describe the same triggers, and they each serve a different audience. The layering is now:
+
+| Layer | Audience | Content |
+|---|---|---|
+| `SKILL.md` `description` frontmatter | **Claude Code matcher** | Full bilingual coverage (English + Chinese for every trigger). The only place that affects runtime matching. |
+| `SKILL.md` body table | Plugin maintainer reading the file | Full bilingual coverage (mirrors description for human readability). |
+| `README.md` Quick start | English users discovering the plugin | English-only trigger list. |
+| `README.zh-CN.md` Quick start | Chinese users discovering the plugin | Chinese-only trigger list. |
+
+**Invariant**: every trigger that appears in either README must appear (in the same language) in `SKILL.md` description. Future trigger additions: update description first, then mirror in body table, then localize in the appropriate README.
+
+### Triggered by
+
+While preparing v2.4.1 community promotion, audit of the rendered English README on GitHub revealed Chinese trigger words mixed into the English Quick start. Investigating whether to strip them surfaced the deeper bug: not all README-advertised Chinese triggers actually exist in the `description` field. Three-layer audit caught two real silent-miss bugs.
+
+### Considered and deferred
+
+- **Adding more synonyms to each trigger** (e.g., "加载项目" / "项目接续" / "我先离开" / "睡了") — could broaden coverage, but expanding the trigger surface area without real-user evidence risks false-positive activation. Each addition should be triggered by a real "I said X and it didn't work" report. Defer to data.
+
+---
+
 ## [2.4.1] — 2026-05-07
 
 Same-day point release. v2.4.0 was the structural switch to plugin distribution; v2.4.1 lands the fixes that surfaced during local install on Claude Code 2.1.89.

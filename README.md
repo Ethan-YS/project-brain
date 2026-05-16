@@ -57,10 +57,10 @@ claude plugin install project-brain@sprout-labs
 
 That's it. From any project after that, just say:
 
-- **"set up project brain"** / **"建项目脑"** — kick off a new brain
-- **"resume this project"** / **"继续这个项目"** — load `MAP.md` + `STATUS.md` + (if exists) `HANDOFF.md`
-- **"I'm switching windows"** / **"压缩了"** / **"context's getting full"** — write a HANDOFF before context dies
-- **"update the project brain"** / **"更新项目脑"** — propose updates with reasons, you approve per item
+- **"set up project brain"** — kick off a new brain
+- **"resume this project"** — load `MAP.md` + `STATUS.md` + (if exists) `HANDOFF.md`
+- **"I'm switching windows"** / **"context's getting full"** — write a HANDOFF before context dies
+- **"update the project brain"** — propose updates with reasons, you approve per item
 
 The skill handles four workflows: new-project kick-off, startup resume, window-switch handoff, and updates. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
 
