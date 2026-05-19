@@ -5,9 +5,10 @@
 # No judgment logic — by design.
 #
 # Usage:
-#   ./scripts/scaffold.sh                          # scaffold into current directory
+#   ./scripts/scaffold.sh                          # scaffold into current directory (English)
 #   ./scripts/scaffold.sh /path/to/your/project    # scaffold into the specified directory
 #   ./scripts/scaffold.sh --tools claude,cursor    # only copy specific adapters
+#   ./scripts/scaffold.sh --lang zh                # use Chinese templates for brain/ + CLAUDE.md
 #
 # Adapters available:
 #   claude    → CLAUDE.md (Claude Code)
@@ -16,6 +17,14 @@
 #   agents    → AGENTS.md (Codex CLI, Aider, etc., AGENTS.md convention)
 #
 # Default: all four adapters are copied.
+#
+# Languages:
+#   en (default)  → templates/        — English brain/ + CLAUDE.md
+#   zh            → templates-zh/     — Chinese brain/ + CLAUDE.md
+#
+# The other three adapters (.cursorrules / .github/copilot-instructions.md / AGENTS.md)
+# remain English regardless of --lang — they are consumed by AI tools, not by humans,
+# and an English instruction file works equally well in any-language project.
 
 set -euo pipefail
 
@@ -23,15 +32,21 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 TEMPLATES="$REPO_ROOT/templates"
+TEMPLATES_ZH="$REPO_ROOT/templates-zh"
 
 # Parse args
 TARGET="."
 TOOLS="claude,cursor,copilot,agents"
+LANG_OPT="en"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --tools)
       TOOLS="$2"
+      shift 2
+      ;;
+    --lang)
+      LANG_OPT="$2"
       shift 2
       ;;
     --help|-h)
@@ -45,21 +60,45 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+# Validate --lang
+case "$LANG_OPT" in
+  en|zh) ;;
+  *)
+    echo "❌ Unknown --lang value: $LANG_OPT (supported: en, zh)" >&2
+    exit 1
+    ;;
+esac
+
+# Pick source paths for brain/ and CLAUDE.md based on language
+# Other adapters always come from English templates/ (read by AI tools, not humans).
+if [[ "$LANG_OPT" == "zh" ]]; then
+  if [[ ! -d "$TEMPLATES_ZH" ]]; then
+    echo "❌ Chinese templates not found at $TEMPLATES_ZH" >&2
+    exit 1
+  fi
+  BRAIN_SOURCE="$TEMPLATES_ZH/brain"
+  CLAUDE_SOURCE="$TEMPLATES_ZH/CLAUDE.md"
+else
+  BRAIN_SOURCE="$TEMPLATES/brain"
+  CLAUDE_SOURCE="$TEMPLATES/CLAUDE.md"
+fi
+
 # Resolve absolute target path
 TARGET="$(cd "$TARGET" 2>/dev/null && pwd || (mkdir -p "$TARGET" && cd "$TARGET" && pwd))"
 
 echo "📂 project-brain scaffold"
-echo "   Source:  $REPO_ROOT"
-echo "   Target:  $TARGET"
-echo "   Tools:   $TOOLS"
+echo "   Source:    $REPO_ROOT"
+echo "   Target:    $TARGET"
+echo "   Tools:     $TOOLS"
+echo "   Language:  $LANG_OPT"
 echo ""
 
 # Copy brain/ folder (always)
 if [[ -d "$TARGET/brain" ]]; then
   echo "⚠️  $TARGET/brain already exists — skipping (rename or remove first if you want a fresh scaffold)"
 else
-  cp -r "$TEMPLATES/brain" "$TARGET/brain"
-  echo "✅ brain/ copied"
+  cp -r "$BRAIN_SOURCE" "$TARGET/brain"
+  echo "✅ brain/ copied ($LANG_OPT)"
 fi
 
 # Copy adapters
@@ -70,8 +109,8 @@ for tool in "${TOOL_LIST[@]}"; do
       if [[ -f "$TARGET/CLAUDE.md" ]]; then
         echo "⚠️  CLAUDE.md exists — skipping"
       else
-        cp "$TEMPLATES/CLAUDE.md" "$TARGET/CLAUDE.md"
-        echo "✅ CLAUDE.md copied (Claude Code)"
+        cp "$CLAUDE_SOURCE" "$TARGET/CLAUDE.md"
+        echo "✅ CLAUDE.md copied (Claude Code, $LANG_OPT)"
       fi
       ;;
     cursor)

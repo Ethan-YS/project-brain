@@ -75,11 +75,15 @@ skill 内置 4 种工作流：新项目 kick-off / 启动接续 / 切窗口 hand
 ```bash
 git clone https://github.com/Ethan-YS/project-brain.git
 
-# Scaffold 到你的项目（默认拷入 4 种 AI 适配文件）
+# Scaffold 到你的项目（默认拷入 4 种 AI 适配文件，英文模板）
 ./project-brain/scripts/scaffold.sh /path/to/your/project
 
 # 或指定特定的：
 ./project-brain/scripts/scaffold.sh /path/to/your/project --tools claude,cursor
+
+# 中文文档项目 —— 给中文 brain/ + 中文 CLAUDE.md
+#（其他 adapter 仍是英文 —— 它们是给 AI 工具读的，不是给人读的）：
+./project-brain/scripts/scaffold.sh /path/to/your/project --lang zh
 
 # 第一天就填 brain/PROJECT.md
 # 走查 ⚠️ TODO ⚠️ 占位符
@@ -234,7 +238,7 @@ brain/
 
 ## 状态
 
-🌱 v2.4 —— 方法论稳定，2 个项目在生产中跑 n=1 和 n=2。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。还没被广泛使用；可以理解为"被 2 个高强度用户验证过，等待社区检验"。
+🌱 v2.4 —— 方法论稳定，140+ stars，多个项目在持续使用。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。外部使用效果还在观察中——维护者日常在用，但其他用户的真实使用反馈还在收集。
 
 ## 作者
 

@@ -5,6 +5,51 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.5.0] — 2026-05-18
+
+Minor version bump. Adds first-class Chinese templates and a `--lang` flag for
+`scaffold.sh`, so Chinese-documented projects can scaffold a fully Chinese
+`brain/` and `CLAUDE.md`. Also promotes two field-tested improvements from real
+project use into the methodology (`§1.4` and new `§1.4b`).
+
+### Added
+
+- **`templates-zh/` directory** mirroring `templates/` structure: Chinese versions of `CLAUDE.md` + `brain/{README,PROJECT,MAP,STATUS,DECISIONS,HANDOFF}.md` + `brain/topics/{,systems,operations,planning,feedback}/README.md` + `brain/handoffs/.gitkeep`. Placeholders remain `⚠️ TODO ⚠️` (cross-language; `doctor.sh` untouched).
+- **`scripts/scaffold.sh --lang en|zh` flag**. Defaults to `en`. With `--lang zh`, `brain/` and `CLAUDE.md` are sourced from `templates-zh/`; the other three adapters (`.cursorrules`, `.github/copilot-instructions.md`, `AGENTS.md`) remain English regardless — they are consumed by AI tools, not humans, so the localization cost isn't worth the upkeep.
+- **METHODOLOGY `§1.4` Step 1b — "Pick the scaffold level"**. New guidance for projects with nested sub-projects (monorepos, websites with sub-modules, multi-product workspaces): default to project-root `brain/`; promote a sub-project to its own `brain/` only when it really lives a separate life. Multi-level nesting (root + sub-project both have `brain/`) is explicitly out of v2 scope.
+- **METHODOLOGY `§1.4b` — "Existing-material decomposition"**. New workflow for projects that already have 2–4 well-structured docs (e.g. `PLAN.md`, `ROADMAP.md`) but no `brain/` organization. Sits between `§1.4` (green-field) and `§1.5` (full migration). Includes explicit "AI may proceed with `git init` without asking" clause when the project has no version control yet.
+
+### Changed
+
+- `skills/project-brain/SKILL.md` `§1` kick-off step 3: mentions `--lang zh` for Chinese-documented projects.
+- `README.md` and `README.zh-CN.md` Option B (manual scaffold) sections: document `--lang` usage and the rationale for not localizing non-Claude adapters.
+
+### Why a minor version (not patch)
+
+A new flag that changes `scaffold.sh` output is user-visible new functionality, not a bugfix. `2.4.x` patches kept scaffold output identical; `2.5.0` adds a new output mode.
+
+### Maintainer notes — the `templates/` ↔ `templates-zh/` discipline
+
+`templates/` and `templates-zh/` are **structure-locked**: section numbers, placeholder positions, table columns, document boundaries, and file lists must stay identical between the two. The only differences are language and the call-out conventions appropriate to that language's audience — nothing else.
+
+**Invariant**: any structural change to `templates/` must be mirrored in `templates-zh/` in the same commit. Translation drift between the two breaks the guarantee that "scaffold language is purely a presentation choice."
+
+If a future change adds a new file to `templates/brain/`, the same file must appear in `templates-zh/brain/` in the same PR. Future maintainers: when reviewing a PR that touches `templates/`, grep for the same path in `templates-zh/` and reject if missing.
+
+### Triggered by
+
+- **`templates-zh/` and `--lang`**: maintainers' real workflow (Chinese-language daily work, multiple projects in active use, 140+ stars) wanted a way to scaffold Chinese-language `brain/` without maintaining a private fork. Eliminates the dual-track drift risk between a public English plugin and a private Chinese maintainer's copy — by making both first-class outputs of the same source of truth.
+- **`§1.4` Step 1b**: a website project's first kick-off (2026-04-25), v2's first real-project validation, surfaced the "do I scaffold at the website root or at a specific sub-module level?" question with no methodology guidance. The AI made an ad-hoc call ("website root"); the call was correct but had to be re-derived from first principles each time it came up.
+- **`§1.4b`**: a macOS desktop app project (2026-05-02) didn't fit either `§1.4` (it already had `PLAN.md` + `ROADMAP.md` + an early `CLAUDE.md` — not green-field) or `§1.5` (no doc rot — those existing docs were well-structured, not unstructured). The hybrid path used to handle it (scaffold empty `brain/`, then map existing docs section-by-section into target files) wasn't in the methodology. Also surfaced "no git yet → AI should `git init` itself, not ask the user" as a workflow rule.
+
+### Considered and deferred
+
+- **Localizing `.cursorrules` / `AGENTS.md` / `.github/copilot-instructions.md` into Chinese versions** — deferred. These files are instruction inputs for AI tools, not human reading material. An English instruction file works equally well in any-language project. Adding Chinese versions would double maintenance with near-zero user-perceptible benefit.
+- **A `--lang ja` / `--lang ko` / other languages** — deferred until there's evidence of real demand from non-English-non-Chinese users. The infrastructure (`templates-<lang>/` + `--lang` arg validation) supports it; adding a new language is a localization PR, not a methodology change.
+- **Auto-detecting language from project locale / existing docs** — deferred. Pure prompt-driven heuristics are unreliable; an explicit flag is honest about what you're asking for. Auto-detection would also conflict with "user judgment is the trigger" from the v2 evolution story.
+
+---
+
 ## [2.4.2] — 2026-05-07
 
 Same-day point release. v2.4.1 surfaced the right release pipeline; v2.4.2 fixes

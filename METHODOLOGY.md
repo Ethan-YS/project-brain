@@ -89,6 +89,15 @@ This is the methodology's reliability anchor: **continuity rides on the AI tool'
 - Fits: multi-module, long-lived, cross-session/cross-window, likely to grow complex
 - Doesn't fit: one-off scripts, projects with < 3 docs, pure exploratory prototypes
 
+**Step 1b: Pick the scaffold level** (added v2.5 from real-project field use) — when a project has nested sub-projects (a monorepo with apps, a website with a sub-module, a multi-product workspace), pick which level gets the `brain/`:
+
+- **Project root** (default): one `brain/` at the top-level repo root. Cross-cutting context — overall product definition, shared decisions, cross-module dependencies — lives here.
+- **Sub-project**: a nested `brain/` under one specific sub-project. Use only when the sub-project really has fundamentally different context, contributors, or release cadence than the parent — and the parent doesn't need to track it.
+
+**Default to project root** unless the sub-project clearly lives a separate life. A nested `brain/` is more maintenance than most sub-projects justify. When in doubt, start at project root; promote a sub-project to its own `brain/` only if the root one starts forking into hard-to-merge dual concerns.
+
+A project with **both** a root `brain/` and sub-project `brain/`s is multi-level mode — explicitly out of scope for v2. If you genuinely need nested brains, treat them as independent scaffolds (one full set of files per `brain/`) and accept the cross-reference overhead.
+
 **Step 2: Confirm with user before scaffolding** — don't just create files.
 Say: "This looks like a fit for `project-brain`. Want me to scaffold?" Wait for explicit go-ahead.
 
@@ -119,6 +128,26 @@ Walk through every placeholder with the user: which are "must fill day one" (PRO
 **Step 6: Make "establishing project-brain" the first DECISIONS entry** — proves this file has been used since day one.
 
 **Step 7: Write a usage observation** to your local notes — let the methodology grow with each use.
+
+### 1.4b Existing-material decomposition (between green-field and full migration)
+
+Added v2.5 from real-project field use. Real projects often don't fit either §1.4 (empty scaffold, fill from scratch) or §1.5 (sprawling unstructured docs, retrofit through structural relocation). Many sit in the middle: they already have **a few well-structured docs that contain the right content in the wrong shape** (e.g. one `PLAN.md`, one `ROADMAP.md`, an early `CLAUDE.md`).
+
+Don't follow §1.4 as if green-field — but don't run §1.5 either, since there's no doc rot to undo.
+
+**The path:**
+
+1. **Scaffold the empty `brain/`** (§1.4 Step 3) — skeleton in place.
+2. **Map existing docs to `brain/` files** rather than copy-and-trim. Walk through each existing doc section-by-section and ask which `brain/` file each section maps to. Examples:
+   - `PLAN.md` §1 (project definition / scope) → `PROJECT.md`
+   - `PLAN.md` §3 (architecture overview) → `topics/systems/ARCHITECTURE.md`
+   - `PLAN.md` §5 (sandbox / dev setup) → `topics/operations/SANDBOX_SETUP.md`
+   - `ROADMAP.md` (entirely) → `topics/planning/ROADMAP.md` (or split per phase)
+3. **`DECISIONS.md` will land a large batch upfront**. Existing docs already encode many decisions, so the first DECISIONS update for these projects often produces 10+ entries at once. The reverse-chronological format absorbs this naturally — write each with proper "rejected alternatives" and a current date.
+4. **Shrink the original docs to index pages**, don't delete them. Leave a short index in `PLAN.md` / `ROADMAP.md` pointing into the new `brain/` locations. This preserves external links and shows readers where content moved.
+5. **`git init` if the project has no git yet**. Existing-material projects sometimes haven't started version control. The decompose-into-brain step creates a clear "before / after structural change" boundary — establish git before this work begins (`git init` + a snapshot commit of the original state) so the decomposition is traceable. The AI may proceed with `git init` without asking — it's a standard engineering default, not a project decision (see Trap 13).
+
+**When this applies**: the project has 2–4 substantial structured docs but no `brain/`-like organization yet. If it has zero docs → §1.4 green-field. If it has 15+ scattered docs with rot → §1.5 full migration.
 
 ### 1.5 Existing-project migration (when user says "clean up structure" or "migrate to v2")
 

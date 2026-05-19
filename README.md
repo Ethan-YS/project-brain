@@ -75,11 +75,15 @@ If you don't use Claude Code, or you just want the scaffold script:
 ```bash
 git clone https://github.com/Ethan-YS/project-brain.git
 
-# Scaffold into your project (defaults to all four AI adapters)
+# Scaffold into your project (defaults to all four AI adapters, English)
 ./project-brain/scripts/scaffold.sh /path/to/your/project
 
 # Or pick specific adapters:
 ./project-brain/scripts/scaffold.sh /path/to/your/project --tools claude,cursor
+
+# For projects documented in Chinese — gives Chinese brain/ + CLAUDE.md
+# (other adapters stay English — they're consumed by AI tools, not humans):
+./project-brain/scripts/scaffold.sh /path/to/your/project --lang zh
 
 # Fill in brain/PROJECT.md on day one
 # Walk through ⚠️ TODO ⚠️ placeholders
@@ -234,7 +238,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.4 — methodology stable, two projects running n=1 and n=2 in production. v2.4 ships as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. Not yet widely used; treat as "battle-tested by two power users, validating in the wild."
+🌱 v2.4 — methodology stable, 140+ stars, multiple projects in active use. v2.4 ships as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. External effectiveness data still pending — battle-tested by the maintainers daily; field reports from other users still being collected.
 
 ## Authors
 
