@@ -1,14 +1,13 @@
 ---
 name: project-brain
 description: |
-  Use this skill when the user explicitly asks to set up, resume, update, or hand off persistent project context for AI-assisted work.
-  Triggers (all require an explicit user request — do NOT activate just because a brain/ folder exists):
+  Triggers (all require explicit user request — do NOT activate just because a brain/ folder exists):
   (1) The user wants to set up project-level memory ("set up project brain", "scaffold project context", "init project brain", "建项目脑").
   (2) The user is in a directory containing brain/ AND explicitly asks to resume / continue / load the project / check status / "what's the state of this project" / "继续这个项目".
   (3) The user signals window switch / context compaction ("switch windows", "context's getting full", "I'll head out", "压缩了", "切窗口") — write a HANDOFF before they leave.
   (4) The user says "update the project brain" / "let's record this" / "更新项目脑" — propose a list with reasons; user approves per item.
-  Do NOT auto-activate during casual conversation that happens to occur inside a brain/-bearing directory. The methodology's "activation boundary" requires an explicit user request.
-  This skill provides a folder structure (brain/), copy-able templates for multiple AI tools, and a four-workflow protocol (startup / kick-off / update / handoff). Methodology details in METHODOLOGY.md alongside this file.
+  (5) The user mentions multiple parallel workstreams / 多线程项目 / 多任务并行 — enable Multi-workstream Mode (METHODOLOGY §3.5).
+  Do NOT auto-activate from casual conversation — explicit user request required. See METHODOLOGY.md.
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep"]
 ---
 

@@ -34,6 +34,7 @@ Symptoms you'll recognize:
 - Sprawling docs where boundaries blur (one architecture file containing design + ops + history + bugs)
 - Decisions buried in commit messages, chat logs, and footnotes — never traceable when you need them
 - Cross-window handoff loses the "fresh stuff in your head" — the next session starts blind
+- Projects running **multiple parallel workstreams** (e.g., dev + ops + outreach as three parallel streams) lose track of which session is on which line — switching between them re-orients from scratch every time
 
 `project-brain` is a structural answer: a `brain/` folder layout + a small set of protocols, designed so a fresh AI session can read 2-3 files and be productive.
 
@@ -165,7 +166,7 @@ When the user says "update the project brain":
 
 The AI should not push specialized judgments back ("which files do you want me to update?") — that hands the wrong layer of judgment to the wrong person.
 
-### 5. Workstream split mode (v2.1, optional)
+### 5. Multi-workstream mode (v2.1, optional)
 
 Some projects naturally have parallel independent workstreams (e.g., development + operations + outreach in one product). For these, `STATUS` and `HANDOFF` split per workstream:
 
@@ -202,7 +203,7 @@ This crystallized into the **Judgment Division Principle** (see Core principle 4
 
 Companion design changes: merged `meta/` + `docs/` into a single `brain/`, added `HANDOFF.md` for cross-window continuity, replaced "hard keyword detection" with **gentle inquiry** ("does this count as decided?" instead of asserting "we decided X"), made placeholders visually loud (`⚠️ TODO ⚠️`), and made the git prerequisite explicit.
 
-**v2.1 (same day, evening)**: A second project — non-development, running parallel workstreams (official ops + outreach) — broke v2's hidden assumption that "one project = one workstream." The user had naturally evolved a workaround using `STATUS_<workstream>.md` naming. We folded it into the methodology as **Workstream Split Mode** (Core principle 5): project-level files stay shared, status and handoff split per workstream.
+**v2.1 (same day, evening)**: A second project — non-development, running parallel workstreams (official ops + outreach) — broke v2's hidden assumption that "one project = one workstream." The user had naturally evolved a workaround using `STATUS_<workstream>.md` naming. We folded it into the methodology as **Multi-workstream Mode** (Core principle 5): project-level files stay shared, status and handoff split per workstream.
 
 ### The meta-takeaway
 
@@ -212,7 +213,7 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Documentation
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 14 traps, judgment division mechanics, workstream split details, and migration paths
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 14 traps, judgment division mechanics, multi-workstream details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)

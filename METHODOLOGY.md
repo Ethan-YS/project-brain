@@ -265,7 +265,7 @@ Use the `scripts/scaffold.sh` script to copy whichever entry files match your to
 
 More specific overrides more general. The project-root `CLAUDE.md` writes only **what's specific to this project** — protocol entry, red lines, high-frequency entry points.
 
-### 3.5 Workstream split mode (v2.1, optional)
+### 3.5 Multi-workstream mode (v2.1, optional)
 
 #### When to use
 
@@ -274,7 +274,7 @@ v2 default assumes "one project = one workstream main line" — fits development
 - A product team running development + operations + outreach as parallel streams
 - Each stream has its own progress, blockers, window-switch handoff — **shouldn't be mixed into one STATUS**
 
-When this fits, enable **workstream split mode**. v2.1 is an extension of v2, **not a replacement**.
+When this fits, enable **multi-workstream mode**. v2.1 is an extension of v2, **not a replacement**.
 
 #### File layout (multi-workstream)
 
@@ -327,7 +327,7 @@ brain/
 3. `mkdir brain/handoffs/<original>` + move existing handoffs in there
 4. Create `STATUS_<new>.md` + `HANDOFF_<new>.md` for the new workstream
 5. Register all workstreams in MAP.md §6
-6. Single commit: "**enable workstream split**" — git log records the structural upgrade clearly
+6. Single commit: "**enable multi-workstream mode**" — git log records the structural upgrade clearly
 
 #### Cross-workstream handoff (deferred to future versions)
 

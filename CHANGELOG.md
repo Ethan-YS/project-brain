@@ -5,6 +5,47 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.5.1] — 2026-05-19
+
+Documentation polish. Triggered by a real user comment pointing to discoverability gaps around v2.1's multi-workstream mode — the functionality has been there since v2.1, but the naming and prose weren't surfacing it for users searching with terms like "multi-thread project" / "parallel sessions" / "多线程项目".
+
+### Added
+
+- **README "The problem" section gained a new symptom line**: projects running multiple parallel workstreams (e.g., dev + ops + outreach) lose track of which session is on which line — explicit name-drop of the v2.1 use case in the problem statement itself. Same line added to README.zh-CN.md in Chinese.
+- **`SKILL.md` description gained trigger (5)**: when the user describes the project as having multiple parallel workstreams / "多线程项目" / "多任务并行" — guide them to enable Multi-workstream Mode. Helps the matcher recognize this scenario in users' natural language.
+
+### Changed
+
+- **"Workstream split mode" → "Multi-workstream mode"**: renamed the v2.1 mode for clearer discoverability. The Chinese counterpart is "多线程模式" (the previous "工作流分裂模式" was awkward and didn't connect to Chinese users' mental model of "multi-threaded projects").
+  - README.md §5 Core principle 5 title + evolution-story paragraph + documentation index link
+  - README.zh-CN.md §5 Core principle 5 title + evolution-story paragraph
+  - METHODOLOGY.md §3.5 title + two prose mentions (the "enable workstream split" → "enable multi-workstream mode" commit message example)
+  - templates/AGENTS.md adapter (one mention)
+  - templates-zh/brain/README.md §6 (one mention)
+- **CHANGELOG.md v2.1 entry intentionally NOT renamed** — keeping "Workstream split mode" as the historical name for that release entry. Renaming history would erase the fact that the term was once different.
+
+### Why a patch version (not minor)
+
+No new functionality. v2.1's multi-workstream mode itself isn't changing — the templates, scaffold, SKILL workflows, doctor.sh all stay identical. Only documentation prose and the mode's display name are touched.
+
+### Triggered by
+
+A user commented on the marketplace listing asking "what about the case where multiple sessions are open simultaneously, or you're in the middle of one thing and need to switch to another?" The functionality to answer this (v2.1 multi-workstream mode) had existed for weeks, but the user's question revealed that:
+
+1. README's "The problem" section listed 4 symptoms — none mentioned multi-workstream projects, so users searching for that scenario had no entry point
+2. "Workstream split mode" as a name didn't match how Chinese users naturally describe the scenario (they think "多线程" / "并行任务")
+3. SKILL.md description's 4 triggers didn't include any natural-language match for "multiple workstreams" or "多线程项目"
+
+A single data point (n=1) is generally too thin to drive a change in v2's evolution philosophy ("real-world friction drives the next version"). But **documentation polish has a different threshold than functional change**: the cost of being more findable is near zero, the cost of being un-findable when functionality already exists is wasted user effort and false "v2 doesn't support this" impressions. The threshold for "polish what already exists to surface better" is lower than "add new mechanism."
+
+### Considered and deferred
+
+- **Adding an `examples/multi-workstream/` example project** — deferred. No specific user request asked for an example, and constructing a realistic multi-workstream example brand-from-scratch is ~30 minutes of new content creation rather than 10 minutes of audit-and-rename. Wait until at least one user asks specifically "do you have a multi-workstream example I can look at?" before building this.
+- **A `scaffold.sh --workstreams "a,b,c"` flag** — deferred. Users who reach the multi-workstream mode either do it at kick-off (SKILL.md walks them through Step 2b) or as an existing-project upgrade (METHODOLOGY §3.5 enabling/upgrading procedure). The manual `cp STATUS.md STATUS_<workstream>.md` step is approximately 30 seconds. Adding a flag saves seconds but adds permanent maintenance surface — not worth it until there's evidence of repeated friction.
+- **Renaming `STATUS_<workstream>.md` file naming convention** — deferred and likely permanent-defer. The file naming uses "workstream" because that's the structural noun. The *mode* is renamed to "Multi-workstream"; the *unit of work* stays "workstream" in file names. This keeps `git log` history continuous and avoids breaking existing projects' file names.
+
+---
+
 ## [2.5.0] — 2026-05-18
 
 Minor version bump. Adds first-class Chinese templates and a `--lang` flag for

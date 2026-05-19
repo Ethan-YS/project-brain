@@ -47,7 +47,7 @@ When a decision feels made: ask "does this count as decided?" — don't assert "
 
 ## Multi-workstream (v2.1)
 
-If this project uses workstream split mode, scope STATUS / HANDOFF / handoffs to the current workstream:
+If this project uses multi-workstream mode, scope STATUS / HANDOFF / handoffs to the current workstream:
 - `STATUS_<current>.md` / `HANDOFF_<current>.md` / `handoffs/<current>/`
 
 PROJECT.md / MAP.md / DECISIONS.md / topics/ stay shared across workstreams.
