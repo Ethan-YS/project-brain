@@ -138,9 +138,12 @@ echo ""
 # ─────────────────────────────────────────────────────────
 echo "${BOLD}4. DECISIONS entries integrity${RESET}"
 if [[ -f "$BRAIN/DECISIONS.md" ]]; then
-  # Use awk to find each ### YYYY-MM-DD entry and check if "Rejected alternatives" or "被否决" appears before next ### or EOF
+  # Use awk to find each entry heading and check if "Rejected alternatives" or "被否决"
+  # appears before the next entry or EOF. Recognized heading styles:
+  #   ### YYYY-MM-DD ...        (v2 template default)
+  #   ### DR-NNN / TD-NNN ...   (numbered-decision style)
   missing=$(awk '
-    /^### [0-9]{4}-[0-9]{2}-[0-9]{2}/ {
+    /^### ([0-9]{4}-[0-9]{2}-[0-9]{2}|(DR|TD)-[0-9]+)/ {
       if (in_entry && !found) {
         print title
       }
@@ -165,7 +168,7 @@ if [[ -f "$BRAIN/DECISIONS.md" ]]; then
     done <<< "$missing"
   else
     # Count actual entries (skip examples in comments)
-    entry_count=$(grep -c "^### [0-9]\{4\}-" "$BRAIN/DECISIONS.md" 2>/dev/null | tr -d ' \n' || echo 0)
+    entry_count=$(grep -cE "^### ([0-9]{4}-|(DR|TD)-[0-9]+)" "$BRAIN/DECISIONS.md" 2>/dev/null | tr -d ' \n' || echo 0)
     entry_count=${entry_count:-0}
     if [[ ! "$entry_count" =~ ^[0-9]+$ ]] || (( entry_count == 0 )); then
       info "DECISIONS.md has no entries yet — append your first real decision"
