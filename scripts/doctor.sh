@@ -22,6 +22,8 @@
 #   4. DECISIONS.md entries missing "Rejected alternatives" / "被否决"
 #   5. MAP.md §5 ↔ brain/topics/ file consistency
 #   6. HANDOFF.md last-modified vs git log (stale HANDOFF without archive)
+#   7. Markdown link integrity (relative links resolve; ASCII #anchors exist at target) — Trap 15
+#   8. Cross-brain sibling references (nested sub-brains must route shared facts via the parent brain) — Trap 16
 
 set -o pipefail
 
@@ -261,6 +263,134 @@ if [[ -d "$TARGET/.git" ]]; then
   fi
 else
   info "no git history — skipping HANDOFF freshness check (the methodology assumes git, see Trap 13)"
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────
+# Shared helper: extract markdown link targets from a file,
+# skipping fenced code blocks and HTML comments (template examples live there)
+# ─────────────────────────────────────────────────────────
+extract_links() {
+  awk '
+    in_comment { if (sub(/.*-->/, "")) { in_comment = 0 } else { next } }
+    /^[[:space:]]*```/ { in_code = !in_code; next }
+    in_code { next }
+    {
+      gsub(/<!--([^-]|-[^-]|--+[^->])*--+>/, "")
+      if (match($0, /<!--/)) { $0 = substr($0, 1, RSTART - 1); in_comment = 1 }
+      print
+    }
+  ' "$1" 2>/dev/null | grep -oE '\]\([^)]+\)' | sed -E 's/^\]\(//; s/\)$//; s/ "[^"]*"$//'
+}
+
+# ─────────────────────────────────────────────────────────
+# Check 7: Markdown link integrity (Trap 15)
+# ─────────────────────────────────────────────────────────
+echo "${BOLD}7. Markdown link integrity${RESET}"
+link_issues=0
+while IFS= read -r -d '' file; do
+  rel="${file#$TARGET/}"
+  dir=$(dirname "$file")
+  while IFS= read -r target; do
+    [[ -z "$target" ]] && continue
+    case "$target" in
+      http://*|https://*|mailto:*) continue ;;
+      *xxx*|*XXX*|*⚠️*) continue ;;   # placeholder examples, not real links
+    esac
+    path="${target%%#*}"
+    path="${path//%20/ }"
+    frag=""
+    [[ "$target" == *"#"* ]] && frag="${target#*#}"
+    if [[ -z "$path" ]]; then
+      resolved="$file"   # pure in-file anchor (#section)
+    elif [[ "$path" = /* ]]; then
+      info "absolute-path link in $rel: $target — breaks on other machines/clones; prefer relative"
+      link_issues=$((link_issues+1))
+      continue
+    else
+      resolved="$dir/$path"
+    fi
+    if [[ -n "$path" && ! -e "$resolved" ]]; then
+      warning "dangling link in $rel: $target"
+      link_issues=$((link_issues+1))
+      continue
+    fi
+    # Anchor validation — ASCII anchors only (the methodology's anchor discipline:
+    # lowercase-hyphen ids; non-ASCII fragments are renderer-dependent, skip them)
+    if [[ -n "$frag" && "$resolved" == *.md && -f "$resolved" ]]; then
+      if [[ "$frag" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+        if ! grep -qiE "<a[[:space:]]+id=[\"']${frag}[\"']" "$resolved"; then
+          if ! grep -E '^#{1,6} ' "$resolved" | sed -E 's/^#{1,6} +//' | tr '[:upper:]' '[:lower:]' \
+               | sed -E 's/[][(){}`*_:,."'"'"']//g; s/  +/ /g; s/^ //; s/ $//; s/ /-/g' \
+               | grep -qxF "$frag"; then
+            warning "anchor #$frag not found in ${resolved#$TARGET/} (linked from $rel) — prefer an explicit <a id=\"$frag\"></a>"
+            link_issues=$((link_issues+1))
+          fi
+        fi
+      fi
+    fi
+  done < <(extract_links "$file")
+done < <(find "$BRAIN" -type f -name "*.md" -print0 2>/dev/null)
+if (( link_issues == 0 )); then ok "all relative links and ASCII anchors resolve"; fi
+echo ""
+
+# ─────────────────────────────────────────────────────────
+# Check 8: Cross-brain sibling references (Trap 16)
+# ─────────────────────────────────────────────────────────
+echo "${BOLD}8. Cross-brain references (nested sub-brains)${RESET}"
+all_brains=()
+while IFS= read -r -d '' b; do
+  case "$b" in
+    */node_modules/*|*/.git/*|*/templates/*|*/templates-zh/*|*/examples/*) continue ;;
+  esac
+  all_brains+=("$b")
+done < <(find "$TARGET" -type d -name brain -print0 2>/dev/null)
+
+if (( ${#all_brains[@]} <= 1 )); then
+  ok "single brain/ — no cross-brain coupling possible"
+else
+  cross_issues=0
+  for src_brain in "${all_brains[@]}"; do
+    src_root=$(dirname "$src_brain")
+    while IFS= read -r -d '' file; do
+      rel="${file#$TARGET/}"
+      dir=$(dirname "$file")
+      while IFS= read -r target; do
+        case "$target" in
+          http://*|https://*|mailto:*|"#"*) continue ;;
+          *xxx*|*XXX*|*⚠️*) continue ;;
+        esac
+        path="${target%%#*}"
+        path="${path//%20/ }"
+        [[ -z "$path" || "$path" = /* ]] && continue
+        pdir=$(cd "$dir" 2>/dev/null && cd "$(dirname "$path")" 2>/dev/null && pwd)
+        [[ -z "$pdir" ]] && continue
+        resolved="$pdir/$(basename "$path")"
+        [[ -e "$resolved" ]] || continue
+        for dst_brain in "${all_brains[@]}"; do
+          [[ "$dst_brain" == "$src_brain" ]] && continue
+          case "$resolved" in
+            "$dst_brain"/*)
+              dst_root=$(dirname "$dst_brain")
+              case "$src_root" in
+                "$dst_root"/*) : ;;   # upward into an ancestor brain — allowed
+                *)
+                  case "$dst_root" in
+                    "$src_root"/*) : ;;   # downward into a descendant brain — allowed
+                    *)
+                      warning "sibling-brain reference in $rel → ${resolved#$TARGET/} — route shared facts via the parent brain (Trap 16)"
+                      cross_issues=$((cross_issues+1))
+                      ;;
+                  esac
+                  ;;
+              esac
+              ;;
+          esac
+        done
+      done < <(extract_links "$file")
+    done < <(find "$src_brain" -type f -name "*.md" -print0 2>/dev/null)
+  done
+  if (( cross_issues == 0 )); then ok "${#all_brains[@]} brains found, no sibling-to-sibling data references"; fi
 fi
 echo ""
 
