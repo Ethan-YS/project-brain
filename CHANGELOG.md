@@ -5,6 +5,28 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.6.0] — 2026-06-09
+
+Mechanization release. Triggered by a model-generation review of the methodology, which surfaced a clean split: rules that encode **information design** (volatility-based file separation, continuity entry points — these stay) versus rules that encode **compensation for weaker AI judgment** (blanket ask-before-write, discipline-based reference hygiene — these can now relax or move into tooling). Two principles follow: spend git's reversibility instead of user attention where a wrong write is cheap, and never leave a mechanically-checkable rule to anyone's discipline.
+
+### Added
+
+- **doctor.sh check 7 — markdown link integrity**: relative links in `brain/` must resolve on disk (with `%20` decoding; fenced code blocks and HTML comments skipped); ASCII `#anchors` must exist at the target as an explicit `<a id>` or a matching heading slug; absolute-path links flagged. Mechanizes Trap 15 (stale cross-references). First run against real projects immediately caught true rot: wrong `../` depths, `~/`-prefixed links no renderer expands, links to since-renamed directories.
+- **doctor.sh check 8 — cross-brain sibling references**: in projects with nested sub-brains, links from one sub-brain into a sibling's `brain/` are flagged — shared facts route via the parent brain; upward/downward references stay allowed. Mechanizes Trap 16.
+- **Optional Claude Code SessionStart hook adapter** (`templates/claude-code-hooks.settings.json` + METHODOLOGY §3.4): injects `brain/STATUS.md` (+ `HANDOFF.md` if present) into context at session start, turning the startup protocol's STATUS half from prompted behavior into deterministic mechanism. Optional and single-tool by design — the methodology core stays tool-agnostic markdown.
+
+### Changed
+
+- **§4.1 update mechanism → tiered trust.** Tier 1 (`STATUS` / `HANDOFF` / mechanical `MAP` registrations): the AI writes directly after the work lands and announces what it wrote in the same reply — git is the review surface, reverting costs one command. Tier 2 (`DECISIONS` / `PROJECT` / structural `MAP` redesigns): ask-before-write, unchanged — these encode shared commitments, and a wrong write corrupts understanding rather than a file. Silent writes remain forbidden at every tier; announcement is the non-negotiable part.
+- **§4.4 "update the project brain" keeps per-item approval** even for Tier-1 files — that workflow is the user explicitly requesting a judgment checkpoint, which is a different moment than routine bookkeeping.
+- SKILL.md core principles and both READMEs updated to match.
+
+### Why minor (not major)
+
+File structure, templates, scaffold, and all four workflows are unchanged. What changed is the trust calibration around writes and the enforcement medium for two traps (discipline → script).
+
+---
+
 ## [2.5.1] — 2026-05-19
 
 Documentation polish. Triggered by a real user comment pointing to discoverability gaps around v2.1's multi-workstream mode — the functionality has been there since v2.1, but the naming and prose weren't surfacing it for users searching with terms like "multi-thread project" / "parallel sessions" / "多线程项目".

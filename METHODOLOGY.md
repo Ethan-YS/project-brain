@@ -265,6 +265,36 @@ Use the `scripts/scaffold.sh` script to copy whichever entry files match your to
 
 More specific overrides more general. The project-root `CLAUDE.md` writes only **what's specific to this project** — protocol entry, red lines, high-frequency entry points.
 
+#### Optional: deterministic startup injection via Claude Code hooks (v2.6)
+
+The instruction-file route above is *prompted* behavior — the AI is told "first read `brain/MAP.md` + `brain/STATUS.md`," and almost always complies, but nothing enforces it. Claude Code's `SessionStart` hooks can make the STATUS half *deterministic*: the hook injects the file's content into context at session start, mechanically, before the model makes any choice.
+
+Merge the `hooks` key from [`templates/claude-code-hooks.settings.json`](./templates/claude-code-hooks.settings.json) into the project's `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f brain/STATUS.md ]; then echo '--- project-brain: brain/STATUS.md ---'; cat brain/STATUS.md; [ -f brain/HANDOFF.md ] && echo '--- brain/HANDOFF.md ---' && cat brain/HANDOFF.md; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Boundaries:
+
+- **This is an optional adapter for one tool.** The methodology core stays tool-agnostic markdown; Cursor / Copilot / AGENTS.md users rely on the instruction-file route unchanged.
+- **Inject STATUS (+ HANDOFF if present) only** — the small, read-every-window files. Don't inject MAP or PROJECT: they're for on-demand reading, and large auto-injections re-create the "read too much" problem this methodology exists to solve.
+- **Multi-workstream projects**: a hook can't know which workstream the window is on — skip the hook or keep it to shared context; the ask-the-user step in §1.3 still applies.
+
 ### 3.5 Multi-workstream mode (v2.1, optional)
 
 #### When to use
@@ -344,26 +374,31 @@ Possible solutions (none baked into v2.1 — accumulate experience first):
 
 ## 4. Update mechanism
 
-### 4.1 The principle
+### 4.1 The principle — tiered trust (since v2.6)
 
-**The AI doesn't silently modify any file in `brain/`.**
+**The AI never *silently* modifies a file in `brain/` — but not every file needs permission before writing.** Files differ in the cost of a wrong write; the approval ritual should match that cost. Git (mandatory anyway, §5.1) makes the cheap tier reversible in one command.
 
-When something should be updated, the AI **proposes** — "we just decided X, want to append to DECISIONS?" — and the user approves, modifies, or rejects.
+| Tier | Files | Protocol |
+|---|---|---|
+| **Tier 1 — write, then announce** | `STATUS`, `HANDOFF`, mechanical `MAP` registrations | After completing the work that changed the state, the AI writes directly and **reports what it wrote in the same reply** ("STATUS overwritten: now at X, next Y"). The user reviews via `git diff` / `git log` when they care to; reverting is one command. |
+| **Tier 2 — ask, then write** | `DECISIONS`, `PROJECT`, structural `MAP` redesigns | These encode shared commitments ("this is decided" / "this is what the project is"). A wrong write corrupts understanding, not just a file. Gentle inquiry (§4.5) and explicit discussion remain mandatory. |
 
-**Sole exception**: when the user explicitly says "update STATUS / log this decision / write a HANDOFF," the AI does it directly without asking.
+**Why the change** (v2.0–v2.5 required ask-before-write for everything): the old rule spent the user's attention as the safety mechanism on every routine STATUS overwrite. With git as the review surface, a Tier-1 mistake costs one `git revert` — user attention is the scarcer resource. What stays non-negotiable at every tier is *announcement*: a write the user never hears about is still forbidden.
+
+**Sole exception** (unchanged): when the user explicitly says "update STATUS / log this decision / write a HANDOFF," the AI does it directly without asking — explicit instruction overrides both tiers.
 
 **Not based on staleness checks**: v2 deliberately removed `last_updated` fields. The protocol guarantees freshness — when the user signals window-switch, the AI updates first; when the AI completes major work, it proposes an update. Files are always current. No need to compare timestamps.
 
 ### 4.2 Update rules per file
 
-| File | When AI proposes update | Trigger source | Must ask first? |
+| File | When the AI updates | Trigger source | Tier / protocol |
 |---|---|---|---|
-| **STATUS.md** | User signals end-of-session ("that's it for now / heading out / time to switch"); or AI completes a major change (proposes, doesn't act) | User / AI sense | Draft for user review, write only after OK |
-| **HANDOFF.md** | User signals window-switch | User | Same. Procedure in §4.3 |
-| **DECISIONS.md** | AI senses something **was just decided** (irreversibly) | AI sense | **Must ask via gentle inquiry** ("does this count as decided?") — see §4.5 |
-| **MAP.md** | Module added/removed; new doc added; structure changed | AI sense | **Must ask** ("I see a new file in `topics/`, register in MAP §5?") |
-| **MAP calibration scan** | User says "MAP calibration" or "tidy up project memory" | User | Run scan per MAP.md last section |
-| **PROJECT.md** | Project definition has drifted (very rare) | Very rare | Must explicitly discuss before changing |
+| **STATUS.md** | User signals end-of-session ("that's it for now / heading out / time to switch"); or AI completes a major change | User / AI sense | **Tier 1**: write directly, announce in the same reply; user reviews via git |
+| **HANDOFF.md** | User signals window-switch | User | **Tier 1**: write directly, announce. Procedure in §4.3 |
+| **DECISIONS.md** | AI senses something **was just decided** (irreversibly) | AI sense | **Tier 2**: gentle inquiry first ("does this count as decided?") — see §4.5 |
+| **MAP.md** | New doc added / doc removed → §5 registration | AI sense | **Tier 1** for mechanical registrations (write + announce); **Tier 2** for structural redesign of the map itself |
+| **MAP calibration scan** | User says "MAP calibration" or "tidy up project memory" | User | Run scan per MAP.md last section; `scripts/doctor.sh` automates the mechanical half |
+| **PROJECT.md** | Project definition has drifted (very rare) | Very rare | **Tier 2**: must explicitly discuss before changing |
 | **`topics/*` docs** | When user and AI deliberately write a topic doc | User | **Not in auto-update scope** — topic docs are written intentionally, not maintained passively |
 
 ### 4.3 HANDOFF write procedure (avoiding archival timing confusion)
@@ -418,6 +453,7 @@ The user might respond:
 - **Don't ask "which ones do you want to update?"** — that pushes specialized judgment back to the user, breaking the division
 - **Also list things you're NOT updating, with reasons** — gives the user the full judgment surface
 - **Real entry counts** (don't pad to look thorough) — see Trap 12
+- **Per-item review applies even to Tier-1 files here** — "update the project brain" is the user requesting a deliberate checkpoint, so the judgment surface is the point. Tiered trust (§4.1) governs routine work moments, not this workflow
 
 ### 4.5 DECISIONS judgment: gentle inquiry, not hard-keyword detection
 

@@ -166,6 +166,8 @@ When the user says "update the project brain":
 
 The AI should not push specialized judgments back ("which files do you want me to update?") — that hands the wrong layer of judgment to the wrong person.
 
+Since v2.6, routine bookkeeping writes are **tiered** (METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations are *write-then-announce* — the AI writes after the work lands and reports it, with git as the review surface. `DECISIONS` / `PROJECT` remain *ask-before-write*. The explicit "update the project brain" checkpoint above keeps per-item approval either way.
+
 ### 5. Multi-workstream mode (v2.1, optional)
 
 Some projects naturally have parallel independent workstreams (e.g., development + operations + outreach in one product). For these, `STATUS` and `HANDOFF` split per workstream:

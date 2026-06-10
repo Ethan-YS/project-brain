@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f brain/STATUS.md ]; then echo '--- project-brain: brain/STATUS.md ---'; cat brain/STATUS.md; [ -f brain/HANDOFF.md ] && echo '--- brain/HANDOFF.md ---' && cat brain/HANDOFF.md; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

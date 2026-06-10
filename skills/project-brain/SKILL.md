@@ -28,7 +28,7 @@ A folder structure + collaboration protocol for persistent project context acros
 
 ## Core principles (always honored)
 
-- **Don't auto-modify any file in `brain/`.** Always propose; user approves.
+- **Tiered trust on `brain/` writes** (v2.6, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations — write directly after the work lands, then **announce what was written in the same reply** (git is the review surface; silent writes are forbidden at every tier). `DECISIONS` / `PROJECT` / structural `MAP` changes — always ask first.
 - **Judgment Division**: the user decides "should we record now"; the AI decides "what specifically to record"; the user reviews. Don't push specialized judgments back to the user ("which files do you want me to update?").
 - **DECISIONS gentle inquiry**: when something feels decided, ask "does this count as decided?" — don't assert "we decided X."
 - **Multi-workstream**: if `brain/` has multiple `STATUS_<workstream>.md` files, don't guess this window's workstream — ask the user.
