@@ -191,10 +191,16 @@ if [[ -f "$BRAIN/MAP.md" && -d "$BRAIN/topics" ]]; then
     in_topics { print }
   ' "$BRAIN/MAP.md" 2>/dev/null)
 
-  # Files registered in §5 (any .md filename inside backticks)
-  # Filter out: placeholders (⚠️ TODO ⚠️), the 5 core continuity files, common skeleton tokens
-  registered=$(echo "$map_section" | grep -oE '`[A-Za-z0-9_./-]+\.md`' | tr -d '`' | sort -u | \
-    grep -vE '^(PROJECT|MAP|STATUS|DECISIONS|HANDOFF|README|CLAUDE|SKILL|AGENTS)\.md$' | \
+  # Lines that are placeholder / future mentions don't count as registrations
+  map_lines=$(echo "$map_section" | grep -vE '待添加|TODO|TBD|⚠️')
+
+  # Files registered in §5 — both backtick mentions and markdown-link targets
+  # (CJK filenames and path-prefixed registrations like docs/foo.md included)
+  registered=$( { echo "$map_lines" | grep -oE '`[^`]+\.md`' | tr -d '`'; \
+                  echo "$map_lines" | grep -oE '\]\([^)#]+\.md\)' | sed -E 's/^\]\(//; s/\)$//; s/%20/ /g'; } | \
+    sort -u | \
+    grep -vE '(^|/)(PROJECT|MAP|STATUS|DECISIONS|HANDOFF|CLAUDE|SKILL|AGENTS)\.md$' | \
+    grep -vE '(^|/)README\.md$' | \
     grep -vE '^(X|TODO|placeholder)\.md$')
 
   # Files actually existing in topics/ (excluding READMEs which are descriptive, not registered)
@@ -220,13 +226,18 @@ if [[ -f "$BRAIN/MAP.md" && -d "$BRAIN/topics" ]]; then
     fi
   done
 
-  # Files registered in MAP §5 but not on disk
+  # Files registered in MAP §5 but not on disk — resolve path-prefixed
+  # registrations against brain/, brain/topics/, and the project root before
+  # falling back to a basename search inside topics/
   if [[ -n "$registered" ]]; then
     while IFS= read -r ref; do
       [[ -z "$ref" ]] && continue
+      if [[ -e "$BRAIN/$ref" || -e "$BRAIN/topics/$ref" || -e "$TARGET/$ref" ]]; then
+        continue
+      fi
       fname=$(basename "$ref")
       if ! find "$BRAIN/topics" -type f -name "$fname" 2>/dev/null | grep -q .; then
-        warning "MAP §5 references file not found in topics/: $fname"
+        warning "MAP §5 references file not found: $ref"
         stale_count=$((stale_count + 1))
       fi
     done <<< "$registered"
