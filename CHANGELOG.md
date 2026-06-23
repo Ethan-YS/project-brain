@@ -5,6 +5,26 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.6.1] — 2026-06-23
+
+Internal-consistency fix from v2.6.0 (same shape as v2.2.1). v2.6.0 added `doctor.sh` checks 7 and 8 and labeled them "mechanizes Trap 15 / Trap 16" — but the trap list in `METHODOLOGY.md §6` stopped at Trap 14. So Trap 15 and Trap 16 were referenced (in the CHANGELOG and the doctor script) without ever being defined in the methodology: a dangling cross-reference — exactly the rot Trap 15 itself exists to catch, and one `doctor.sh` can't self-detect, since check 7 only scans a user project's `brain/`, never the methodology docs.
+
+### Fixed
+
+- **METHODOLOGY.md — new `§6.5 v2.6 traps (mechanized in doctor.sh)`** defining **Trap 15 (stale cross-references)** and **Trap 16 (cross-brain sibling references)**. Content matches what `doctor.sh` checks 7/8 already enforce; framed as the contrast to §6.4's discipline-only traps (these two shipped enforced from the day they were named).
+- **`README.md` + `skills/project-brain/SKILL.md`**: "all 14 traps" → "all 16 traps". The count was stale the moment 15/16 were named.
+- **`README.md` doctor pointer**: "catches the most common 6 traps" → reflects the 8 checks `doctor.sh` runs since v2.6.0 (checks 7/8 were added then, but this count wasn't updated alongside them).
+
+### Triggered by
+
+A walkthrough of the skill caught the dangling reference: `doctor.sh` and the CHANGELOG cite Trap 15/16, and `grep` confirmed neither appeared in `METHODOLOGY.md`. The fix is the project honoring its own discipline — Trap 15 is "stale cross-references," and the methodology was carrying one that pointed straight at its own missing definitions.
+
+### Why a patch version
+
+Per the versioning principle below, "additions to traps" is patch-level. This changes no file structure, templates, scaffold, or workflows — it backfills two definitions v2.6.0 should have shipped and resyncs the counts that referenced them.
+
+---
+
 ## [2.6.0] — 2026-06-09
 
 Mechanization release. Triggered by a model-generation review of the methodology, which surfaced a clean split: rules that encode **information design** (volatility-based file separation, continuity entry points — these stay) versus rules that encode **compensation for weaker AI judgment** (blanket ask-before-write, discipline-based reference hygiene — these can now relax or move into tooling). Two principles follow: spend git's reversibility instead of user attention where a wrong write is cheap, and never leave a mechanically-checkable rule to anyone's discipline.

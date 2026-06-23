@@ -215,14 +215,14 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Documentation
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 14 traps, judgment division mechanics, multi-workstream details, and migration paths
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 16 traps, judgment division mechanics, multi-workstream details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)
 - **[templates/](./templates/)** — drop-in templates for `brain/` + 4 AI tool adapters
 - **[examples/small-saas/](./examples/small-saas/)** — a fully-filled example brain/ folder
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — one-command scaffold into any project
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (catches the most common 6 traps)
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (8 structural checks covering the most common traps)
 
 ## Compatibility
 

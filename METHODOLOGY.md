@@ -619,6 +619,20 @@ In multi-workstream projects, the user might tell the same window to switch work
 
 This is essentially Trap 11 (cross-project switch pollution) at a finer granularity — the same discipline applies.
 
+### 6.5 v2.6 traps (mechanized in `doctor.sh`)
+
+Unlike the traps above — documented as cautions, then left to discipline — these two ship enforced. `scripts/doctor.sh` checks 7 and 8 catch them mechanically, on the v2.6 principle that a mechanically-checkable rule should never be left to anyone's discipline. They're defined here so the rule lives in the methodology, not only in the script that enforces it.
+
+**Trap 15: Stale cross-references**
+Relative links between `brain/` docs rot silently — a file moves, a directory gets renamed, a heading is reworded — and nothing surfaces the break until someone clicks. Concrete forms caught on the first real-project runs: wrong `../` depths after a file moved, `~/`-prefixed paths no markdown renderer expands, absolute-path links that break on another machine or a fresh clone, and `#anchor` links pointing at a heading that no longer exists.
+
+**Discipline**: keep relative links resolvable on disk; prefer an explicit `<a id="..."></a>` for a section anchor over relying on the renderer's heading slug; never hardcode absolute or `~/` paths. `doctor.sh` check 7 mechanizes this — relative links must resolve (with `%20` decoding; fenced code blocks and HTML comments skipped), ASCII `#anchors` must exist at the target, absolute-path links are flagged.
+
+**Trap 16: Cross-brain sibling references**
+Only relevant to the nested sub-brain setup §1.4 Step 1b flags as out-of-scope-but-sometimes-unavoidable. When a project ends up with more than one `brain/`, a doc in one sub-brain links straight into a *sibling* sub-brain's `brain/`. That couples two scaffolds meant to stay independent: the shared fact now lives in two places, and renaming or moving one silently breaks the other.
+
+**Discipline**: route shared facts up to the **parent** brain and have each sub-brain reference the parent — never a sibling. Upward references (into an ancestor brain) and downward references (into a descendant brain) stay allowed; only sibling-to-sibling data references are the trap. `doctor.sh` check 8 mechanizes this for projects with nested brains.
+
 ---
 
 ## 7. Related resources

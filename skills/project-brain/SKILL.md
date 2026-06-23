@@ -95,7 +95,7 @@ When the user says "update the project brain":
 
 ## Reference
 
-- **Full methodology** (the why, all 14 traps, evolution story): `${CLAUDE_PLUGIN_ROOT}/METHODOLOGY.md`
+- **Full methodology** (the why, all 16 traps, evolution story): `${CLAUDE_PLUGIN_ROOT}/METHODOLOGY.md`
 - **Templates** (what `scaffold.sh` copies): `${CLAUDE_PLUGIN_ROOT}/templates/`
 - **Doctor (structural health check)**: `bash "${CLAUDE_PLUGIN_ROOT}/scripts/doctor.sh" <user-project-root>`
 - **Public repo**: https://github.com/Ethan-YS/project-brain
