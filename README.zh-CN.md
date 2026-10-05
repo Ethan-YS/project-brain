@@ -215,14 +215,14 @@ brain/
 
 ## 文档
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 14 条陷阱、判断权分工机制细节、工作流分裂细节、迁移路径）
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 17 条陷阱、判断权分工机制细节、工作流分裂细节、迁移路径）
 - **[CHANGELOG.md](./CHANGELOG.md)** — 版本历史
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest（plugin 装好后自动加载）
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json`（manifest）+ `marketplace.json`（Sprout Labs marketplace 入口）
 - **[templates/](./templates/)** — `brain/` + 4 种 AI 工具的 adapter 模板
 - **[examples/small-saas/](./examples/small-saas/)** — 一个完整填好的 brain/ 示例
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — 一条命令 scaffold 到任何项目
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（catch 6 种最常见陷阱）
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（8 项结构检查，覆盖最常见的陷阱）
 
 ## 兼容性
 

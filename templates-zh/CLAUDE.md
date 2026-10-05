@@ -66,7 +66,7 @@
 - 模块新增 / 删除 → 提议更新 `brain/MAP.md` 第 2 节
 - 新增文档 / 废弃文档 → 提议更新 `brain/MAP.md` 第 5 节
 - 用户暗示会话结束（"就这样 / 我先走了 / 该切了"）→ 主动起草 `brain/STATUS.md` 让用户审（软上限 80 行）
-- 用户说切窗口 → 写 `brain/HANDOFF.md`，把上一份归档到 `brain/handoffs/YYYY-MM-DD-HHMM.md`
+- 用户说切窗口 → 写 `brain/HANDOFF.md`，把上一份归档到 `brain/handoffs/YYYY-MM-DD-HHMM.md`；Claude Code 下顺手刷新自动记忆指针（METHODOLOGY §3.4，v2.7）
 - 用户显式说"更新 STATUS / 记一条决策" → 直接做，不要再问
 
 **多工作流**（v2.1）：上面所有涉及 STATUS / HANDOFF / handoffs 的，都按当前窗口所属工作流来 —— `STATUS_<当前>.md` / `HANDOFF_<当前>.md` / `handoffs/<当前>/`。PROJECT / MAP / DECISIONS / topics 共享，不分工作流。详见 METHODOLOGY §3.5 + §4.7。

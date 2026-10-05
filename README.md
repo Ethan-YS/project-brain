@@ -215,7 +215,7 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Documentation
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 16 traps, judgment division mechanics, multi-workstream details, and migration paths
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 17 traps, judgment division mechanics, multi-workstream details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)

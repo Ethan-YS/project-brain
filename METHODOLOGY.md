@@ -82,6 +82,7 @@ This is the methodology's reliability anchor: **continuity rides on the AI tool'
 
 - **If `cwd` switches to another project mid-session** — must re-read the new project's MAP + STATUS + HANDOFF, do not carry over memory from the previous project (Trap 11)
 - **If the user says "switch this window to another workstream"** (within the same multi-workstream project) — must re-read `STATUS_<new>.md` + `HANDOFF_<new>.md`, do not carry over memory from the previous workstream (Trap 14)
+- **If Claude Code's auto memory surfaced a project-brain pointer at session start** (v2.7, §3.4) — treat it as a signpost only. Still run the read protocol above; never report project state from the pointer (Trap 17)
 
 ### 1.4 New project kick-off (when user says "set up project brain")
 
@@ -295,6 +296,53 @@ Boundaries:
 - **Inject STATUS (+ HANDOFF if present) only** — the small, read-every-window files. Don't inject MAP or PROJECT: they're for on-demand reading, and large auto-injections re-create the "read too much" problem this methodology exists to solve.
 - **Multi-workstream projects**: a hook can't know which workstream the window is on — skip the hook or keep it to shared context; the ask-the-user step in §1.3 still applies.
 
+#### Optional: Claude Code auto-memory pointer (v2.7)
+
+Claude Code maintains its own **auto memory**: a per-repository directory under `~/.claude/projects/<project>/memory/`, holding one fact per file (frontmatter `type: user | feedback | project | reference`) plus a `MEMORY.md` index. The index's first 200 lines / 25 KB are loaded into context at every session start; topic files are read on demand. It lives outside the repo — not versioned, not visible to Cursor / Copilot / Codex — and per Anthropic's docs it is not a handoff mechanism: a fresh session gets CLAUDE.md + the memory index, never a summary of the last session.
+
+That makes it a second continuity channel but a poor state store. v2.7 uses it for exactly one thing: a **pointer** — one `project`-type file, one index line — so the auto-loaded context already says "this repo keeps state in `brain/`, go there" before the AI has read anything.
+
+What the pointer adds over the instruction-file route:
+
+- **A second auto-loaded channel.** The instruction file says "read `brain/`"; the pointer says the same thing from Claude's own memory. Two independent prompts to the same place beat one.
+- **A timestamp the static template can't carry.** The pointer records when the last HANDOFF was written (and for which workstream). On wake, the AI can say "there's a handoff from two hours ago" before opening a file.
+- **Nothing else.** No state, no summary, no todo list. `brain/` stays the single truth (Trap 17).
+
+Pointer file — `<memory-dir>/project-brain-pointer.md`:
+
+```markdown
+---
+name: project-brain-pointer
+description: This repo keeps its continuity state in brain/ (project-brain); where to resume from
+metadata:
+  type: project
+---
+
+This project uses project-brain. Continuity state lives in `brain/`, not here.
+- When the user asks to resume / continue / check status: read `brain/MAP.md` + `brain/STATUS.md`, then `brain/HANDOFF.md` if present (METHODOLOGY §1.3). Multi-workstream: ask which workstream first.
+- This note is a signpost, not state. Never report progress from it.
+- Last HANDOFF written: <YYYY-MM-DD HH:MM> (workstream: <name or —>)
+```
+
+Index line in `MEMORY.md` — **replace in place, never append a new line per handoff**:
+
+```markdown
+- [project-brain pointer](project-brain-pointer.md) — continuity lives in brain/; last HANDOFF <YYYY-MM-DD HH:MM>
+```
+
+When to write / refresh it (Claude Code only — the AI knows its own memory directory from its system prompt; if no such directory is announced, skip silently):
+
+- **Kick-off** (§1.4): create it once the scaffold lands.
+- **Every HANDOFF write** (§4.3 step 3): rewrite the file and replace its index line. Same rhythm as archiving — mechanical, announced in the same reply, no approval needed (Tier 1, §4.1).
+- **Never on casual work.** The pointer changes only when a HANDOFF does.
+
+Boundaries:
+
+- **Optional, single-tool adapter** — like the SessionStart hook above. The methodology core stays tool-agnostic markdown.
+- **Prompted, not deterministic.** Unlike the hook, this relies on the AI following the procedure. The hook remains the deterministic option; the two stack.
+- **Per-repository scope.** Auto memory is keyed to the repo, so a monorepo with nested sub-brains gets one pointer — write it for the parent brain only (same routing logic as Trap 16).
+- **Activation boundary unchanged** (§5.4). Seeing the pointer does not license auto-activating any workflow; it only tells the AI where to go when the user asks.
+
 ### 3.5 Multi-workstream mode (v2.1, optional)
 
 #### When to use
@@ -403,10 +451,11 @@ Possible solutions (none baked into v2.1 — accumulate experience first):
 
 ### 4.3 HANDOFF write procedure (avoiding archival timing confusion)
 
-When the user says "switch windows," the **currently-online AI** does two steps:
+When the user says "switch windows," the **currently-online AI** does three steps:
 
 1. **Archive first**: if `brain/HANDOFF.md` already exists (left from previous switch), `git mv` it to `brain/handoffs/<its-last-modified-timestamp>.md`
 2. **Then write the new one**: write a fresh `brain/HANDOFF.md` for the next session
+3. **Refresh the auto-memory pointer** (Claude Code only, v2.7, §3.4): rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (and workstream, if multi-workstream) and replace its single index line in `MEMORY.md`. Skip silently in tools without auto memory.
 
 This way `HANDOFF.md` always represents "**state at the most recent window-switch**," and the archive is the historical chain.
 
@@ -632,6 +681,13 @@ Relative links between `brain/` docs rot silently — a file moves, a directory 
 Only relevant to the nested sub-brain setup §1.4 Step 1b flags as out-of-scope-but-sometimes-unavoidable. When a project ends up with more than one `brain/`, a doc in one sub-brain links straight into a *sibling* sub-brain's `brain/`. That couples two scaffolds meant to stay independent: the shared fact now lives in two places, and renaming or moving one silently breaks the other.
 
 **Discipline**: route shared facts up to the **parent** brain and have each sub-brain reference the parent — never a sibling. Upward references (into an ancestor brain) and downward references (into a descendant brain) stay allowed; only sibling-to-sibling data references are the trap. `doctor.sh` check 8 mechanizes this for projects with nested brains.
+
+### 6.6 v2.7 traps
+
+**Trap 17: Auto memory as a shadow state store**
+Claude Code's auto memory (§3.4) is auto-loaded, Claude-writable, and invisible in the repo — every property that tempts an AI to jot "current state" there instead of in `brain/`. The moment it does, the project has two states: one versioned and shared with every tool, one in `~/.claude` that only Claude on this machine sees, that no `git log` records, and that goes stale the first time a window switches without touching it. The same drift shows up in the index: appending a new `MEMORY.md` line per handoff instead of replacing the one line grows the auto-loaded block until it hits the 200-line cap, after which later entries silently stop loading.
+
+**Discipline**: auto memory holds one pointer (§3.4) and nothing else about the project — no progress, no todos, no decisions. Refresh it by rewriting, never by appending. On wake, treat it as a signpost and run the read protocol; report state only from `brain/`. `doctor.sh` cannot check this (the directory is outside the repo), so it stays a discipline trap — the first new one since v2.6 mechanized the rest, and flagged as such deliberately.
 
 ---
 

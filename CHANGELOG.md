@@ -5,6 +5,31 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.7.0] — 2026-10-04
+
+Second continuity channel. Triggered by Claude Code shipping **auto memory** — a per-repository `~/.claude/projects/<project>/memory/` directory whose `MEMORY.md` index is loaded into context at every session start. It is not a handoff mechanism (Anthropic's docs: a fresh session gets CLAUDE.md + the memory index, never a summary of the previous session) and it is invisible to every other tool, so it cannot replace `brain/`. But it is a second auto-loaded channel that Claude itself writes to, and the methodology can use that for exactly one thing: pointing at `brain/`.
+
+### Added
+
+- **Optional Claude Code auto-memory pointer** (METHODOLOGY §3.4): one `project`-type memory file + one `MEMORY.md` index line saying "continuity state lives in `brain/`; last HANDOFF at `<timestamp>` (`<workstream>`)". Created at kick-off, refreshed on every HANDOFF write (§4.3 gains step 3), replaced in place — never appended. Carries what the static instruction file cannot: when the last handoff happened. Optional and single-tool by design, same shape as the v2.6 SessionStart hook adapter; the two stack (hook = deterministic STATUS injection, pointer = Claude-authored signpost).
+- **Trap 17 — auto memory as a shadow state store** (§6.6): the auto-loaded, Claude-writable, out-of-repo directory tempts an AI to keep "current state" there; the result is two states, one of which no other tool or `git log` can see. Also covers index accretion (appending a line per handoff until the 200-line load cap silently drops later entries). Not mechanizable by `doctor.sh` (outside the repo) — the first discipline-only trap since v2.6, flagged as such.
+- **Startup discipline** (§1.3, SKILL §2): a surfaced pointer is a signpost only — run the read protocol, never report state from the pointer.
+
+### Changed
+
+- `SKILL.md` kick-off gains step 7 (write the pointer) and handoff gains step 4 (refresh it); `templates/CLAUDE.md` + `templates-zh/CLAUDE.md` window-switch line mentions the refresh.
+- Trap count resynced to 17 in `README.md` and `SKILL.md`.
+
+### Fixed
+
+- **`README.zh-CN.md`** still said "14 条陷阱" and "catch 6 种" — the v2.6.1 resync only touched the English README and SKILL.md. Trap 15 in action, one release late. Now 17 / 8 checks.
+
+### Why minor (not major)
+
+File structure, templates' `brain/` layout, scaffold, doctor, and the four workflows are unchanged. What's added is an optional adapter for one tool plus the trap that guards it — the same class of change as v2.6's hook adapter.
+
+---
+
 ## [2.6.1] — 2026-06-23
 
 Internal-consistency fix from v2.6.0 (same shape as v2.2.1). v2.6.0 added `doctor.sh` checks 7 and 8 and labeled them "mechanizes Trap 15 / Trap 16" — but the trap list in `METHODOLOGY.md §6` stopped at Trap 14. So Trap 15 and Trap 16 were referenced (in the CHANGELOG and the doctor script) without ever being defined in the methodology: a dangling cross-reference — exactly the rot Trap 15 itself exists to catch, and one `doctor.sh` can't self-detect, since check 7 only scans a user project's `brain/`, never the methodology docs.

@@ -43,6 +43,7 @@ When the user wants to scaffold:
 4. **Walk the user through `brain/PROJECT.md`** on day one — fill the one-line definition + "what we explicitly DON'T do." Don't let this drift into the future.
 5. **Scan placeholders**: `grep -rn "⚠️ TODO ⚠️" <user-project>/brain/` — go through with the user. Empty fields should be intentional.
 6. **First DECISIONS entry**: append "establishing project-brain" with rejected alternatives, so this file is used from day one.
+7. **Write the auto-memory pointer** (Claude Code only, METHODOLOGY §3.4 v2.7): in the memory directory your system prompt names, create `project-brain-pointer.md` (type `project`) + one `MEMORY.md` index line saying state lives in `brain/`. If no memory directory is announced, skip.
 
 ## §2 Startup (entering a project that already has `brain/`)
 
@@ -60,6 +61,8 @@ When the user wants to scaffold:
 
 **Universal discipline**: if `cwd` switches to another project mid-session, re-read the new project's files; if the user switches workstreams in the same window, re-read the new workstream's files. Don't carry over memory.
 
+**Auto-memory pointer** (v2.7): if Claude Code's memory index surfaced a `project-brain pointer`, it's a signpost only — still read the files above; never report state from it (Trap 17).
+
 ## §3 Handoff (user signaling window switch)
 
 When the user says they're switching windows / context is getting full / heading out:
@@ -75,6 +78,7 @@ When the user says they're switching windows / context is getting full / heading
    - Where the next session should pick up
    - **Things still in head not yet written down** — the unique value of HANDOFF (hunches, half-tried approaches, weird debugging observations)
 3. Keep it short. If STATUS was just overwritten, HANDOFF can be near-empty.
+4. **Refresh the auto-memory pointer** (Claude Code only, METHODOLOGY §3.4 v2.7): in the memory directory your system prompt names, rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (+ workstream) and **replace** its one line in `MEMORY.md` in place — never append. Announce it in the same reply as the HANDOFF. If no memory directory is announced, skip.
 
 ## §4 Update workflow
 
@@ -95,7 +99,7 @@ When the user says "update the project brain":
 
 ## Reference
 
-- **Full methodology** (the why, all 16 traps, evolution story): `${CLAUDE_PLUGIN_ROOT}/METHODOLOGY.md`
+- **Full methodology** (the why, all 17 traps, evolution story): `${CLAUDE_PLUGIN_ROOT}/METHODOLOGY.md`
 - **Templates** (what `scaffold.sh` copies): `${CLAUDE_PLUGIN_ROOT}/templates/`
 - **Doctor (structural health check)**: `bash "${CLAUDE_PLUGIN_ROOT}/scripts/doctor.sh" <user-project-root>`
 - **Public repo**: https://github.com/Ethan-YS/project-brain

@@ -66,7 +66,7 @@ Specific rhythm:
 - Module added / removed → propose to update `brain/MAP.md` §2
 - New doc added / deprecated → propose to update `brain/MAP.md` §5
 - User signals end-of-session ("that's it / heading out / time to switch") → proactively draft `brain/STATUS.md` for review (soft cap 80 lines)
-- User says window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`
+- User says window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`; in Claude Code, also refresh the auto-memory pointer (METHODOLOGY §3.4, v2.7)
 - User explicitly says "update STATUS / log a decision" → just do it, don't ask
 
 **Multi-workstream** (v2.1): scope all the above STATUS / HANDOFF / handoffs to the current window's workstream — `STATUS_<current>.md` / `HANDOFF_<current>.md` / `handoffs/<current>/`. PROJECT / MAP / DECISIONS / topics are shared, not per-workstream. See METHODOLOGY §3.5 + §4.7.
