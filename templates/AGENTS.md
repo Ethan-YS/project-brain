@@ -21,12 +21,13 @@ Brief report: project recognized + current progress + last blocker.
 ### Multi-workstream (v2.1)
 
 First read shared files: `brain/MAP.md` + `brain/PROJECT.md`.
-Then ask the user which workstream this session works on. Don't guess.
-Read the corresponding `STATUS_<workstream>.md` + `HANDOFF_<workstream>.md` after the user answers.
+Identify which workstream this session works on — explicit signals only (the session is named for a workstream, e.g. `web-6`, or the user said so); otherwise ask. Don't guess.
+Then read the corresponding `STATUS_<workstream>.md` + `HANDOFF_<workstream>.md`.
+Concurrent sessions (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this session's name + date into your workstream's roster row (that cell only, committed alone) and say so.
 
 ## Update protocol
 
-Don't silently modify any file in `brain/`.
+Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations — write after the work lands, then tell the user what you wrote; `DECISIONS` / `PROJECT` / structural `MAP` changes — propose first, write after approval.
 
 **Judgment division** (core principle):
 - The user decides "should we record now" (high-level pacing)
@@ -53,6 +54,12 @@ If this project uses multi-workstream mode, scope STATUS / HANDOFF / handoffs to
 PROJECT.md / MAP.md / DECISIONS.md / topics/ stay shared across workstreams.
 
 If the user switches workstream mid-session: re-read the new one's files; don't carry over memory.
+
+Concurrent sessions in one checkout (v2.8, METHODOLOGY §3.6):
+- Name other workstreams, never their current session/window names (those live only in the MAP §6 roster)
+- Write only your own STATUS / HANDOFF; edit shared files (MAP / DECISIONS / PROJECT) in place, never rewrite them whole
+- Stage files by name; run `git diff --cached --stat` before every commit; never `git add -A` / `commit -a`
+- Need a change in an area another workstream owns? Record it in your STATUS ("Handed to other workstreams") and tell that workstream; the owner records it in theirs when it accepts
 
 ## Build / test / dev commands
 

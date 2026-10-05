@@ -63,7 +63,7 @@ That's it. From any project after that, just say:
 - **"I'm switching windows"** / **"context's getting full"** — write a HANDOFF before context dies
 - **"update the project brain"** — propose updates with reasons, you approve per item
 
-The skill handles four workflows: new-project kick-off, startup resume, window-switch handoff, and updates. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
+The skill handles five workflows: new-project kick-off, startup resume, window-switch handoff, updates, and (in concurrent multi-workstream projects) handing work from one workstream to another. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
 
 > **Already installed the old way?** If you previously cloned to `~/.claude/skills/project-brain`, remove it first: `rm -rf ~/.claude/skills/project-brain`. The plugin install is the supported path going forward.
 
@@ -189,6 +189,8 @@ brain/
 
 Single-workstream projects ignore this — they keep the default `STATUS.md` / `HANDOFF.md`.
 
+**Concurrent windows** (v2.8): when several workstream windows run *at the same time* in one checkout, MAP §6 adds a "Who's on it now" roster — workstreams are durable, windows are disposable, so window names live only there and each new window claims its own row. The registry gains an "Owns" column; requests between workstreams are recorded in both STATUS files; and a short git discipline (shared staging area, stage your own hunks, edit shared files in place) helps keep windows from committing or erasing each other's work. See METHODOLOGY §3.6.
+
 ## Why this exists — the evolution story
 
 This methodology didn't appear from a design session. It evolved through real use across multiple projects — each iteration triggered by friction we hit and couldn't ignore.
@@ -207,6 +209,8 @@ Companion design changes: merged `meta/` + `docs/` into a single `brain/`, added
 
 **v2.1 (same day, evening)**: A second project — non-development, running parallel workstreams (official ops + outreach) — broke v2's hidden assumption that "one project = one workstream." The user had naturally evolved a workaround using `STATUS_<workstream>.md` naming. We folded it into the methodology as **Multi-workstream Mode** (Core principle 5): project-level files stay shared, status and handoff split per workstream.
 
+**v2.8 (October 2026)**: A product running three workstreams — web, iOS app, distribution — in **concurrent** windows, one human and a dozen-plus AI windows rotated through in a week, all in one checkout. v2.1 had assumed windows take turns and had explicitly deferred cross-workstream handoff until real-world friction showed which solution fits. It did. The project grew its own answers — a roster separating workstreams from windows (after a handoff turned out to hard-code two other windows' names), two-ledger requests between workstreams, git rules for a shared staging area (after one window swept up another's staged hunks) — and v2.8 writes them down as **Concurrent Workstreams** (METHODOLOGY §3.6, Traps 18–20). Validated on that one project; field reports welcome.
+
 ### The meta-takeaway
 
 The healthy evolution pattern wasn't "design everything upfront." It was **"build what works now, let real-world friction drive the next version."** Each version came from a specific, named problem. Each refinement was triggered by a real moment of pain.
@@ -215,14 +219,14 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Documentation
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 17 traps, judgment division mechanics, multi-workstream details, and migration paths
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 20 traps, judgment division mechanics, multi-workstream and concurrent-window details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)
 - **[templates/](./templates/)** — drop-in templates for `brain/` + 4 AI tool adapters
 - **[examples/small-saas/](./examples/small-saas/)** — a fully-filled example brain/ folder
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — one-command scaffold into any project
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (8 structural checks covering the most common traps)
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (10 structural checks covering the most common traps)
 
 ## Compatibility
 

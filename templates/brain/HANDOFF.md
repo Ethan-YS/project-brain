@@ -14,6 +14,8 @@
 > **Who reads this**: the AI starting a new session (if this file exists).
 >
 > **Multi-workstream (v2.1)**: copy this template as `HANDOFF_<workstream>.md` (e.g., `HANDOFF_dev.md`); archive to `handoffs/<workstream>/YYYY-MM-DD-HHMM.md`. See METHODOLOGY §3.5.
+>
+> **Concurrent windows (v2.8)**: name other workstreams, not their current windows — window names go stale at the next switch; the roster in MAP §6 is where they live (Trap 18).
 
 ---
 

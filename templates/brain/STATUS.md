@@ -16,6 +16,8 @@
 > **Who reads this**: every new session.
 >
 > **Multi-workstream (v2.1)**: copy this template as `STATUS_<workstream>.md` (e.g., `STATUS_dev.md`), one per workstream. See METHODOLOGY §3.5.
+>
+> **Concurrent windows (v2.8)**: uncomment the two cross-workstream sections below; name other workstreams, never their windows. See METHODOLOGY §3.6.
 
 ---
 
@@ -38,10 +40,27 @@
 
 - ⚠️ TODO ⚠️
 
+<!-- Concurrent multi-workstream only (v2.8, METHODOLOGY §3.6.3) — uncomment these two sections.
+     You write only your own STATUS: "Handed to…" when you send a request, "From…" when you accept one.
+     When you overwrite this STATUS, carry open rows forward; a row drops out only once it's done.
+
+## Handed to other workstreams
+
+| What | To (workstream) | State: sent / accepted / done |
+|---|---|---|
+
+## From other workstreams
+
+| What | From (workstream) | Done means | Tell when shipped |
+|---|---|---|---|
+
+-->
+
 ## Uncommitted changes
 
 <!-- Which files are edited but not committed, and why not yet.
-     `git status` tells you which files; this section adds "why." -->
+     `git status` tells you which files; this section adds "why."
+     Concurrent windows: also list other windows' uncommitted edits you've noticed as "not this workstream's — don't touch." -->
 
 - ⚠️ TODO ⚠️
 

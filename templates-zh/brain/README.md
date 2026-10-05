@@ -50,7 +50,9 @@
 - 归档变成 `handoffs/<工作流>/YYYY-MM-DD-HHMM.md`
 - PROJECT / MAP / DECISIONS / topics 保持共享
 
-详见 METHODOLOGY §3.5。
+**几个窗口同时开**（v2.8，可选）：MAP §6 多一张「现在谁在接」（工作流 → 现在的窗口）。新窗口醒来先认领自己那一行；别处只写工作流名，不写窗口名。工作流之间交活，两边的 STATUS 各记一笔。共用文件只改自己那一处，不整份重写。
+
+详见 METHODOLOGY §3.5 + §3.6。
 
 ## 完整方法论
 

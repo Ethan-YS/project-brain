@@ -24,6 +24,8 @@
 #   6. HANDOFF.md last-modified vs git log (stale HANDOFF without archive)
 #   7. Markdown link integrity (relative links resolve; ASCII #anchors exist at target) — Trap 15
 #   8. Cross-brain sibling references (nested sub-brains must route shared facts via the parent brain) — Trap 16
+#   9. Workstream registry ↔ STATUS_/HANDOFF_ files (multi-workstream projects)
+#  10. Roster window names leaking into active STATUS / HANDOFF files — Trap 18 (concurrent mode)
 
 set -o pipefail
 
@@ -206,6 +208,24 @@ if [[ -f "$BRAIN/MAP.md" && -d "$BRAIN/topics" ]]; then
     grep -vE '(^|/)README\.md$' | \
     grep -vE '^(X|TODO|placeholder)\.md$')
 
+  # Glob / brace registrations (round*.md, recheck-{a,b}.md) describe a set of
+  # files, not one: set them aside as patterns, match topics/ files against them
+  globs=$(echo "$registered" | grep -E '[*?{[]')
+  registered=$(echo "$registered" | grep -vE '[*?{[]')
+  matches_glob() {
+    local fname="$1" pat
+    [[ -z "$globs" ]] && return 1
+    while IFS= read -r pat; do
+      [[ -z "$pat" ]] && continue
+      pat=$(basename "$pat" | sed -E 's/\{([^}]*)\}/@(\1)/g; s/,/|/g')
+      shopt -s extglob
+      # shellcheck disable=SC2053
+      if [[ "$fname" == $pat ]]; then shopt -u extglob; return 0; fi
+      shopt -u extglob
+    done <<< "$globs"
+    return 1
+  }
+
   # Files actually existing in topics/ (excluding READMEs which are descriptive, not registered)
   actual_files=()
   while IFS= read -r f; do
@@ -218,6 +238,7 @@ if [[ -f "$BRAIN/MAP.md" && -d "$BRAIN/topics" ]]; then
   # Files in topics/ but not registered in MAP §5
   for file_path in "${actual_files[@]}"; do
     fname=$(basename "$file_path")
+    matches_glob "$fname" && continue
     if [[ -n "$registered" ]] && ! echo "$registered" | grep -qF "$fname"; then
       rel="${file_path#$BRAIN/}"
       info "topics/ file not registered in MAP §5: $rel"
@@ -405,6 +426,117 @@ else
     done < <(find "$src_brain" -type f -name "*.md" -print0 2>/dev/null)
   done
   if (( cross_issues == 0 )); then ok "${#all_brains[@]} brains found, no sibling-to-sibling data references"; fi
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────
+# Shared helper: MAP §6 workstream section — a ## heading that mentions
+# "Workstream" / "工作流", up to the next ## heading (### subsections such as
+# the "Who's on it now" roster stay inside). 工作流 also means "workflow", so
+# when several headings match, the one whose body mentions STATUS_ files wins.
+# ─────────────────────────────────────────────────────────
+ws_section() {
+  [[ -f "$BRAIN/MAP.md" ]] || return 0
+  awk '
+    /^[[:space:]]*```/ { in_code = !in_code }
+    /^## / && !in_code {
+      cur = 0
+      if ($0 ~ /[Ww]orkstream|工作流/) { n++; cur = n; body[n] = "" }
+      next
+    }
+    cur { body[cur] = body[cur] $0 "\n"; if ($0 ~ /STATUS_/) hit[cur] = 1 }
+    END {
+      pick = 0
+      for (i = 1; i <= n; i++) if (hit[i]) { pick = i; break }
+      if (!pick && n) pick = 1
+      if (pick) printf "%s", body[pick]
+    }
+  ' "$BRAIN/MAP.md" 2>/dev/null
+}
+
+# ─────────────────────────────────────────────────────────
+# Check 9: Workstream registry ↔ files (multi-workstream only)
+# ─────────────────────────────────────────────────────────
+echo "${BOLD}9. Workstream registry ↔ files${RESET}"
+ws_files=()
+for f in "$BRAIN"/STATUS_*.md; do
+  [[ -e "$f" ]] && ws_files+=("$f")
+done
+if (( ${#ws_files[@]} == 0 )); then
+  ok "single-workstream project — nothing to check"
+else
+  section=$(ws_section)
+  reg_issues=0
+  if [[ -z "$section" ]]; then
+    warning "multi-workstream project (${#ws_files[@]} STATUS_<workstream>.md files) but MAP.md has no workstream registry section (§6, METHODOLOGY §3.5)"
+    reg_issues=$((reg_issues+1))
+  else
+    for f in "${ws_files[@]}"; do
+      name=$(basename "$f"); ws="${name#STATUS_}"; ws="${ws%.md}"
+      if ! grep -qF -- "$name" <<< "$section"; then
+        warning "workstream '$ws' ($name) is not registered in MAP §6"
+        reg_issues=$((reg_issues+1))
+      fi
+      if [[ ! -e "$BRAIN/HANDOFF_$ws.md" ]]; then
+        info "no HANDOFF_$ws.md for workstream '$ws' — expected once its first window switches"
+        reg_issues=$((reg_issues+1))
+      fi
+    done
+    # Registered in §6 but missing on disk (placeholder and retired rows skipped)
+    while IFS= read -r ref; do
+      [[ -z "$ref" || -e "$BRAIN/$ref" ]] && continue
+      warning "MAP §6 registers $ref but brain/$ref doesn't exist — if the workstream was retired, mark its row 'retired <date>'"
+      reg_issues=$((reg_issues+1))
+    done < <(grep -vE '⚠️|[Rr]etired|已结束|退役' <<< "$section" | grep -oE 'STATUS_[^`|)( ]+\.md' | grep -v '<' | sort -u)
+  fi
+  if (( reg_issues == 0 )); then ok "${#ws_files[@]} workstream(s), all registered in MAP §6 with their files"; fi
+fi
+echo ""
+
+# ─────────────────────────────────────────────────────────
+# Check 10: Window names outside the roster (Trap 18)
+# Concurrent mode keeps current window names in one table — MAP §6
+# "Who's on it now". A roster name showing up in an active STATUS / HANDOFF
+# is either provenance (fine) or an address that goes stale at the next
+# switch; the script can't tell which, so it reports info for a human glance.
+# ─────────────────────────────────────────────────────────
+echo "${BOLD}10. Window names outside the roster (Trap 18)${RESET}"
+roster=$(ws_section | awk -F'|' '
+  function clean(x) { gsub(/\*\*|`/, "", x); gsub(/^[ \t]+|[ \t]+$/, "", x); return x }
+  /^[ \t]*\|/ {
+    if (!in_table) {                       # header row of a new table
+      in_table = 1; wcol = 0
+      for (i = 2; i < NF; i++) {
+        h = tolower($i)
+        if (h ~ /current window|现在的窗口|当前窗口|窗口名/) { wcol = i; break }
+      }
+      next
+    }
+    if ($0 ~ /^[ \t]*\|[-:| \t]+\|[ \t]*$/) next   # separator row
+    if (wcol) {
+      name = clean($wcol); ws = clean($2)
+      if (name != "" && name !~ /⚠️/ && name !~ /^[-—–]+$/ && name !~ /^[0-9]+$/ && name != ws) print name
+    }
+    next
+  }
+  { in_table = 0; wcol = 0 }
+' | sort -u)
+if [[ -z "$roster" ]]; then
+  ok "no \"Who's on it now\" roster in MAP §6 — nothing to check"
+else
+  leaks=0
+  while IFS= read -r name; do
+    [[ -z "$name" ]] && continue
+    for f in "$BRAIN"/STATUS*.md "$BRAIN"/HANDOFF*.md; do
+      [[ -e "$f" ]] || continue
+      n=$(grep -cF -- "$name" "$f" 2>/dev/null | tr -d ' \n')
+      if [[ "$n" =~ ^[0-9]+$ ]] && (( n > 0 )); then
+        info "$(basename "$f") names current window '$name' on $n line(s) — name the workstream instead, unless it's provenance (Trap 18)"
+        leaks=$((leaks+1))
+      fi
+    done
+  done <<< "$roster"
+  if (( leaks == 0 )); then ok "roster window names appear only in the roster"; fi
 fi
 echo ""
 

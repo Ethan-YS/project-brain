@@ -5,6 +5,41 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.8.0] — 2026-10-04
+
+Concurrent workstreams. v2.1's multi-workstream mode split STATUS / HANDOFF per workstream but assumed windows take turns — and explicitly deferred cross-workstream handoff "to avoid over-engineering before real-world friction tells us which solution fits." The friction arrived: a product running three workstreams (web, iOS app, distribution) in **concurrent** windows — one human, a dozen-plus AI windows rotated through in a week, one checkout, no worktrees. That project grew its own rules under pressure; v2.8 writes them down. Like v2.1, it is **validated on one project** — shipped to collect field reports rather than held back for more.
+
+### Added
+
+- **METHODOLOGY §3.6 — Concurrent workstreams** (optional, on top of §3.5):
+  - **§3.6.1 Workstreams are durable, windows are disposable** — a "Who's on it now" roster in MAP §6 (workstream → current window → since) is the only place a window name is current. A new window identifies its workstream from explicit signals and, once the user confirms the wake report, claims its row (one cell, own commit, announced). Everywhere else, name the workstream; window names only as provenance. Ad-hoc windows never claim.
+  - **§3.6.2 Ownership** — the registry gains an "Owns" column; areas another workstream owns are handed over, not edited; shared areas get a say-so-before-editing rule; interface dependencies between workstreams are written down where the owner sees them.
+  - **§3.6.3 Cross-workstream requests** — resolves the v2.1 deferral: two ledgers ("Handed to other workstreams" in the requester's STATUS, "From other workstreams" in the owner's, written by the owner on accepting) plus a live ping through whatever channel the tool has. Open rows are carried across STATUS overwrites. A request whose owner has no live window waits as a `sent` row — on wake, each window skims the other workstreams' "Handed to…" lists for rows addressed to it. Close the loop on ship; announce deploys before and after (who to tell is a standing fact in MAP §6, not STATUS).
+  - **§3.6.4 One checkout, several windows** — git discipline for a shared working tree and staging area: check `git diff --cached` before every commit (and don't commit over or unstage another window's staged work), stage by name, stage only your own hunks of a shared file (recipe for AIs without interactive `git add -p`, guarded against wiping another window's staged hunks in the same file), test the staged index in isolation (`git checkout-index`), edit shared brain files in place, deploy from a commit.
+  - **§3.6.5 Workstream lifecycle** — adding the Nth workstream mid-project (with a DECISIONS entry), retiring one (`retired <date>`, history kept, name never reused).
+- **Traps 18–20** (§6.7): window names as workstream identity; sweeping another window's work into your commit; rewriting a shared brain file from a stale copy. Traps 18 and 19 were hit in the source project; Trap 20 is labelled preventive — the shared-file rule it ran on.
+- **`doctor.sh` check 9** — workstream registry ↔ files: every `STATUS_<ws>.md` registered in MAP §6, a `HANDOFF_<ws>.md` beside it, no registration pointing at a missing file (rows marked retired are skipped).
+- **`doctor.sh` check 10** — partially mechanizes Trap 18: roster window names found in active STATUS / HANDOFF files are listed as info (the script can't tell provenance from address, so it never escalates).
+- **SKILL.md §5 — Cross-workstream request** workflow (and trigger 6); startup gains the roster claim; core principles gain the concurrent-window rules.
+- Templates (`templates/` + `templates-zh/`): MAP §6 gains the Owns column, the roster, retiring steps, interface-dependency list and the concurrent rules; STATUS gains the two ledger sections (commented out until needed); HANDOFF / brain README / CLAUDE.md / AGENTS.md / `.cursorrules` / Copilot instructions gain the concurrent-window lines.
+
+### Changed
+
+- **Identifying a window's workstream** (§1.3, all adapters): v2.1 always asked. v2.8 also accepts explicit signals — the window's own name contains the workstream's name, or the user said which when opening it — and still asks otherwise. Never guesses.
+- §3.5's "Cross-workstream handoff (deferred to future versions)" now points to §3.6.3; §4.3 / §4.7 / §5.3 updated for concurrent windows; §5.4 states that opening a window claims nothing until the user confirms which workstream it's on.
+- Trap count 17 → 20; doctor checks 8 → 10; skill workflows 4 → 5 (README, README.zh-CN, SKILL.md).
+
+### Fixed
+
+- **`doctor.sh` check 5** reported glob / brace registrations in MAP §5 (`brief-round*.md`, `recheck-{a,b}.md`) as missing files. They describe a set, not one file — now treated as patterns: never reported missing, and `topics/` files they match count as registered. Found running the doctor on the source project.
+- **Adapters still carried the pre-v2.6 write rule.** `templates/CLAUDE.md`, `templates-zh/CLAUDE.md`, `AGENTS.md`, `.cursorrules` and the Copilot instructions said "propose, then user approves" for every `brain/` write — two releases after §4.1 introduced tiered trust, and in direct conflict with v2.8's write-then-announce roster claim. All five now state tiered trust.
+
+### Why minor (not major)
+
+Single-workstream projects and turn-taking multi-workstream projects are untouched: no file moves, no renamed sections, the scaffold output is the same plus optional blocks. Everything new activates only when several windows run at once.
+
+---
+
 ## [2.7.0] — 2026-10-04
 
 Second continuity channel. Triggered by Claude Code shipping **auto memory** — a per-repository `~/.claude/projects/<project>/memory/` directory whose `MEMORY.md` index is loaded into context at every session start. It is not a handoff mechanism (Anthropic's docs: a fresh session gets CLAUDE.md + the memory index, never a summary of the previous session) and it is invisible to every other tool, so it cannot replace `brain/`. But it is a second auto-loaded channel that Claude itself writes to, and the methodology can use that for exactly one thing: pointing at `brain/`.

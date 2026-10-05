@@ -63,7 +63,7 @@ claude plugin install project-brain@sprout-labs
 - **"压缩了"** / **"切窗口"** —— 在上下文死掉之前写一份 HANDOFF
 - **"更新项目脑"** —— skill 会带理由提议清单，你逐项认可
 
-skill 内置 4 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff / 更新。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
+skill 内置 5 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff / 更新 / （几个窗口同时开的多工作流项目里）把活交给另一条工作流。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
 
 > **之前用旧方式装过？** 如果你之前 `git clone` 到了 `~/.claude/skills/project-brain`，先 `rm -rf ~/.claude/skills/project-brain` 再装 plugin。plugin 路径是从此往后唯一支持的安装路径。
 
@@ -189,6 +189,8 @@ brain/
 
 单工作流项目忽略这条——保持默认的 `STATUS.md` / `HANDOFF.md`。
 
+**几个窗口同时开**（v2.8）：几条工作流的窗口*同时*在一个工作目录里干活时，MAP §6 多一张「现在谁在接」——工作流不变、窗口会换，所以窗口名只写在这张表里，新窗口醒来先认领自己那一行。工作流清单多一列「管哪些」；工作流之间交活，两边的 STATUS 各记一笔；再加几条 git 规矩（暂存区共用、只暂存自己的改动、共用文件只改自己那一处），尽量避免窗口之间互相把对方的改动提交走或冲掉。详见 METHODOLOGY §3.6。
+
 ## 这套方法论是怎么演化出来的
 
 它不是某次设计会议的产物。它是在多个真实项目里**被现实推着演化**出来的——每一次迭代都源于一个我们绕不过去的具体问题。
@@ -207,6 +209,8 @@ brain/
 
 **v2.1（同日深夜）**：第二个项目——一个**非开发项目**，并行跑多条独立工作流——撞到 v2 的假设"一个项目 = 一条工作流主线"。用户已经自然演化出 `STATUS_<工作流>.md` 命名后缀绕过限制，但意识到这应该被 skill 化。v2.1 加入**多线程模式**（可选，默认关闭）。
 
+**v2.8（2026 年 10 月）**：一个产品同时跑三条工作流——网页、iOS App、宣传分发——窗口是**同时开着的**：一个人、一周里轮换了十几个 AI 窗口，全在一个工作目录里。v2.1 默认窗口轮流上场，并且明确把「跨工作流交接」留白，要等真实摩擦说明哪种解法合适。摩擦来了。这个项目自己长出了答案——把工作流和窗口分开的「现在谁在接」表（起因是一份交接里写死了另外两个窗口的名字）、两边各记一笔的跨线交活、共用暂存区的 git 规矩（起因是一个窗口把另一个窗口暂存好的改动一起提交走了）——v2.8 把它们写成**并发多工作流**（METHODOLOGY §3.6，陷阱 18–20）。目前只在这一个项目上验证过，欢迎反馈。
+
 ### 元收获
 
 健康的演化模式不是"先把所有可能场景设计满"。它是"**先做能用的，让实战推动下一版**"——每一版都从一个具体的、有名字的问题开始。
@@ -215,14 +219,14 @@ brain/
 
 ## 文档
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 17 条陷阱、判断权分工机制细节、工作流分裂细节、迁移路径）
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 20 条陷阱、判断权分工机制细节、工作流分裂与并发窗口细节、迁移路径）
 - **[CHANGELOG.md](./CHANGELOG.md)** — 版本历史
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest（plugin 装好后自动加载）
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json`（manifest）+ `marketplace.json`（Sprout Labs marketplace 入口）
 - **[templates/](./templates/)** — `brain/` + 4 种 AI 工具的 adapter 模板
 - **[examples/small-saas/](./examples/small-saas/)** — 一个完整填好的 brain/ 示例
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — 一条命令 scaffold 到任何项目
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（8 项结构检查，覆盖最常见的陷阱）
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（10 项结构检查，覆盖最常见的陷阱）
 
 ## 兼容性
 

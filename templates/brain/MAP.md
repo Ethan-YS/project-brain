@@ -86,17 +86,47 @@
 
 > **Fill this section only for multi-workstream projects** — single-workstream projects can leave it empty or remove the section.
 > Workstreams share PROJECT / MAP / DECISIONS / topics; STATUS / HANDOFF / handoffs split per workstream.
-> See METHODOLOGY §3.5.
+> See METHODOLOGY §3.5 (and §3.6 if several windows run at once).
 
-| Workstream | STATUS file | HANDOFF file | Archive directory | Active windows / notes |
+| Workstream | Owns (dirs / areas it changes) | STATUS file | HANDOFF file | Archive directory |
 |---|---|---|---|---|
-| ⚠️ TODO ⚠️ | `STATUS_⚠️.md` | `HANDOFF_⚠️.md` | `handoffs/⚠️/` | ⚠️ TODO ⚠️ |
+| ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ | `STATUS_⚠️.md` | `HANDOFF_⚠️.md` | `handoffs/⚠️/` |
+
+A workstream doesn't edit an area another one owns — it hands the change over (METHODOLOGY §3.6.3).
 
 **Adding a new workstream**:
 1. User decides the workstream name (keep style consistent with existing names — all English or all the chosen language)
 2. AI creates `STATUS_<new>.md` + `HANDOFF_<new>.md` (from templates) + `handoffs/<new>/.gitkeep`
-3. Register in this section
-4. Single commit: "**add workstream: <new>**"
+3. Register in this section (registry row; roster row too if windows run concurrently)
+4. List it in the project instruction file's wake section (`CLAUDE.md` / `AGENTS.md` …)
+5. DECISIONS entry: why a new workstream rather than folding the work into an existing one
+6. Single commit: "**add workstream: <new>**"
+
+**Retiring a workstream**: archive its STATUS / HANDOFF into `handoffs/<ws>/`, mark its registry row `retired <date>`, drop its roster row, take it out of the instruction file's wake section, log it in DECISIONS. Never reuse the name.
+
+### Who's on it now (v2.8, concurrent windows only)
+
+> Fill only if several windows run at the same time. Workstreams are durable, windows are disposable — this table is the **only** place a window name is current. See METHODOLOGY §3.6.
+
+| Workstream | Current window (the name other windows reach it by) | Since |
+|---|---|---|
+| ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ |
+
+- **New window, once the user confirms the wake report**: write your window name + date into your workstream's row — that cell only, committed alone, announced. Ad-hoc windows never claim a row.
+- **On wake, also skim the other workstreams' STATUS** "Handed to other workstreams" for rows addressed to yours that are still `sent` — requests waiting for someone to accept them.
+- **Reaching another workstream**: this table first; window gone → look for a live window named after the workstream; none → put it in your own STATUS under "Handed to other workstreams" — its next window picks it up on wake.
+- **STATUS / HANDOFF / DECISIONS name the workstream, never the window.** Provenance ("found by web-5") is fine; addresses ("tell web-5") are not.
+- **Ad-hoc windows** (one-off tasks that own no workstream) stay off this table.
+
+**Interface dependencies & who to tell** (standing facts — change these, or ship these, and tell the listed workstream first):
+- ⚠️ TODO ⚠️ (e.g., "app depends on web's `.topbar` class and `/g/<id>` URLs" · "any deploy → tell app before and after")
+
+**Concurrent rules** (one checkout, several windows — METHODOLOGY §3.6.4):
+- The staging area is shared: `git diff --cached --stat` before every commit; stage files by name, never `-A` / `-a` / `.`
+- Commit only your own changes; when a shared file also holds another window's uncommitted edits, stage only your part
+- Shared brain files (MAP / DECISIONS / PROJECT): re-read, then edit your one spot — never rewrite the whole file
+- Editing an area another workstream owns or shares → tell it first (file + intent)
+- Deploy from a commit, not the working tree; tell affected workstreams before and after
 
 ---
 

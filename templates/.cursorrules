@@ -23,15 +23,16 @@ Don't silently start working — confirm understanding first.
 ### Multi-workstream (v2.1)
 
 First read shared files: `brain/MAP.md` + `brain/PROJECT.md`.
-Don't guess this window's workstream — ask the user:
+Don't guess this window's workstream — use explicit signals only (the window is named for a workstream, e.g. `web-6`, or the user said so); otherwise ask:
 "I see this is a multi-workstream project with [list workstreams]. Which one does this window work on?"
-After the user says, read `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`.
+Then read `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`.
+Concurrent windows (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this window's name + date into your workstream's roster row (that cell only, committed alone) and say so.
 
 If the user switches workstreams mid-session, re-read the new one's files and don't carry over memory.
 
 ## Update responsibility
 
-The AI doesn't silently modify any file in `brain/` — propose, then user approves.
+The AI never silently modifies a file in `brain/` (tiered trust, METHODOLOGY §4.1): STATUS / HANDOFF / mechanical MAP registrations — write after the work lands, then announce what was written; DECISIONS / PROJECT / structural MAP changes — propose, then user approves.
 
 Judgment division:
 - The user decides "should we record now" (high-level pacing)
@@ -47,6 +48,8 @@ Specific rhythm:
 - User signals window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`
 
 For multi-workstream (v2.1): scope STATUS / HANDOFF / handoffs to the current workstream — `STATUS_<current>.md`, etc. PROJECT / MAP / DECISIONS / topics are shared.
+
+Concurrent windows in one checkout (v2.8, METHODOLOGY §3.6): name workstreams, not window names; write only your own STATUS / HANDOFF; edit shared files in place, never rewrite them whole; stage by name and check `git diff --cached --stat` before committing; hand changes in another workstream's area to its owner (both STATUS files record the request).
 
 ## Project red lines (read before writing code)
 

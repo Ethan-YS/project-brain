@@ -50,7 +50,9 @@ If this project has parallel independent workstreams, the continuity layer split
 - Archives become `handoffs/<workstream>/YYYY-MM-DD-HHMM.md`
 - PROJECT / MAP / DECISIONS / topics stay shared
 
-See METHODOLOGY §3.5.
+**Concurrent windows** (v2.8, optional): if several windows work at the same time, MAP §6 also holds a "Who's on it now" roster (workstream → current window). Each new window claims its row; everywhere else, name workstreams, not windows. Requests between workstreams live in both STATUS files. Shared files are edited in place, never rewritten.
+
+See METHODOLOGY §3.5 + §3.6.
 
 ## Full methodology
 

@@ -26,11 +26,13 @@ After reading, give a brief report: project recognized + current progress + last
 
 **First read project-level shared files**: `brain/MAP.md` (with workstream registry, §6) + `brain/PROJECT.md` (if needed).
 
-**Don't guess which workstream this window belongs to** — report and ask:
+**Identify which workstream this window serves — don't guess.** Explicit signals only: this window is named for a workstream (its name plus a number, e.g. `web-6`), or the user said which one when opening it. Otherwise report and ask:
 
 > "I see this is a multi-workstream project with [list workstreams]. Which one does this window work on?"
 
-After the user explicitly says, **then read** `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`, then do the same brief report.
+**Then read** `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`, then do the same brief report (include anything waiting under "From other workstreams").
+
+**Concurrent windows** (v2.8 — MAP §6 has a "Who's on it now" roster): also skim the other workstreams' STATUS "Handed to other workstreams" for rows addressed to yours that are still `sent`, and mention them in the report. Once the user confirms and work begins, write this window's name + date into your workstream's roster row — that cell only, committed alone, announced. Refer to other workstreams by workstream name, never by window name (Trap 18).
 
 **If the user switches this window's workstream mid-session** — must re-read the new workstream's STATUS + HANDOFF, **don't carry over memory from the previous workstream** (Trap 14).
 
@@ -52,7 +54,7 @@ After the user explicitly says, **then read** `brain/STATUS_<workstream>.md` + `
 
 ## Update responsibility
 
-**Core principle**: The AI doesn't silently modify any file in `brain/` — propose, then user approves.
+**Core principle — tiered trust** (METHODOLOGY §4.1): the AI never *silently* modifies a file in `brain/`. `STATUS` / `HANDOFF` / mechanical `MAP` registrations (including a roster claim): write after the work lands, then announce what was written in the same reply. `DECISIONS` / `PROJECT` / structural `MAP` changes: propose first, user approves.
 
 **Judgment division** (important):
 - The user decides "**should we record now**"
@@ -70,6 +72,8 @@ Specific rhythm:
 - User explicitly says "update STATUS / log a decision" → just do it, don't ask
 
 **Multi-workstream** (v2.1): scope all the above STATUS / HANDOFF / handoffs to the current window's workstream — `STATUS_<current>.md` / `HANDOFF_<current>.md` / `handoffs/<current>/`. PROJECT / MAP / DECISIONS / topics are shared, not per-workstream. See METHODOLOGY §3.5 + §4.7.
+
+**Concurrent windows** (v2.8, several windows in one checkout): write only your own workstream's STATUS / HANDOFF; edit shared files (MAP / DECISIONS / PROJECT) in place — re-read, change your one spot, never rewrite the whole file; stage files by name and run `git diff --cached --stat` before every commit; don't edit an area another workstream owns (MAP §6) — hand it over: your STATUS records it under "Handed to other workstreams," theirs under "From other workstreams" when they accept, plus a live ping if your tool can message other sessions. See METHODOLOGY §3.6.
 
 Full mechanism: see `METHODOLOGY.md` §4.
 
