@@ -32,7 +32,7 @@ After reading, give a brief report: project recognized + current progress + last
 
 **Then read** `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`, then do the same brief report (include anything waiting under "From other workstreams").
 
-**Concurrent windows** (v2.8 — MAP §6 has a "Who's on it now" roster): also skim the other workstreams' STATUS "Handed to other workstreams" for rows addressed to yours that are still `sent`, and mention them in the report. Once the user confirms and work begins, write this window's name + date into your workstream's roster row — that cell only, committed alone, announced. Refer to other workstreams by workstream name, never by window name (Trap 18).
+**Concurrent windows** (v2.8 — MAP §6 has a "Who's on it now" roster): also skim the other workstreams' STATUS "Handed to other workstreams" for rows addressed to yours that are still `sent`, and mention them in the report. Once the user confirms and work begins, write this window's name + date into your workstream's roster row — that cell only, committed alone. Refer to other workstreams by workstream name, never by window name (Trap 18).
 
 **If the user switches this window's workstream mid-session** — must re-read the new workstream's STATUS + HANDOFF, **don't carry over memory from the previous workstream** (Trap 14).
 
@@ -54,7 +54,7 @@ After reading, give a brief report: project recognized + current progress + last
 
 ## Update responsibility
 
-**Core principle — tiered trust** (METHODOLOGY §4.1): the AI never *silently* modifies a file in `brain/`. `STATUS` / `HANDOFF` / mechanical `MAP` registrations (including a roster claim) / `RUNBOOK` appends (a numbered trap, a procedure): write after the work lands, then announce what was written in the same reply. `DECISIONS` / `PROJECT` / structural `MAP` changes: propose first, user approves.
+**Core principle** (METHODOLOGY §4.1, v2.9.1): `brain/` is written for the next window, not for the user. Write `STATUS` / `HANDOFF` / `MAP` registrations (including a roster claim) / `RUNBOOK` appends when the work lands — don't ask, don't report; commit with a message that says what changed, and git is the only record. Ask the user exactly one thing, and only when you can't tell: **is this decided?** `DECISIONS` and `PROJECT` follow the answer; what the user said plainly, write without asking.
 
 **Judgment division** (important):
 - The user decides "**should we record now**"
@@ -65,9 +65,9 @@ Specific rhythm:
 
 - User says "**update the project brain**" → run "judge + list" workflow: based on what happened in the session, proactively judge which files should update and what to write, give a **list with reasons** for the user to review (see METHODOLOGY §4.4)
 - AI senses "that section felt like a decision" → **gentle inquiry**: "does this count as decided? Want to append to DECISIONS?" — don't assert (see METHODOLOGY §4.5)
-- Module added / removed → propose to update `brain/MAP.md` §2
-- New doc added / deprecated → propose to update `brain/MAP.md` §5
-- User signals end-of-session ("that's it / heading out / time to switch") → proactively draft `brain/STATUS.md` for review (soft cap 80 lines / ~6,000 characters)
+- Module added / removed → update `brain/MAP.md` §2
+- New doc added / deprecated → register it in `brain/MAP.md` §5
+- User signals end-of-session ("that's it / heading out / time to switch") → overwrite `brain/STATUS.md` (soft cap 80 lines / ~6,000 characters)
 - User says window-switch / hand off / shift change → first move what's still valid out of the old `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`), archive it to `brain/handoffs/YYYY-MM-DD-HHMM.md`, then write the new one as a shift report (the template's six sections); in Claude Code, also refresh the auto-memory pointer (METHODOLOGY §3.4, v2.7)
 - User explicitly says "update STATUS / log a decision" → just do it, don't ask
 

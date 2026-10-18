@@ -84,7 +84,7 @@ This is the methodology's reliability anchor: **continuity rides on the AI tool'
 3. **Then** read the corresponding `STATUS_<workstream>.md` + `HANDOFF_<workstream>.md`
 4. **Concurrent mode** (v2.8 — MAP §6 has a "Who's on it now" roster): also skim the *other* workstreams' STATUS "Handed to other workstreams" lists for rows addressed to this workstream that are still `sent` — those are requests nobody on this workstream has accepted yet (§3.6.3)
 5. Then do the brief report from single-workstream step 3 — name the workstream, and mention open requests (its own "From other workstreams" list plus any unaccepted `sent` rows from step 4)
-6. **Concurrent mode, once the user confirms** the report and work begins on this workstream: claim its roster row — this window's name + date in that one cell, committed alone, announced (§3.6.1). A window opened for casual chat claims nothing (§5.4)
+6. **Concurrent mode, once the user confirms** the report and work begins on this workstream: claim its roster row — this window's name + date in that one cell, committed alone (§3.6.1). A window opened for casual chat claims nothing (§5.4)
 
 #### Universal disciplines
 
@@ -357,7 +357,7 @@ Index line in `MEMORY.md` — **replace in place, never append a new line per ha
 When to write / refresh it (Claude Code only — the AI knows its own memory directory from its system prompt; if no such directory is announced, skip silently):
 
 - **Kick-off** (§1.4): create it once the scaffold lands.
-- **Every HANDOFF write** (§4.3 step 3): rewrite the file and replace its index line. Same rhythm as archiving — mechanical, announced in the same reply, no approval needed (Tier 1, §4.1).
+- **Every HANDOFF write** (§4.3 step 3): rewrite the file and replace its index line. Same rhythm as archiving — mechanical, no approval needed (§4.1).
 - **Never on casual work.** The pointer changes only when a HANDOFF does.
 
 Boundaries:
@@ -464,7 +464,7 @@ A workstream ("web", "outreach") lives for months. The window serving it is repl
 
 "Current window" is whatever name the other windows reach it by — a session title, a tab name, the address your tool's session-to-session messaging uses.
 
-- **Identify, then claim.** On wake, a window first works out which workstream it serves — from explicit signals only (it is named for the workstream, e.g. `web-6`, or the user said so when opening it); otherwise it asks (§1.3). Once the user confirms the wake report and work on that workstream begins, it writes its own name into the workstream's roster row — that one cell and the date, nothing else — committed alone and announced (a Tier 1 mechanical MAP registration, §4.1). Ad-hoc windows never claim, even if their name happens to contain a workstream's name (an `app-review` window is not the app workstream).
+- **Identify, then claim.** On wake, a window first works out which workstream it serves — from explicit signals only (it is named for the workstream, e.g. `web-6`, or the user said so when opening it); otherwise it asks (§1.3). Once the user confirms the wake report and work on that workstream begins, it writes its own name into the workstream's roster row — that one cell and the date, nothing else — committed alone (a mechanical MAP registration, §4.1). Ad-hoc windows never claim, even if their name happens to contain a workstream's name (an `app-review` window is not the app workstream).
 - **Refer to workstreams, not windows.** STATUS, HANDOFF and DECISIONS say "the app workstream," never "app-6." A window name may appear as provenance ("found by outreach-1 on 10-05"), never as an address ("tell app-6 before deploying"). The roster is the one place a window name is current (Trap 18).
 - **Reaching another workstream:** look it up in the roster. If that window is gone, look for a live window named after the workstream (your tool's session list, if it has one). If there is none, write the request into your own STATUS (§3.6.3) — the next window on that workstream picks it up when it skims the other workstreams' "Handed to…" lists on wake (§1.3 step 4).
 - **Ad-hoc windows** — one-off tasks that don't own a workstream — stay off the roster and get no STATUS of their own. Anything they decide that matters goes into DECISIONS like any other window's.
@@ -528,39 +528,38 @@ Validated on one workspace over one week. If a workspace turns out to need a par
 
 ## 4. Update mechanism
 
-### 4.1 The principle — tiered trust (since v2.6)
+### 4.1 The principle — `brain/` is written for the next window (since v2.9.1)
 
-**The AI never *silently* modifies a file in `brain/` — but not every file needs permission before writing.** Files differ in the cost of a wrong write; the approval ritual should match that cost. Git (mandatory anyway, §5.1) makes the cheap tier reversible in one command.
+`brain/` is the AI's memory for the AI. The reader of STATUS, HANDOFF, MAP, RUNBOOK and DECISIONS is the next window, not the user — the user asked for a handoff and never reads one. So the AI writes these files the way it writes any note to itself: **when the work lands, without asking and without reporting.** The commit is the record: every `brain/` write goes into a commit whose message says what changed, and `git log` / `git diff` are where the user looks on the rare day they want to.
 
-| Tier | Files | Protocol |
-|---|---|---|
-| **Tier 1 — write, then announce** | `STATUS`, `HANDOFF`, mechanical `MAP` registrations, `RUNBOOK` appends (a numbered trap, a symptom row or a procedure moved there at a handoff — §4.3 step 0, v2.9) | After completing the work that changed the state, the AI writes directly and **reports what it wrote in the same reply** ("STATUS overwritten: now at X, next Y"). The user reviews via `git diff` / `git log` when they care to; reverting is one command. |
-| **Tier 2 — ask, then write** | `DECISIONS`, `PROJECT`, structural `MAP` redesigns | These encode shared commitments ("this is decided" / "this is what the project is"). A wrong write corrupts understanding, not just a file. Gentle inquiry (§4.5) and explicit discussion remain mandatory. |
+The user's attention is spent on exactly one thing, because only the user knows the answer: **is this decided?** When the AI can't tell whether a stretch of conversation settled something, it asks — at a natural pause, not mid-flow (§4.5) — and writes DECISIONS or changes PROJECT on the answer. When the user said it plainly ("use Haiku," "that's the scope," "log that"), the AI writes without asking. This is information, not permission.
 
-**Why the change** (v2.0–v2.5 required ask-before-write for everything): the old rule spent the user's attention as the safety mechanism on every routine STATUS overwrite. With git as the review surface, a Tier-1 mistake costs one `git revert` — user attention is the scarcer resource. What stays non-negotiable at every tier is *announcement*: a write the user never hears about is still forbidden.
+Two things remain at the user's request: **"update the project brain"** (§4.4), a deliberate checkpoint where the AI lists what it would write and the user picks; and **"no proposals today"** (§4.6).
 
-**Sole exception** (unchanged): when the user explicitly says "update STATUS / log this decision / write a HANDOFF," the AI does it directly without asking — explicit instruction overrides both tiers.
+**History — why this used to be more.** v2.0–v2.5 required approval before every `brain/` write, a rule written when the AI's judgment was trusted less. v2.6 relaxed it into two tiers — write-then-announce for STATUS / HANDOFF / MAP registrations, ask-first for DECISIONS / PROJECT — spending git's reversibility instead of user attention. v2.9.1 finishes the move, after the maintainer asked the obvious question: *if there were no skill, I'd say "hand off," you'd write the file, and I'd never know what you wrote — so what is the announcement for?* The announce-to-the-user half addressed a reader who doesn't read these files; the ask-first half had turned judgment division (§4.4) on its head by handing the AI's own judgment back to the user. One live project had already been running the single rule for six weeks on the user's say-so before the methodology caught up. What remains is the only question the AI genuinely cannot answer alone.
 
-**Not based on staleness checks**: v2 deliberately removed `last_updated` fields. The protocol guarantees freshness — when the user signals window-switch, the AI updates first; when the AI completes major work, it proposes an update. Files are always current. No need to compare timestamps.
+**Concurrent windows are unchanged** (§3.6): shared files are edited in place, areas another workstream owns are handed over, and a window tells *other windows* before touching what they share. That is coordination between writers, not reporting to the user.
+
+**Not based on staleness checks**: v2 deliberately removed `last_updated` fields. The protocol guarantees freshness — when the user signals window-switch, the AI updates first; when the AI completes major work, it writes. Files are always current. No need to compare timestamps.
 
 ### 4.2 Update rules per file
 
-| File | When the AI updates | Trigger source | Tier / protocol |
+| File | When the AI updates | Trigger source | Protocol |
 |---|---|---|---|
-| **STATUS.md** | User signals end-of-session ("that's it for now / heading out / time to switch"); or AI completes a major change | User / AI sense | **Tier 1**: write directly, announce in the same reply; user reviews via git |
-| **HANDOFF.md** | User signals window-switch | User | **Tier 1**: write directly, announce. Procedure in §4.3 |
-| **DECISIONS.md** | AI senses something **was just decided** (irreversibly) | AI sense | **Tier 2**: gentle inquiry first ("does this count as decided?") — see §4.5 |
-| **MAP.md** | New doc added / doc removed → §5 registration | AI sense | **Tier 1** for mechanical registrations (write + announce); **Tier 2** for structural redesign of the map itself |
+| **STATUS.md** | User signals end-of-session ("that's it for now / heading out / time to switch"); or AI completes a major change | User / AI sense | Write it; commit |
+| **HANDOFF.md** | User signals window-switch | User | Write it; commit. Procedure in §4.3 |
+| **DECISIONS.md** | AI senses something **was just decided** (irreversibly) | AI sense | Write it when the user said so plainly; ask "does this count as decided?" only when you can't tell (§4.5) |
+| **MAP.md** | New doc added / doc removed → §5 registration | AI sense | Write it; commit. In concurrent projects, tell the other windows before restructuring the map itself (§3.6.4) |
 | **MAP calibration scan** | User says "MAP calibration" or "tidy up project memory" | User | Run scan per MAP.md last section; `scripts/doctor.sh` automates the mechanical half |
-| **PROJECT.md** | Project definition has drifted (very rare) | Very rare | **Tier 2**: must explicitly discuss before changing |
+| **PROJECT.md** | Project definition has drifted (very rare) | Very rare | A redefinition is a decision: only on the user's plain say-so (§4.5) |
 | **`topics/*` docs** | When user and AI deliberately write a topic doc | User | **Not in auto-update scope** — topic docs are written intentionally, not maintained passively (one exception: the next row) |
-| **`topics/operations/RUNBOOK.md`** (v2.9) | A handoff's "new traps" / "procedures found" land here; an incident adds a symptom row | AI sense, at a handoff or an incident | **Tier 1 for appends** (numbered trap, symptom row, procedure — write + announce). Rewriting its commands or health-check sections is a deliberate topic edit like any other |
+| **`topics/operations/RUNBOOK.md`** (v2.9) | A handoff's "new traps" / "procedures found" land here; an incident adds a symptom row | AI sense, at a handoff or an incident | Appends (numbered trap, symptom row, procedure): write; commit. Rewriting its commands or health-check sections is a deliberate topic edit like any other |
 
 ### 4.3 HANDOFF write procedure (avoiding archival timing confusion)
 
 When the user says "switch windows" / "hand off" / "shift change," the **currently-online AI** does four steps:
 
-0. **Settle first** (v2.9): read the existing `brain/HANDOFF.md`. Anything in it that is *still valid* leaves before archiving — open waits into STATUS's ledgers, procedures and traps into `topics/operations/RUNBOOK.md`, anything decided into DECISIONS (Tier 2, ask). The archive must be safe to never open again (Trap 21). Same for this shift's own "new traps" and "procedures found": they go into RUNBOOK now, numbered, and the handoff cites the numbers. All Tier 1 except DECISIONS — write, then announce.
+0. **Settle first** (v2.9): read the existing `brain/HANDOFF.md`. Anything in it that is *still valid* leaves before archiving — open waits into STATUS's ledgers, procedures and traps into `topics/operations/RUNBOOK.md`, anything decided into DECISIONS. The archive must be safe to never open again (Trap 21). Same for this shift's own "new traps" and "procedures found": they go into RUNBOOK now, numbered, and the handoff cites the numbers. Write and commit; ask only if you can't tell whether something still open was actually decided (§4.5).
 1. **Archive**: `git mv` the existing `brain/HANDOFF.md` to `brain/handoffs/<its-last-modified-timestamp>.md`
 2. **Then write the new one**: a fresh `brain/HANDOFF.md` in the six-section shape (§3.2), empty sections deleted
 3. **Refresh the auto-memory pointer** (Claude Code only, v2.7, §3.4): rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (and workstream, if multi-workstream) and replace its single index line in `MEMORY.md`. Skip silently in tools without auto memory.
@@ -614,7 +613,7 @@ The user might respond:
 - **Don't ask "which ones do you want to update?"** — that pushes specialized judgment back to the user, breaking the division
 - **Also list things you're NOT updating, with reasons** — gives the user the full judgment surface
 - **Real entry counts** (don't pad to look thorough) — see Trap 12
-- **Per-item review applies even to Tier-1 files here** — "update the project brain" is the user requesting a deliberate checkpoint, so the judgment surface is the point. Tiered trust (§4.1) governs routine work moments, not this workflow
+- **Per-item review applies to every file here** — "update the project brain" is the user requesting a deliberate checkpoint, so the judgment surface is the point. §4.1's write-without-asking governs routine work moments, not this workflow
 
 ### 4.5 DECISIONS judgment: gentle inquiry, not hard-keyword detection
 
@@ -661,8 +660,8 @@ If the project is multi-workstream (§3.5), all rules in §4.1-4.6 **still apply
 
 | Rule | Single-workstream | Multi-workstream |
 |---|---|---|
-| AI doesn't silently modify | same | same |
-| Proactively propose, user approves | same | same |
+| AI writes without asking; the commit is the record | same | same |
+| "Update the project brain" → list, user picks | same | same (list scoped to the current workstream) |
 | Judgment division | same | same (user "should we?", AI "what specifically?") |
 | **STATUS update target** | `STATUS.md` | **`STATUS_<current-workstream>.md`** |
 | **HANDOFF write target** | `HANDOFF.md` | **`HANDOFF_<current-workstream>.md`** |
@@ -670,7 +669,7 @@ If the project is multi-workstream (§3.5), all rules in §4.1-4.6 **still apply
 | MAP update | same | same (shared) |
 | DECISIONS append | same | same (shared); entries can tag `[affects: <workstream>]` |
 | PROJECT change | same | same (shared) |
-| **Roster row** (concurrent, v2.8) | — | claim your own workstream's row once the user confirms the wake report (Tier 1, announce); never edit another workstream's row |
+| **Roster row** (concurrent, v2.8) | — | claim your own workstream's row once the user confirms the wake report (committed alone); never edit another workstream's row |
 | **Shared files with concurrent windows** (v2.8) | — | MAP / DECISIONS / PROJECT edited in place — re-read, change your one spot, never rewrite the whole file (Trap 20) |
 | **Cross-workstream requests** (v2.8) | — | recorded in your own STATUS only — "Handed to…" when sending, "From…" when accepting (§3.6.3) |
 | **Neighbour projects** (v2.9) | same ledgers, keyed by project name (§3.6.6); never copy another project's session id — find its window through its roster | same |

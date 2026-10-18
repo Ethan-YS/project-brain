@@ -167,7 +167,7 @@ When the user says "update the project brain":
 
 The AI should not push specialized judgments back ("which files do you want me to update?") — that hands the wrong layer of judgment to the wrong person.
 
-Since v2.6, routine bookkeeping writes are **tiered** (METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations are *write-then-announce* — the AI writes after the work lands and reports it, with git as the review surface. `DECISIONS` / `PROJECT` remain *ask-before-write*. The explicit "update the project brain" checkpoint above keeps per-item approval either way.
+Since v2.9.1, `brain/` is written for the next window, not for the user (METHODOLOGY §4.1): the AI writes `STATUS` / `HANDOFF` / `MAP` registrations / `RUNBOOK` appends when the work lands — no asking, no reporting; the commit is the record. The one question it still asks, and only when it can't tell, is whether something is decided; `DECISIONS` / `PROJECT` follow the answer. The explicit "update the project brain" checkpoint above keeps per-item approval.
 
 ### 5. Multi-workstream mode (v2.1, optional)
 

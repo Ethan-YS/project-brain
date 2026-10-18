@@ -113,7 +113,7 @@ A workstream doesn't edit an area another one owns — it hands the change over 
 |---|---|---|
 | ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ |
 
-- **New window, once the user confirms the wake report**: write your window name + date into your workstream's row — that cell only, committed alone, announced. Ad-hoc windows never claim a row.
+- **New window, once the user confirms the wake report**: write your window name + date into your workstream's row — that cell only, committed alone. Ad-hoc windows never claim a row.
 - **On wake, also skim the other workstreams' STATUS** "Handed to other workstreams" for rows addressed to yours that are still `sent` — requests waiting for someone to accept them.
 - **Reaching another workstream**: this table first; window gone → look for a live window named after the workstream; none → put it in your own STATUS under "Handed to other workstreams" — its next window picks it up on wake.
 - **STATUS / HANDOFF / DECISIONS name the workstream, never the window.** Provenance ("found by web-5") is fine; addresses ("tell web-5") are not.

@@ -23,11 +23,11 @@ Brief report: project recognized + current progress + last blocker.
 First read shared files: `brain/MAP.md` + `brain/PROJECT.md`.
 Identify which workstream this session works on — explicit signals only (the session is named for a workstream, e.g. `web-6`, or the user said so); otherwise ask. Don't guess.
 Then read the corresponding `STATUS_<workstream>.md` + `HANDOFF_<workstream>.md`.
-Concurrent sessions (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this session's name + date into your workstream's roster row (that cell only, committed alone) and say so.
+Concurrent sessions (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this session's name + date into your workstream's roster row (that cell only, committed alone).
 
 ## Update protocol
 
-Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations / `RUNBOOK` appends — write after the work lands, then tell the user what you wrote; `DECISIONS` / `PROJECT` / structural `MAP` changes — propose first, write after approval.
+`brain/` is written for the next session, not for the user (METHODOLOGY §4.1, v2.9.1): `STATUS` / `HANDOFF` / `MAP` registrations / `RUNBOOK` appends — write when the work lands, don't ask, don't report; the commit message is the record. Ask only one thing, and only when you can't tell: is this decided? `DECISIONS` / `PROJECT` follow the answer.
 
 **Judgment division** (core principle):
 - The user decides "should we record now" (high-level pacing)

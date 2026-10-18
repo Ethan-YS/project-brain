@@ -5,6 +5,22 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.9.1] — 2026-10-18
+
+One rule instead of two tiers. Shipped hours after 2.9.0, from a question the maintainer asked while reviewing it: *if there were no skill, I'd say "hand off," you'd write the file, and I'd never know what you wrote — so what is the announcement for?* The honest answer: nothing. `brain/` is read by the next window, not by the user. The write-then-announce half of v2.6's tiered trust was reporting to a reader who doesn't read, and the ask-first half had handed the AI's own judgment back to the user — the exact inversion §4.4's judgment division warns against. One live project had already been running the single rule for six weeks on the user's say-so before the methodology caught up.
+
+### Changed
+
+- **§4.1 rewritten**: `brain/` is written for the next window. The AI writes STATUS / HANDOFF / MAP registrations / RUNBOOK appends when the work lands — no asking, no reporting; the commit is the record. The user is asked exactly one thing, and only when the AI can't tell: *is this decided?* DECISIONS and PROJECT follow the answer. "Update the project brain" (§4.4) and "no proposals today" (§4.6) stay as checkpoints the user invokes. The rule's history (all-ask → two tiers → one rule) is kept in §4.1.
+- **§4.2 / §4.3 step 0 / §4.4 / §4.7 / §3.4 / §3.6.1 / §1.3** — every "Tier 1 / Tier 2 / announce" reference updated; a roster claim is "committed alone", no longer "announced".
+- **SKILL.md core principle, templates en/zh (`CLAUDE.md`, MAP §6 roster bullet), all four adapters, README en/zh** — same rule. Rhythm bullets no longer say "propose to update MAP" / "draft STATUS for review"; they say update, register, overwrite.
+
+### Why a patch
+
+No file structure, template layout, scaffold or doctor change. In an existing project only the write-rule paragraph of its instruction file needs touching, and only if it copied the pre-v2.9.1 wording.
+
+---
+
 ## [2.9.0] — 2026-10-18
 
 Measurement release. Every version so far came from one project's friction; v2.9 came from reading **17 live `brain/` folders side by side** — 56 STATUS files, 99 archived handoffs, nearly 400 DECISIONS entries — after a sibling project in the same workspace, running *without* a `brain/`, patched its hand-written handoff shift after shift until it contradicted itself. The layout held: STATUS line caps honored in 53 of 56 files, DECISIONS carrying rejected alternatives almost everywhere. Three things were leaking at the edges, and all three had the same shape — content with no sanctioned home:

@@ -32,7 +32,7 @@ A folder structure + collaboration protocol for persistent project context acros
 
 ## Core principles (always honored)
 
-- **Tiered trust on `brain/` writes** (v2.6, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations / `RUNBOOK` appends (v2.9) — write directly after the work lands, then **announce what was written in the same reply** (git is the review surface; silent writes are forbidden at every tier). `DECISIONS` / `PROJECT` / structural `MAP` changes — always ask first.
+- **`brain/` is written for the next window, not for the user** (v2.9.1, METHODOLOGY §4.1): write `STATUS` / `HANDOFF` / `MAP` registrations / `RUNBOOK` appends when the work lands — don't ask, don't report; commit with a message that says what changed. Ask the user exactly one thing, and only when you can't tell: **is this decided?** `DECISIONS` / `PROJECT` follow the answer; what the user said plainly, write without asking.
 - **HANDOFF is a shift report** (v2.9, METHODOLOGY §3.2): six sections, empty ones deleted; the test is "could the next window look this up?", not length. Archives are history — what's still valid moves to STATUS / RUNBOOK / DECISIONS *before* archiving (Trap 21). Project-level traps and procedures live in `brain/topics/operations/RUNBOOK.md`, numbered; handoffs cite the numbers.
 - **Neighbour projects** (v2.9, METHODOLOGY §3.6.6): sibling repos are reached through *their* MAP §6 roster — never copy a session id or window name into this brain. Requests across the boundary use the same two STATUS ledgers, keyed by project name.
 - **Judgment Division**: the user decides "should we record now"; the AI decides "what specifically to record"; the user reviews. Don't push specialized judgments back to the user ("which files do you want me to update?").
@@ -66,7 +66,7 @@ When the user wants to scaffold:
 3. Read corresponding `brain/STATUS_<workstream>.md` + `brain/HANDOFF_<workstream>.md`
 4. **Concurrent windows** (MAP §6 has a "Who's on it now" roster): skim the other workstreams' STATUS "Handed to other workstreams" for rows addressed to yours that are still `sent`
 5. Brief report — name the workstream; mention open requests ("From other workstreams" + unaccepted `sent` rows)
-6. **Concurrent windows, once the user confirms** and work begins: claim your roster row — this window's name + date in your workstream's cell only, committed alone (stage just that hunk of `brain/MAP.md`, after checking nothing else is staged in it), announced. Ad-hoc windows never claim
+6. **Concurrent windows, once the user confirms** and work begins: claim your roster row — this window's name + date in your workstream's cell only, committed alone (stage just that hunk of `brain/MAP.md`, after checking nothing else is staged in it). Ad-hoc windows never claim
 
 **Universal discipline**: if `cwd` switches to another project mid-session, re-read the new project's files; if the user switches workstreams in the same window, re-read the new workstream's files. Don't carry over memory.
 
@@ -76,7 +76,7 @@ When the user wants to scaffold:
 
 When the user says they're switching windows / context is getting full / heading out / 交接 / 换班:
 
-0. **Settle first** (v2.9, METHODOLOGY §4.3 step 0): read the existing `brain/HANDOFF.md`. Move what is *still valid* out before archiving — open waits into STATUS's ledgers, procedures and traps into `brain/topics/operations/RUNBOOK.md` (numbered), anything decided into DECISIONS (ask first). This shift's own new traps and procedures go into RUNBOOK the same way; the handoff cites the numbers. Tier 1 except DECISIONS — write, then announce.
+0. **Settle first** (v2.9, METHODOLOGY §4.3 step 0): read the existing `brain/HANDOFF.md`. Move what is *still valid* out before archiving — open waits into STATUS's ledgers, procedures and traps into `brain/topics/operations/RUNBOOK.md` (numbered), anything decided into DECISIONS (ask only if you can't tell it was decided). This shift's own new traps and procedures go into RUNBOOK the same way; the handoff cites the numbers. Write and commit.
 1. **Archive the existing HANDOFF**:
    ```bash
    git mv brain/HANDOFF.md brain/handoffs/$(date +%Y-%m-%d-%H%M).md
@@ -91,7 +91,7 @@ When the user says they're switching windows / context is getting full / heading
    - **Still warm**: hunches, half-tried approaches, odd observations — the genuinely unwritten
    Name workstreams and neighbour projects, never window names or session ids (Trap 18).
 3. **The test is not length** — it's whether the next window could have looked it up. Restated STATUS, retold procedures, copied rationale: cut. Never write "see the previous handoff, it still applies" (Trap 21) — that content was moved in step 0.
-4. **Refresh the auto-memory pointer** (Claude Code only, METHODOLOGY §3.4 v2.7): in the memory directory your system prompt names, rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (+ workstream) and **replace** its one line in `MEMORY.md` in place — never append. Announce it in the same reply as the HANDOFF. If no memory directory is announced, skip.
+4. **Refresh the auto-memory pointer** (Claude Code only, METHODOLOGY §3.4 v2.7): in the memory directory your system prompt names, rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (+ workstream) and **replace** its one line in `MEMORY.md` in place — never append. If no memory directory is announced, skip.
 
 ### §3b No `brain/` yet (METHODOLOGY §1.4c)
 
@@ -124,7 +124,7 @@ When the user says "update the project brain":
 When this window's workstream needs something from another one — or the user says "hand this to the X workstream":
 
 1. **Check ownership** in MAP §6 (the registry's Owns column). If the area belongs to another workstream, don't edit it — hand it over.
-2. **Record it in your own STATUS** under "Handed to other workstreams": what, to which workstream, state `sent`. Tier 1 — write, then announce.
+2. **Record it in your own STATUS** under "Handed to other workstreams": what, to which workstream, state `sent`. Write and commit.
 3. **Deliver it live**: find the workstream's current window in the MAP §6 roster. If your tool can message other sessions, send it there; otherwise tell the user what to carry across. Window gone and no live window named after the workstream → the `sent` row waits; the next window on that workstream finds it on wake (§2 step 4).
 4. **On the receiving side**: when you accept a request, record it in *your* STATUS under "From other workstreams" — what, from which workstream, what done means, who to tell when it ships. Never edit the requester's STATUS.
 5. **Close the loop**: when it ships, tell the requester; the requester ticks its own list. A deploy / release that affects other workstreams gets announced to them before and after (who to tell lives in MAP §6 "Interface dependencies & who to tell").

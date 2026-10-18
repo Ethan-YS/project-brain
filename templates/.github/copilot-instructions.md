@@ -23,18 +23,18 @@ Then report briefly: project recognized + current progress + last blocker.
 First read shared files: `brain/MAP.md` + `brain/PROJECT.md`.
 Don't guess this window's workstream — use explicit signals only (the window is named for a workstream, e.g. `web-6`, or the user said so); otherwise ask the user which one.
 Then read the corresponding `STATUS_<workstream>.md` + `HANDOFF_<workstream>.md`.
-Concurrent windows (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this window's name + date into your workstream's roster row and say so.
+Concurrent windows (v2.8 — MAP §6 has a "Who's on it now" roster): also check other workstreams' STATUS for requests to yours still marked `sent`. Once the user confirms and work begins, write this window's name + date into your workstream's roster row.
 
 ## Update behavior
 
-Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1):
-- `STATUS` / `HANDOFF` / mechanical `MAP` registrations / `RUNBOOK` appends → write after the work lands, then tell the user what you wrote
-- `DECISIONS` / `PROJECT` / structural `MAP` changes → propose to the user (with reasoning), wait for approval, then write
+`brain/` is written for the next session, not for the user (METHODOLOGY §4.1, v2.9.1):
+- `STATUS` / `HANDOFF` / `MAP` registrations / `RUNBOOK` appends → write when the work lands, don't ask, don't report; the commit message is the record
+- `DECISIONS` / `PROJECT` → write what the user said plainly; ask "does this count as decided?" only when you can't tell
 
 Specific triggers:
 - User says "update the project brain" → propose a list with reasons (what to update + why); user picks
 - A decision feels just made → ask "does this count as decided?" — don't assert
-- User signals end-of-session ("that's it / heading out") → draft `brain/STATUS.md` for review
+- User signals end-of-session ("that's it / heading out") → overwrite `brain/STATUS.md`
 - User signals window-switch / hand off → move what's still valid out of the old `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`), archive it to `brain/handoffs/YYYY-MM-DD-HHMM.md`, write the new one as a shift report (six sections)
 
 Multi-workstream (v2.1): scope STATUS / HANDOFF / handoffs to the current workstream. PROJECT / MAP / DECISIONS / topics are shared.
