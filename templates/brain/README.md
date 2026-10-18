@@ -12,7 +12,7 @@ This folder holds **everything about this project itself** — for future sessio
 | `MAP.md` | What does the project look like? Where do I find what? | Evolves with structure |
 | `STATUS.md` | Where are we? Next step? What's blocked? | Instantaneous, overwritable |
 | `DECISIONS.md` | Why did we do X? Why didn't we do Y? | Append-only |
-| `HANDOFF.md` | The previous session's still-warm thoughts at window-switch | Transient, overwritten per switch |
+| `HANDOFF.md` | The last shift's report: first thing to do, waits, what's still only in its head | Transient, overwritten per switch |
 
 `handoffs/` — past HANDOFFs archived as `YYYY-MM-DD-HHMM.md`.
 
@@ -27,11 +27,13 @@ This folder holds **everything about this project itself** — for future sessio
 
 Decision criterion: see `topics/README.md`.
 
+`operations/RUNBOOK.md` comes with the scaffold (v2.9): commands, health check, where to look when something breaks, numbered traps. Handoffs point into it instead of retelling.
+
 ## How a new session uses this
 
 1. Read `MAP.md` first — understand structure + know where docs live
 2. Read `STATUS.md` next — know current progress
-3. If `HANDOFF.md` exists, read it — get the previous session's "still warm" thoughts
+3. If `HANDOFF.md` exists, read it — the last shift's report
 4. Read `PROJECT.md` / `DECISIONS.md` on demand — understand scope / trace why
 5. Use `MAP.md` §5 topic doc index to enter `topics/` content as needed
 
@@ -39,9 +41,9 @@ Decision criterion: see `topics/README.md`.
 
 - **Continuity layer 5 files don't overlap**: any piece of info should clearly belong to one of them. Mixing causes degradation.
 - **PROJECT shouldn't change often**: if it does, the project's definition is drifting — record that in DECISIONS.
-- **STATUS soft cap 80 lines**: over that, settle content into MAP (structural) or DECISIONS (rationale), then overwrite.
+- **STATUS soft cap 80 lines / ~6,000 characters**: over that, settle content into MAP (structural) or DECISIONS (rationale), then overwrite.
 - **DECISIONS append-only**: never modify history. Even when overturning, do it with a new entry that supersedes the old one.
-- **HANDOFF overwritten at next window-switch**: previous version archived to `handoffs/` first.
+- **HANDOFF overwritten at next window-switch**: what's still valid moves to STATUS / RUNBOOK first, then the previous version is archived to `handoffs/` — archives are history, never current (Trap 21).
 
 ## Multi-workstream mode (v2.1, optional)
 

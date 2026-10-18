@@ -14,7 +14,7 @@ Decide single- or multi-workstream (look at file naming under `brain/`):
 Read these in order:
 1. `brain/MAP.md` — project map
 2. `brain/STATUS.md` — current state
-3. `brain/HANDOFF.md` if exists — previous session's still-warm thoughts
+3. `brain/HANDOFF.md` if exists — last shift's report (first thing to do, waits, still-warm thoughts)
 
 Brief report: project recognized + current progress + last blocker.
 
@@ -27,7 +27,7 @@ Concurrent sessions (v2.8 — MAP §6 has a "Who's on it now" roster): also chec
 
 ## Update protocol
 
-Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations — write after the work lands, then tell the user what you wrote; `DECISIONS` / `PROJECT` / structural `MAP` changes — propose first, write after approval.
+Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1): `STATUS` / `HANDOFF` / mechanical `MAP` registrations / `RUNBOOK` appends — write after the work lands, then tell the user what you wrote; `DECISIONS` / `PROJECT` / structural `MAP` changes — propose first, write after approval.
 
 **Judgment division** (core principle):
 - The user decides "should we record now" (high-level pacing)
@@ -40,9 +40,10 @@ When the user says "update the project brain":
 3. Wait for user's approval per item
 4. Write the approved updates
 
-When the user signals window-switch:
-1. Archive existing `brain/HANDOFF.md` to `brain/handoffs/<timestamp>.md`
-2. Write a new `brain/HANDOFF.md` capturing still-warm-not-yet-written thoughts
+When the user signals window-switch / hand off / shift change:
+1. Move what's still valid out of the existing `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`)
+2. Archive it to `brain/handoffs/<timestamp>.md`
+3. Write a new `brain/HANDOFF.md` as a shift report (the template's six sections; delete empty ones). Don't restate what STATUS / RUNBOOK already hold
 
 When a decision feels made: ask "does this count as decided?" — don't assert "we decided X."
 

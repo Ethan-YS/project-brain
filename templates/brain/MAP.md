@@ -50,7 +50,7 @@
 | `PROJECT.md` | Origin, non-goals | First contact, scope ambiguous |
 | `MAP.md` | Module structure, doc index | Every session |
 | `STATUS.md` | Current state, next step | Every session |
-| `HANDOFF.md` | Previous session's window-switch handoff | Every session (if exists) |
+| `HANDOFF.md` | The last shift's report | Every session (if exists) |
 | `DECISIONS.md` | Historical decisions | When tracing a design's rationale |
 
 `handoffs/` — historical HANDOFF archive directory.
@@ -68,6 +68,7 @@
 ### operations/ (ops / process)
 | File | What it is | When to read |
 |---|---|---|
+| `RUNBOOK.md` | Commands, health check, where to look when something breaks, numbered traps (v2.9, ships with the scaffold) | Before operating anything; when something breaks; before writing a HANDOFF (new traps and procedures go here) |
 | ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ |
 
 ### planning/ (plans / roadmap)
@@ -82,9 +83,9 @@
 
 ---
 
-## 6. Workstream registry (v2.1, multi-workstream projects only)
+## 6. Workstream registry & neighbour projects (v2.1 / v2.9)
 
-> **Fill this section only for multi-workstream projects** — single-workstream projects can leave it empty or remove the section.
+> **The registry is for multi-workstream projects**, and so is the roster — with one exception: a single-workstream project with neighbour projects keeps one roster row (see the end of this section). The **Neighbour projects** table applies to any project that depends on sibling repos (v2.9).
 > Workstreams share PROJECT / MAP / DECISIONS / topics; STATUS / HANDOFF / handoffs split per workstream.
 > See METHODOLOGY §3.5 (and §3.6 if several windows run at once).
 
@@ -117,6 +118,7 @@ A workstream doesn't edit an area another one owns — it hands the change over 
 - **Reaching another workstream**: this table first; window gone → look for a live window named after the workstream; none → put it in your own STATUS under "Handed to other workstreams" — its next window picks it up on wake.
 - **STATUS / HANDOFF / DECISIONS name the workstream, never the window.** Provenance ("found by web-5") is fine; addresses ("tell web-5") are not.
 - **Ad-hoc windows** (one-off tasks that own no workstream) stay off this table.
+- **Single-workstream project with neighbours** (v2.9): keep one row here (workstream = the project) so neighbours can find your current window the same way.
 
 **Interface dependencies & who to tell** (standing facts — change these, or ship these, and tell the listed workstream first):
 - ⚠️ TODO ⚠️ (e.g., "app depends on web's `.topbar` class and `/g/<id>` URLs" · "any deploy → tell app before and after")
@@ -127,6 +129,19 @@ A workstream doesn't edit an area another one owns — it hands the change over 
 - Shared brain files (MAP / DECISIONS / PROJECT): re-read, then edit your one spot — never rewrite the whole file
 - Editing an area another workstream owns or shares → tell it first (file + intent)
 - Deploy from a commit, not the working tree; tell affected workstreams before and after
+
+### Neighbour projects (v2.9, optional)
+
+> Other repositories this one depends on or feeds — each with its own `brain/`, its own windows, often its own runtime interface (a service, an MCP, a shared id space). Fill once a request to or from another project has happened more than once. See METHODOLOGY §3.6.6.
+
+| Project | Its `brain/` | What crosses the boundary (we depend on it for… / it depends on us for…) | Reach it via |
+|---|---|---|---|
+| ⚠️ TODO ⚠️ | ⚠️ TODO ⚠️ (path) | ⚠️ TODO ⚠️ | its MAP §6 roster |
+
+- **Find its window through its roster**, never by copying a session id or window name into this brain — those expire at its next switch (Trap 18, now across projects). A neighbour with a single workstream keeps a one-row roster for exactly this.
+- **Requests across the boundary** use the same two ledgers as workstreams (§3.6.3), keyed by project name: "Handed to…" in the requester's STATUS, "From…" in the owner's.
+- **Interface facts** (service names, ports, id formats, who to tell before a change) are standing facts — in the row above or under "Interface dependencies & who to tell", not in STATUS or HANDOFF.
+- **What this is not**: not a parent brain (nested brains are v3, out of scope) and not a shared DECISIONS — each project logs its own side of a joint decision.
 
 ---
 

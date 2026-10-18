@@ -5,6 +5,46 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.9.0] — 2026-10-18
+
+Measurement release. Every version so far came from one project's friction; v2.9 came from reading **17 live `brain/` folders side by side** — 56 STATUS files, 99 archived handoffs, nearly 400 DECISIONS entries — after a sibling project in the same workspace, running *without* a `brain/`, patched its hand-written handoff shift after shift until it contradicted itself. The layout held: STATUS line caps honored in 53 of 56 files, DECISIONS carrying rejected alternatives almost everywhere. Three things were leaking at the edges, and all three had the same shape — content with no sanctioned home:
+
+- **HANDOFF** was defined as "near-empty hunches" and had become a **shift report** in every project (median 49 lines, 28 of 99 longer than STATUS's own cap, longest 238), the same six sections recurring — and new handoffs citing old ones as "still valid" (the chain).
+- **A project's own traps and procedures** had no file, so they lived in those handoffs and went stale at every switch.
+- **"Current state" was prose** with nothing to verify it against, while the brain-less sibling had a one-command health check that never went stale.
+
+### Added
+
+- **METHODOLOGY §1.4c — Handoff first, brain later**: a handoff / 交接 request in a project with no `brain/` activates the skill (the user's words are the trigger; a progress file is not). Say what you see, offer the §1.4b decomposition, otherwise write the handoff in brain shape at the project root so it moves in later unchanged. SKILL.md trigger (7) + §3b.
+- **`topics/operations/RUNBOOK.md`** (`templates/` + `templates-zh/`), pre-registered in MAP §5 — the one topic doc the scaffold ships in shape: commands, health check, "when something breaks, look here first" (symptom → where-to-look table), numbered append-only traps. METHODOLOGY §3.3 says why; `operations/README` updated.
+- **STATUS "How to verify this"** section: the commands that report live state, run before trusting the prose. The soft cap gains a second measure (~6,000 characters).
+- **METHODOLOGY §3.6.6 — Neighbour projects** (n=1): sibling repos that depend on each other at runtime. MAP §6 gains a "Neighbour projects" table (project, its brain, what crosses the boundary, reach it via *its* roster); the §3.6.3 ledgers apply keyed by project name; a single-workstream project with neighbours keeps a one-row roster. The rule that earned the section: never copy another project's session id into your brain — Trap 18, one level up. SKILL core principle + §5 step 7; §4.7 row.
+- **Trap 21 — the handoff chain** (§6.8): archives cited as current, and its brain-less form, the in-place-patched handoff section.
+- **`doctor.sh` check 11 — HANDOFF shape**: a current HANDOFF citing an archived one as still valid (Trap 21), or longer than its STATUS once past 40 lines (Trap 10), or with no STATUS beside it. Info-level: the script reads shape, not intent.
+- **Trigger words** (SKILL.md, METHODOLOGY §0 / §1.1): "hand off", "shift change", 交接, 换班, 接班, 交班.
+- **Example** (`examples/small-saas/`): a filled RUNBOOK, a six-section HANDOFF, a "How to verify this" section in STATUS.
+
+### Changed
+
+- **HANDOFF is a shift report** (§3.2; templates en/zh; all four adapters; brain READMEs; MAP §4): six sections — this shift / first thing for the next window / procedures found / waiting on others / new traps / still warm — empty ones deleted. The discipline is no longer "short"; it is *don't write what the next window can look up*. **Trap 10 reworded** to match.
+- **§4.3 HANDOFF procedure gains step 0 — settle first**: what's still valid leaves the old handoff (waits → STATUS ledgers, procedures and traps → RUNBOOK, decisions → DECISIONS) *before* archiving; this shift's new traps go to RUNBOOK numbered and the handoff cites the numbers. SKILL §3 rewritten accordingly.
+- **§4.1 / §4.2: `RUNBOOK` appends are Tier 1** (a numbered trap, a symptom row, a procedure moved at a handoff — write, then announce); the rest of `topics/*` stays deliberate. Stated in SKILL.md and all four adapters.
+- **Trap 8 / `doctor.sh` check 2** measure characters as well as lines (soft cap ~6,000): a live STATUS sat at 70 lines and 10,500 characters, longest line 1,300 — struck-through items and nested history had turned it into a log without tripping the line cap.
+- **STATUS ledgers** ("Handed to…" / "From…") accept a project name as well as a workstream.
+- Trap count 20 → 21; doctor checks 10 → 11; `plugin.json` 2.9.0.
+
+### Fixed
+
+- **`doctor.sh` check 7 cried wolf on every archived handoff**: files `git mv`'d into `handoffs/` break their relative links by construction, and on one live project 21 of 22 doctor observations were exactly that. `handoffs/` is now skipped with a one-line note — archives are history that nothing current depends on (Trap 21).
+- **`doctor.sh` check 6 went silent** whenever any earlier check had printed anything: its "looks fresh" test read the global counters. Now per-check.
+- **Template header looked like Trap 21 to check 11** (one line held both `handoffs/` and "still valid"): split into two bullets, so a fresh scaffold passes clean. Caught by running the new doctor on a fresh scaffold before release.
+
+### Why minor (not major)
+
+No file moves, no renamed sections; scaffold output is the old layout plus one pre-registered topic doc and two STATUS sections. A v2.8 brain passes the v2.9 doctor with at most info-level observations, plus the character cap, which is a warning by design. HANDOFF's new shape is a template, not a parser — old handoffs stay readable.
+
+---
+
 ## [2.8.0] — 2026-10-04
 
 Concurrent workstreams. v2.1's multi-workstream mode split STATUS / HANDOFF per workstream but assumed windows take turns — and explicitly deferred cross-workstream handoff "to avoid over-engineering before real-world friction tells us which solution fits." The friction arrived: a product running three workstreams (web, iOS app, distribution) in **concurrent** windows — one human, a dozen-plus AI windows rotated through in a week, one checkout, no worktrees. That project grew its own rules under pressure; v2.8 writes them down. Like v2.1, it is **validated on one project** — shipped to collect field reports rather than held back for more.

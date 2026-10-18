@@ -60,10 +60,10 @@ claude plugin install project-brain@sprout-labs
 
 - **"建项目脑"** —— 启动一个新项目脑
 - **"继续这个项目"** —— 读 `MAP.md` + `STATUS.md` +（如果有）`HANDOFF.md`
-- **"压缩了"** / **"切窗口"** —— 在上下文死掉之前写一份 HANDOFF
+- **"压缩了"** / **"切窗口"** / **"交接"** —— 在上下文死掉之前写一份 HANDOFF（交班记录）；项目还没有 `brain/` 也行
 - **"更新项目脑"** —— skill 会带理由提议清单，你逐项认可
 
-skill 内置 5 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff / 更新 / （几个窗口同时开的多工作流项目里）把活交给另一条工作流。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
+skill 内置 5 种工作流：新项目 kick-off / 启动接续 / 切窗口 handoff（项目还没有 `brain/` 也有一条路）/ 更新 / （几个窗口同时开的多工作流项目里）把活交给另一条工作流。**激活边界**：必须由你显式说出请求，不会因为目录里有 `brain/` 就自动触发——这是这套方法论的核心立场。
 
 > **之前用旧方式装过？** 如果你之前 `git clone` 到了 `~/.claude/skills/project-brain`，先 `rm -rf ~/.claude/skills/project-brain` 再装 plugin。plugin 路径是从此往后唯一支持的安装路径。
 
@@ -100,7 +100,7 @@ scaffold 会给你：
 | `.github/copilot-instructions.md` | GitHub Copilot Chat |
 | `AGENTS.md` | Codex CLI / Aider / Continue（AGENTS.md 约定） |
 
-新 AI 会话打开你的项目时，自动加载的指令文件引导它读 `brain/MAP.md` + `brain/STATUS.md`。如果存在 `brain/HANDOFF.md`，它能拿到上一次会话"还热着但没写下"的内容。
+新 AI 会话打开你的项目时，自动加载的指令文件引导它读 `brain/MAP.md` + `brain/STATUS.md`。如果存在 `brain/HANDOFF.md`，它读到的是上一班的交班记录：先做什么、在等谁、还有什么只在上一班脑子里。
 
 ### 体检（scaffold 完成后随时跑）
 
@@ -108,7 +108,7 @@ scaffold 会给你：
 ./project-brain/scripts/doctor.sh /path/to/your/project
 ```
 
-只读的结构体检：缺核心文件、STATUS 超过 80 行、决策缺"被否决的方案"、topics/ 文件未在 MAP 登记、`⚠️ TODO ⚠️` 占位符残留 等。**只报告问题，不修改**——修不修是你的判断。
+只读的结构体检：缺核心文件、STATUS 超过 80 行或约 6000 字、决策缺"被否决的方案"、topics/ 文件未在 MAP 登记、`⚠️ TODO ⚠️` 占位符残留、交接把归档引用为现行 等。**只报告问题，不修改**——修不修是你的判断。
 
 ### 看完整填好的例子
 
@@ -120,13 +120,14 @@ scaffold 会给你：
 brain/
 ├── PROJECT.md       这个项目是什么？刻意不做什么？
 ├── MAP.md           模块结构 + 文档索引（"X 在哪里？"）
-├── STATUS.md        当前状态——可覆写，软上限 80 行
+├── STATUS.md        当前状态——可覆写，软上限 80 行 / 约 6000 字
 ├── DECISIONS.md     决策日志——只追加，必填"被否决的方案"
-├── HANDOFF.md       跨窗口桥梁——脑子里还热着但没写下的事
+├── HANDOFF.md       交班记录——下一班先做什么、在等谁、新坑、还热乎的
 ├── handoffs/        历史 HANDOFF 归档（按时间戳）
 └── topics/          按问题维度分类的专题
     ├── systems/      → "这是怎么设计的？"
     ├── operations/   → "怎么操作 / 每次发版要做什么？"
+    │   └── RUNBOOK.md  命令 · 体检 · 出事了先看哪 · 编号的坑（随骨架一起来）
     ├── planning/     → "将来要做什么 / 怎么规划？"
     └── feedback/     → "现实 / 用户告诉我们什么？"
 ```
@@ -211,6 +212,8 @@ brain/
 
 **v2.8（2026 年 10 月）**：一个产品同时跑三条工作流——网页、iOS App、宣传分发——窗口是**同时开着的**：一个人、一周里轮换了十几个 AI 窗口，全在一个工作目录里。v2.1 默认窗口轮流上场，并且明确把「跨工作流交接」留白，要等真实摩擦说明哪种解法合适。摩擦来了。这个项目自己长出了答案——把工作流和窗口分开的「现在谁在接」表（起因是一份交接里写死了另外两个窗口的名字）、两边各记一笔的跨线交活、共用暂存区的 git 规矩（起因是一个窗口把另一个窗口暂存好的改动一起提交走了）——v2.8 把它们写成**并发多工作流**（METHODOLOGY §3.6，陷阱 18–20）。目前只在这一个项目上验证过，欢迎反馈。
 
+**v2.9（2026 年 10 月）**：第一个靠**测量**而不是靠某一个项目的摩擦推出来的版本。把 17 个在用的 `brain/` 并排读了一遍——56 份 STATUS、99 份归档交接、近 400 条决策——五份文件的架构站住了：STATUS 的行数上限 56 份里守住 53 份，DECISIONS 几乎处处带着「被否决的方案」。漏在三个边角。HANDOFF 被定义成「近乎空的预感」，实际在每个项目里都成了**交班记录**（中位数 49 行，四分之一比 STATUS 自己的上限还长），段落都一样，却没有被认可的形状；项目自己的坑和费劲摸出来的办法没有文件可放，就住进了那些交接，每换一班过时一次，新交接开始写「上一份仍然有效，去那里查」；「现在的状态」是手写的文字，没有东西能核。同一工作区里一个**没有** `brain/` 的兄弟项目，交接一班班打补丁打到前后矛盾，却有一条永不过时的体检命令。v2.9 给 HANDOFF 定了六段形状，随骨架带上 `topics/operations/RUNBOOK.md`，STATUS 加「现状怎么核」，doctor 学会量字数、认交接链，写下邻居仓库之间怎么互相找，并记下陷阱 21。
+
 ### 元收获
 
 健康的演化模式不是"先把所有可能场景设计满"。它是"**先做能用的，让实战推动下一版**"——每一版都从一个具体的、有名字的问题开始。
@@ -219,14 +222,14 @@ brain/
 
 ## 文档
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 20 条陷阱、判断权分工机制细节、工作流分裂与并发窗口细节、迁移路径）
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — 完整方法论（含 21 条陷阱、判断权分工机制细节、工作流分裂与并发窗口细节、迁移路径）
 - **[CHANGELOG.md](./CHANGELOG.md)** — 版本历史
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest（plugin 装好后自动加载）
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json`（manifest）+ `marketplace.json`（Sprout Labs marketplace 入口）
 - **[templates/](./templates/)** — `brain/` + 4 种 AI 工具的 adapter 模板
 - **[examples/small-saas/](./examples/small-saas/)** — 一个完整填好的 brain/ 示例
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — 一条命令 scaffold 到任何项目
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（10 项结构检查，覆盖最常见的陷阱）
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — 只读的结构体检（11 项结构检查，覆盖最常见的陷阱）
 
 ## 兼容性
 
@@ -245,7 +248,7 @@ brain/
 
 ## 状态
 
-🌱 v2.4 —— 方法论稳定，140+ stars，多个项目在持续使用。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。外部使用效果还在观察中——维护者日常在用，但其他用户的真实使用反馈还在收集。
+🌱 v2.9 —— 方法论稳定，140+ stars，维护者日常在用的项目脑有 17 个。v2.9 是第一个靠测量这些项目脑、而不是靠某一个项目的摩擦推出来的版本（见演化故事）。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。外部使用效果还在观察中——维护者日常在用，但其他用户的真实使用反馈还在收集。
 
 ## 作者
 

@@ -1,15 +1,26 @@
-# HANDOFF — Cross-window Bridge
+# HANDOFF — Shift Report
 
-> Transient. Filled at window-switch by the leaving session; the next session reads it and (after this one) it gets archived to `handoffs/<timestamp>.md`.
+> Transient. Written at window-switch by the leaving session. The next session reads it, moves its live content into STATUS / RUNBOOK, and only then archives it under `handoffs/`.
 
 ---
 
-2026-04-25 14:30 — switching windows (context at ~70%, taking a break before tackling the conflict-resolution UI).
+## This shift
 
-Current cursor: `desktop/renderer/src/sync/LocalSyncEngine.ts:142` — `detectConflicts()` is stubbed. STATUS.md was just overwritten with the next-step list, so the structured handoff is in there.
+2026-04-25 14:30 — switching windows (context at ~70%; taking a break before the conflict-resolution UI). Wrote the conflict-detection logic in `LocalSyncEngine.ts` (lines 80–142; `detectConflicts()` itself still stubbed at 142), updated `SYNC_PROTOCOL.md`, released v0.3.2. STATUS just overwritten.
 
-What's still in head, not yet written down:
-- Suspicion that the test framework's mock of `fs.statSync` is returning incorrect mtime resolution on Windows — saw weird 2-second drifts on the test run yesterday but didn't dig in. If conflict tests start flaking on Windows CI, look here first before suspecting the algorithm.
-- BUG-007's top reporter (a teacher with 3 devices) keeps emailing — they're patient but I don't want this to slip past v0.4. Personal pressure I'm aware of but haven't put into a planning doc.
+## First thing for the next window
 
-That's it. STATUS has the rest.
+STATUS "Next steps" 1 — finish `detectConflicts()`. Before that, settle the auto-merge question in STATUS "Blockers": it decides what `ConflictView.tsx` has to show.
+
+## Procedures found this shift
+
+RUNBOOK §1 now has the license commands (`find` / `resend`) — used twice this week for "paid but no email" reports.
+
+## New traps
+
+RUNBOOK traps 1 (Windows mtime drift in the `fs.statSync` mock) and 2 (mac arm64 packaging), added this shift.
+
+## Still warm
+
+- The Windows drift (trap 1) might not be the mock at all — I haven't ruled out that `LocalSyncEngine` rounds mtimes somewhere. If conflict tests flake on Windows CI, check the mock first, but keep this in mind.
+- #BUG-007's top reporter (a teacher with three devices) keeps emailing. Patient, but I don't want this to slip past v0.4 — a personal pressure, not a planning item yet.

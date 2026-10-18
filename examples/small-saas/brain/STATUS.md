@@ -1,13 +1,18 @@
 # STATUS — Current Development State
 
 > **What this file answers**: "Where are we? Next step? What's blocked?"
-> **Soft cap**: 80 lines. Overwrite freely after settling stable content into MAP / DECISIONS.
+> **Soft cap**: 80 lines / ~6,000 characters. Overwrite freely after settling stable content into MAP / DECISIONS.
 
 ---
 
 ## What we're doing now
 
 **v0.4 — Offline editing UX**. Users can already edit while offline (notes are local files); the gap is **what happens when both devices edited the same note offline and then come online**. Currently the second device just loses its changes — that's #BUG-007 (top-voted user complaint).
+
+## How to verify this
+
+- `npm run check` — sync self-test, Stripe webhook, last license emails, packaging targets (what each line means: `topics/operations/RUNBOOK.md` §2)
+- `npm run test:sync -- --grep conflict` — the conflict cases; 0 of 5 written so far (Next steps 3)
 
 ## Next steps
 

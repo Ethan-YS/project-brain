@@ -17,15 +17,16 @@
 #
 # Checks performed:
 #   1. brain/ directory structure (required core files exist)
-#   2. STATUS.md(_<workstream>.md) line count (soft cap 80)
+#   2. STATUS.md(_<workstream>.md) size — soft cap 80 lines or ~6,000 characters, whichever trips first (Trap 8)
 #   3. ⚠️ TODO ⚠️ placeholder count per file
 #   4. DECISIONS.md entries missing "Rejected alternatives" / "被否决"
 #   5. MAP.md §5 ↔ brain/topics/ file consistency
 #   6. HANDOFF.md last-modified vs git log (stale HANDOFF without archive)
-#   7. Markdown link integrity (relative links resolve; ASCII #anchors exist at target) — Trap 15
+#   7. Markdown link integrity (relative links resolve; ASCII #anchors exist at target) — Trap 15. handoffs/ is skipped: archives are history (Trap 21)
 #   8. Cross-brain sibling references (nested sub-brains must route shared facts via the parent brain) — Trap 16
 #   9. Workstream registry ↔ STATUS_/HANDOFF_ files (multi-workstream projects)
 #  10. Roster window names leaking into active STATUS / HANDOFF files — Trap 18 (concurrent mode)
+#  11. HANDOFF shape — a current HANDOFF citing an archived one as still valid, or longer than its STATUS once past 40 lines (Traps 10 / 21)
 
 set -o pipefail
 
@@ -51,6 +52,9 @@ critical() { echo "${RED}❌ ${1}${RESET}"; CRITICAL=$((CRITICAL+1)); }
 warning()  { echo "${YELLOW}⚠️  ${1}${RESET}"; WARNINGS=$((WARNINGS+1)); }
 info()     { echo "${CYAN}ℹ️  ${1}${RESET}"; INFO=$((INFO+1)); }
 ok()       { echo "${GREEN}✅ ${1}${RESET}"; }
+
+# Characters, not bytes, whatever the locale: drop UTF-8 continuation bytes, count the rest (+1 per newline)
+count_chars() { LC_ALL=C awk '{ gsub(/[\200-\277]/, ""); n += length($0) + 1 } END { print n + 0 }' "$1" 2>/dev/null || echo 0; }
 
 # Resolve target
 TARGET="${1:-.}"
@@ -97,20 +101,28 @@ if (( CRITICAL == 0 )); then ok "core structure intact"; fi
 echo ""
 
 # ─────────────────────────────────────────────────────────
-# Check 2: STATUS line count (soft cap 80)
+# Check 2: STATUS size (soft cap 80 lines / ~6,000 characters — Trap 8)
+# The line cap alone is gameable without anyone meaning to: struck-through
+# items and history nested as sub-bullets keep the line count flat while the
+# file turns into a log. Both measures are reported; whichever trips first.
 # ─────────────────────────────────────────────────────────
-echo "${BOLD}2. STATUS soft cap (80 lines)${RESET}"
+echo "${BOLD}2. STATUS soft cap (80 lines / ~6,000 characters)${RESET}"
 status_ok=true
 for status_file in "$BRAIN"/STATUS*.md; do
   [[ -e "$status_file" ]] || continue
   lines=$(wc -l < "$status_file" | tr -d ' ')
+  chars=$(count_chars "$status_file")
   basename_status=$(basename "$status_file")
   if (( lines > 80 )); then
     warning "$basename_status is $lines lines (soft cap 80) — settle stable content into MAP.md or DECISIONS.md, then overwrite"
     status_ok=false
   fi
+  if (( chars > 6000 )); then
+    warning "$basename_status is $chars characters (soft cap ~6,000) in $lines lines — long lines, struck-through items or nested history make a log, not a state; settle it, then overwrite (Trap 8)"
+    status_ok=false
+  fi
 done
-if $status_ok; then ok "all STATUS files within 80 lines"; fi
+if $status_ok; then ok "all STATUS files within 80 lines / 6,000 characters"; fi
 echo ""
 
 # ─────────────────────────────────────────────────────────
@@ -281,6 +293,7 @@ echo ""
 # ─────────────────────────────────────────────────────────
 echo "${BOLD}6. HANDOFF freshness${RESET}"
 if [[ -d "$TARGET/.git" ]]; then
+  fresh_issues=0
   for handoff_file in "$BRAIN"/HANDOFF*.md; do
     [[ -e "$handoff_file" ]] || continue
     rel="${handoff_file#$TARGET/}"
@@ -290,12 +303,12 @@ if [[ -d "$TARGET/.git" ]]; then
       age_days=$(( (now - last_modified) / 86400 ))
       if (( age_days > 14 )); then
         info "$(basename "$handoff_file") is ${age_days} days old — if you've switched windows since, archive it to handoffs/<timestamp>.md"
+        fresh_issues=$((fresh_issues+1))
       fi
     fi
   done
-  if (( INFO == 0 && WARNINGS == 0 && CRITICAL == 0 )); then
-    ok "HANDOFF status looks fresh"
-  fi
+  # Per-check counter (v2.9): the old global test went silent whenever an earlier check had printed anything
+  if (( fresh_issues == 0 )); then ok "HANDOFF status looks fresh"; fi
 else
   info "no git history — skipping HANDOFF freshness check (the methodology assumes git, see Trap 13)"
 fi
@@ -365,8 +378,12 @@ while IFS= read -r -d '' file; do
       fi
     fi
   done < <(extract_links "$file")
-done < <(find "$BRAIN" -type f -name "*.md" -print0 2>/dev/null)
+done < <(find "$BRAIN" -type d -name handoffs -prune -o -type f -name "*.md" -print0 2>/dev/null)
 if (( link_issues == 0 )); then ok "all relative links and ASCII anchors resolve"; fi
+# Archived handoffs were written at brain/ and moved by git mv, so their relative links break by construction.
+# They are history that nothing current depends on (Trap 21) — not checked, not counted.
+archived_n=$(find "$BRAIN/handoffs" -type f -name "*.md" 2>/dev/null | wc -l | tr -d ' ')
+if (( archived_n > 0 )); then echo "   (handoffs/ skipped: $archived_n archived handoff(s) — archives are history, links there aren't maintained)"; fi
 echo ""
 
 # ─────────────────────────────────────────────────────────
@@ -538,6 +555,46 @@ else
   done <<< "$roster"
   if (( leaks == 0 )); then ok "roster window names appear only in the roster"; fi
 fi
+echo ""
+
+# ─────────────────────────────────────────────────────────
+# Check 11: HANDOFF shape (Traps 10 / 21, v2.9)
+#   a) a current HANDOFF citing an archived handoff as still valid — the chain the
+#      next window has to walk; that content belongs in STATUS / RUNBOOK / DECISIONS
+#   b) a current HANDOFF longer than the STATUS it bridges (and over 40 lines, so a
+#      short pair never trips it) — a shift report carrying state, procedures or
+#      rationale that have a home elsewhere; c) a HANDOFF with no STATUS beside it
+# Both are info: the script can't read intent, only shape.
+# ─────────────────────────────────────────────────────────
+echo "${BOLD}11. HANDOFF shape (Traps 10 / 21)${RESET}"
+shape_issues=0
+for handoff_file in "$BRAIN"/HANDOFF*.md; do
+  [[ -e "$handoff_file" ]] || continue
+  hname=$(basename "$handoff_file")
+  suffix="${hname#HANDOFF}"                 # ".md" or "_<workstream>.md"
+  status_file="$BRAIN/STATUS$suffix"
+  chain=$(grep -niE 'handoffs/|previous handoff|last handoff|上一份|上一班' "$handoff_file" 2>/dev/null \
+          | grep -E 'still (valid|appl)|remain(s)? valid|仍然有效|仍有效|还有效|依然有效|去那里查|去那儿查|照旧有效' | head -3)
+  if [[ -n "$chain" ]]; then
+    info "$hname cites an archived handoff as still valid — move that content into STATUS / RUNBOOK / DECISIONS; archives are history (Trap 21):"
+    while IFS= read -r l; do
+      [[ -z "$l" ]] && continue
+      printf '      line %s: …%s…\n' "${l%%:*}" "$(printf '%s' "${l#*:}" | awk '{ i = index($0, "handoffs/"); s = (i > 40) ? i - 40 : 1; print substr($0, s, 120) }')"
+    done <<< "$chain"
+    shape_issues=$((shape_issues+1))
+  fi
+  if [[ -f "$status_file" ]]; then
+    hl=$(wc -l < "$handoff_file" | tr -d ' '); sl=$(wc -l < "$status_file" | tr -d ' ')
+    if (( hl > 40 && hl > sl )); then
+      info "$hname is $hl lines, $(basename "$status_file") is $sl — a shift report longer than the state it bridges usually carries content that belongs in STATUS or RUNBOOK (Trap 10)"
+      shape_issues=$((shape_issues+1))
+    fi
+  else
+    info "$hname has no $(basename "$status_file") beside it — a HANDOFF without its STATUS (multi-workstream: register the workstream in MAP §6, METHODOLOGY §3.5)"
+    shape_issues=$((shape_issues+1))
+  fi
+done
+if (( shape_issues == 0 )); then ok "current HANDOFF(s) cite no archive as current and are no longer than their STATUS"; fi
 echo ""
 
 # ─────────────────────────────────────────────────────────

@@ -11,7 +11,8 @@
 - **Release procedures**: package commands, publish steps, RELEASE_CHECKLIST
 - **Build / packaging**: cross-platform packaging, signing, notarization
 - **Deploy logs**: what happened during a particular deployment + issues encountered
-- **Operational runbooks**: reset user data, admin tasks, support flows
+- **`RUNBOOK.md`** (ships with the scaffold, v2.9): commands, health check, symptom → where-to-look table, numbered traps — the home for what handoffs used to carry
+- **Task-specific runbooks**: reset user data, admin tasks, support flows
 - **Change history**: CHANGELOG (organized by version)
 - **External coordination**: how this interacts with other repos / teams
 
@@ -34,3 +35,4 @@
 - **CHANGELOG**: update at each release, not "I'll catch up later"
 - **DEPLOY_LOG**: log it during the deploy, with concrete steps and issues
 - The "authority" of an operational doc comes from the **last time it was actually walked through** — long-unused procedures should default to "presumed stale"
+- **RUNBOOK §4 traps are numbered and append-only**: a HANDOFF's "new traps" move here at the switch; elsewhere cite the number instead of retelling

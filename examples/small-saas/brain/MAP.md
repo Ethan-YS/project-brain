@@ -68,7 +68,7 @@ Stripe Payment Link ──webhook──▶ License Worker ──KV──▶ Lice
 | `PROJECT.md` | Origin, non-goals | First contact, scope ambiguous |
 | `MAP.md` | Module structure, doc index | Every session |
 | `STATUS.md` | Current state, next step | Every session |
-| `HANDOFF.md` | Previous session's window-switch handoff | Every session (if exists) |
+| `HANDOFF.md` | The last shift's report | Every session (if exists) |
 | `DECISIONS.md` | Historical decisions | Tracing why something is the way it is |
 
 `handoffs/` — historical HANDOFF archive directory (empty for now; populates each window-switch).
@@ -84,6 +84,7 @@ Stripe Payment Link ──webhook──▶ License Worker ──KV──▶ Lice
 | File | What it is | When to read |
 |---|---|---|
 | `RELEASE_CHECKLIST.md` | Pre-release red lines | Every release before tagging |
+| `RUNBOOK.md` | Commands, health check, symptom → where-to-look table, numbered traps | Before operating anything; when something breaks; before writing a HANDOFF (new traps go here) |
 
 ### planning/
 | File | What it is | When to read |

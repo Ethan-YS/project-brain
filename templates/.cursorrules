@@ -15,7 +15,7 @@ Decide single- or multi-workstream (look at file naming under `brain/`):
 Must read (under `brain/`):
 1. `brain/MAP.md` — project map
 2. `brain/STATUS.md` — current state
-3. `brain/HANDOFF.md` if it exists — previous session's still-warm thoughts
+3. `brain/HANDOFF.md` if it exists — last shift's report
 
 Then briefly report: project recognized + current progress + last blocker.
 Don't silently start working — confirm understanding first.
@@ -32,7 +32,7 @@ If the user switches workstreams mid-session, re-read the new one's files and do
 
 ## Update responsibility
 
-The AI never silently modifies a file in `brain/` (tiered trust, METHODOLOGY §4.1): STATUS / HANDOFF / mechanical MAP registrations — write after the work lands, then announce what was written; DECISIONS / PROJECT / structural MAP changes — propose, then user approves.
+The AI never silently modifies a file in `brain/` (tiered trust, METHODOLOGY §4.1): STATUS / HANDOFF / mechanical MAP registrations / RUNBOOK appends — write after the work lands, then announce what was written; DECISIONS / PROJECT / structural MAP changes — propose, then user approves.
 
 Judgment division:
 - The user decides "should we record now" (high-level pacing)
@@ -44,8 +44,8 @@ Specific rhythm:
 - AI senses a decision was just made → gently inquire ("does this count as decided?"), don't assert
 - Module added/removed → propose updating `brain/MAP.md` §2
 - New doc added/removed → propose updating `brain/MAP.md` §5
-- User signals end-of-session → draft `brain/STATUS.md` for review (soft cap 80 lines)
-- User signals window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`
+- User signals end-of-session → draft `brain/STATUS.md` for review (soft cap 80 lines / ~6,000 characters)
+- User signals window-switch / hand off → move what's still valid out of the old `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`), archive it to `brain/handoffs/YYYY-MM-DD-HHMM.md`, write the new one as a shift report (six sections)
 
 For multi-workstream (v2.1): scope STATUS / HANDOFF / handoffs to the current workstream — `STATUS_<current>.md`, etc. PROJECT / MAP / DECISIONS / topics are shared.
 

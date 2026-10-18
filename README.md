@@ -60,10 +60,10 @@ That's it. From any project after that, just say:
 
 - **"set up project brain"** — kick off a new brain
 - **"resume this project"** — load `MAP.md` + `STATUS.md` + (if exists) `HANDOFF.md`
-- **"I'm switching windows"** / **"context's getting full"** — write a HANDOFF before context dies
+- **"I'm switching windows"** / **"context's getting full"** / **"hand off"** — write a HANDOFF (a shift report) before context dies; works even before the project has a `brain/`
 - **"update the project brain"** — propose updates with reasons, you approve per item
 
-The skill handles five workflows: new-project kick-off, startup resume, window-switch handoff, updates, and (in concurrent multi-workstream projects) handing work from one workstream to another. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
+The skill handles five workflows: new-project kick-off, startup resume, window-switch handoff (with a path for projects that have no `brain/` yet), updates, and (in concurrent multi-workstream projects) handing work from one workstream to another. Auto-trigger requires an explicit user request — it intentionally does **not** activate just because a `brain/` folder exists.
 
 > **Already installed the old way?** If you previously cloned to `~/.claude/skills/project-brain`, remove it first: `rm -rf ~/.claude/skills/project-brain`. The plugin install is the supported path going forward.
 
@@ -100,7 +100,7 @@ What the scaffold gives you:
 | `.github/copilot-instructions.md` | GitHub Copilot Chat |
 | `AGENTS.md` | Codex CLI / Aider / Continue (AGENTS.md convention) |
 
-When a new AI session opens your project, the auto-loaded instruction file directs it to read `brain/MAP.md` + `brain/STATUS.md`. If `brain/HANDOFF.md` exists, it picks up the previous session's "still-warm-not-yet-written-down" thoughts.
+When a new AI session opens your project, the auto-loaded instruction file directs it to read `brain/MAP.md` + `brain/STATUS.md`. If `brain/HANDOFF.md` exists, it reads the last shift's report: what to do first, what's waiting on others, what's still only in the last window's head.
 
 ### Health check (any time after scaffolding)
 
@@ -108,7 +108,7 @@ When a new AI session opens your project, the auto-loaded instruction file direc
 ./project-brain/scripts/doctor.sh /path/to/your/project
 ```
 
-Read-only structural checks: missing core files, STATUS over 80 lines, decisions without "rejected alternatives," topics/ files not registered in MAP, stale `⚠️ TODO ⚠️` placeholders, etc. Reports issues but never fixes them — that's still your call. See [scripts/doctor.sh](./scripts/doctor.sh).
+Read-only structural checks: missing core files, STATUS over 80 lines or ~6,000 characters, decisions without "rejected alternatives," topics/ files not registered in MAP, stale `⚠️ TODO ⚠️` placeholders, a HANDOFF that cites an archived one as still current, etc. Reports issues but never fixes them — that's still your call. See [scripts/doctor.sh](./scripts/doctor.sh).
 
 ### See a fully-filled example
 
@@ -120,13 +120,14 @@ If the empty templates feel abstract, see [examples/small-saas/](./examples/smal
 brain/
 ├── PROJECT.md       What is this project? What do we explicitly NOT do?
 ├── MAP.md           Module structure + document index ("where do I find X?")
-├── STATUS.md        Current state — overwritable, soft cap 80 lines
+├── STATUS.md        Current state — overwritable, soft cap 80 lines / ~6,000 chars
 ├── DECISIONS.md     Decision log — append-only, requires "rejected alternatives"
-├── HANDOFF.md       Cross-window bridge — what's still in head but not yet written
+├── HANDOFF.md       Shift report — first thing for the next window, waits, new traps, still-warm
 ├── handoffs/        Archive of past HANDOFFs (timestamped)
 └── topics/          Per-problem-dimension docs
     ├── systems/      → "How is this designed?"
     ├── operations/   → "How do I operate it / what to do each release?"
+    │   └── RUNBOOK.md  commands · health check · where to look · numbered traps (ships with the scaffold)
     ├── planning/     → "What are we going to build / how to plan it?"
     └── feedback/     → "What is reality / users telling us?"
 ```
@@ -211,6 +212,8 @@ Companion design changes: merged `meta/` + `docs/` into a single `brain/`, added
 
 **v2.8 (October 2026)**: A product running three workstreams — web, iOS app, distribution — in **concurrent** windows, one human and a dozen-plus AI windows rotated through in a week, all in one checkout. v2.1 had assumed windows take turns and had explicitly deferred cross-workstream handoff until real-world friction showed which solution fits. It did. The project grew its own answers — a roster separating workstreams from windows (after a handoff turned out to hard-code two other windows' names), two-ledger requests between workstreams, git rules for a shared staging area (after one window swept up another's staged hunks) — and v2.8 writes them down as **Concurrent Workstreams** (METHODOLOGY §3.6, Traps 18–20). Validated on that one project; field reports welcome.
 
+**v2.9 (October 2026)**: The first version driven by measurement rather than one project's friction. Reading 17 live `brain/` folders side by side — 56 STATUS files, 99 archived handoffs, nearly 400 decisions — showed the five-file layout holding: STATUS caps honored in 53 of 56 files, DECISIONS carrying rejected alternatives almost everywhere. Three things were leaking at the edges. HANDOFF, defined as "near-empty hunches," had become a **shift report** in every project (median 49 lines, a quarter longer than STATUS's own cap) with the same six sections recurring and no sanctioned shape. A project's own traps and hard-won procedures had no file, so they lived in those handoffs and went stale at every switch — and new handoffs had started citing old ones as "still valid." And "current state" was prose with nothing to verify it against, while a sibling project in the same workspace that had grown a handoff *without* a `brain/` — and patched it shift after shift until it contradicted itself — had a one-command health check that never went stale. v2.9 gives HANDOFF its six sections, ships `topics/operations/RUNBOOK.md`, adds "How to verify this" to STATUS, teaches the doctor to measure characters and to spot handoff chains, writes down how neighbouring repos reach each other, and names Trap 21.
+
 ### The meta-takeaway
 
 The healthy evolution pattern wasn't "design everything upfront." It was **"build what works now, let real-world friction drive the next version."** Each version came from a specific, named problem. Each refinement was triggered by a real moment of pain.
@@ -219,14 +222,14 @@ If you take one thing from this repo: **resist the urge to design comprehensive 
 
 ## Documentation
 
-- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 20 traps, judgment division mechanics, multi-workstream and concurrent-window details, and migration paths
+- **[METHODOLOGY.md](./METHODOLOGY.md)** — full methodology including all 21 traps, judgment division mechanics, multi-workstream and concurrent-window details, and migration paths
 - **[CHANGELOG.md](./CHANGELOG.md)** — version history
 - **[skills/project-brain/SKILL.md](./skills/project-brain/SKILL.md)** — Claude Code skill manifest (loaded automatically once the plugin is installed)
 - **[.claude-plugin/](./.claude-plugin/)** — `plugin.json` (manifest) + `marketplace.json` (Sprout Labs marketplace entry)
 - **[templates/](./templates/)** — drop-in templates for `brain/` + 4 AI tool adapters
 - **[examples/small-saas/](./examples/small-saas/)** — a fully-filled example brain/ folder
 - **[scripts/scaffold.sh](./scripts/scaffold.sh)** — one-command scaffold into any project
-- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (10 structural checks covering the most common traps)
+- **[scripts/doctor.sh](./scripts/doctor.sh)** — read-only health check (11 structural checks covering the most common traps)
 
 ## Compatibility
 
@@ -245,7 +248,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.4 — methodology stable, 140+ stars, multiple projects in active use. v2.4 ships as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. External effectiveness data still pending — battle-tested by the maintainers daily; field reports from other users still being collected.
+🌱 v2.9 — methodology stable, 140+ stars, 17 brains in daily use by the maintainers. v2.9 is the first release driven by measuring those brains rather than by one project's friction (see the evolution story). v2.4 shipped as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. External effectiveness data still pending — battle-tested by the maintainers daily; field reports from other users still being collected.
 
 ## Authors
 

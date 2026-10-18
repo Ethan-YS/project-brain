@@ -24,6 +24,7 @@ brain/
 └── topics/
     ├── systems/SYNC_PROTOCOL.md       — How the sync algorithm works
     ├── operations/RELEASE_CHECKLIST.md — Pre-release checks
+    ├── operations/RUNBOOK.md — Commands, health check, symptom table, numbered traps
     ├── planning/MOBILE_ROADMAP.md      — Mobile platform plan (deferred)
     └── feedback/BUG_TRACKER.md         — Active bugs from users
 ```
@@ -35,7 +36,7 @@ Open the files in this order:
 2. `brain/MAP.md` — See the module structure and where everything lives
 3. `brain/STATUS.md` — Understand what the founder is working on right now
 4. `brain/DECISIONS.md` — Read the 4 entries; notice how each "Rejected alternatives" section makes the entry valuable beyond a CHANGELOG line
-5. `brain/HANDOFF.md` — See how short and specific a window-switch handoff can be
+5. `brain/HANDOFF.md` — See a six-section shift report that points into STATUS / RUNBOOK instead of restating them
 6. Browse `brain/topics/` for one of each category to see how problem-dimension classification plays out
 
 This example is **single-workstream** (one main development line). Multi-workstream examples are intentionally deferred until real-world usage produces one — see [METHODOLOGY §3.5](../../METHODOLOGY.md#35-workstream-split-mode-v21-optional) for when the split mode applies.

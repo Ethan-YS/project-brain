@@ -30,6 +30,8 @@ When the user speaks naturally and the AI parses what file/folder is meant:
 | "update status / STATUS" | Just `brain/STATUS.md` (or `STATUS_<workstream>.md` if multi-workstream) |
 | "log a decision / record a decision" | Append a new entry to `brain/DECISIONS.md` |
 | "switch windows / write HANDOFF" | Write `brain/HANDOFF.md` + archive previous to `brain/handoffs/` |
+| "hand off" / "shift change" / "I'm handing over" / 交接 / 换班 / 接班 / 交班 | Same as window-switch: write `brain/HANDOFF.md` as a shift report (§3.2, §4.3). No `brain/` yet → §1.4c |
+| "the runbook" / "the traps" / 手册 / 坑 | `brain/topics/operations/RUNBOOK.md` (§3.3) — commands, health check, symptom table, numbered traps |
 | "who's on it now" / "the roster" | The roster in `brain/MAP.md` §6: workstream → current window (concurrent mode, §3.6.1) |
 | "hand this to the X workstream" / "tell the X window" | Cross-workstream request: both STATUS ledgers + a live ping (§3.6.3) |
 | "redefine the project" | `brain/PROJECT.md` (rare, discuss first) |
@@ -49,7 +51,8 @@ The AI does **not** auto-detect "is this a project directory?" All triggers come
 | "load project brain" / "how do I pick up this project?" | Startup protocol (§1.3) |
 | "clean up the structure" / "this project is a mess" / "migrate to v2" | Existing-project migration (§1.5) |
 | "update the project brain" | Proposal-list workflow with judgment division (§4.4) |
-| "switch windows" / "context's getting full" / "I'll head out" | Write STATUS + HANDOFF |
+| "switch windows" / "context's getting full" / "I'll head out" / "hand off" / "shift change" / 交接 / 换班 / 接班 / 交班 | Write STATUS + HANDOFF (§4.3) |
+| A handoff / window-switch request (the row above) in a project that has **no `brain/`** | Handoff first, brain later (§1.4c) |
 | "hand this to the X workstream" / "tell the X window" (concurrent multi-workstream projects) | Cross-workstream request (§3.6.3) |
 | "MAP calibration" / "scan the MAP" | Run MAP self-calibration (see MAP.md last section) |
 
@@ -70,7 +73,7 @@ This is the methodology's reliability anchor: **continuity rides on the AI tool'
 #### Single-workstream (default)
 
 1. Read two files: `brain/MAP.md` + `brain/STATUS.md`
-2. If `brain/HANDOFF.md` exists → read it (this is the previous session's still-warm thoughts that didn't make it into STATUS)
+2. If `brain/HANDOFF.md` exists → read it (the last shift's report, §3.2: first thing to do, waits, new traps, what's still only in its head)
 3. **Don't silently start working** — give a brief report: "I see this is [project name], currently stopped at [STATUS section 1], next step is [STATUS section 2]. Continue?"
 
 #### Multi-workstream (split mode)
@@ -123,7 +126,7 @@ cp -r "$SKILL/templates/brain"   <new-project-root>/brain
 cp    "$SKILL/templates/CLAUDE.md"  <new-project-root>/CLAUDE.md
 ```
 
-**Step 4: Fill `PROJECT.md` on day one** — while memory is fresh, write the one-line definition and "what we explicitly will NOT do." This file's value comes from "imprinting clarity at the moment definition exists." Once the project grows, the one-line definition becomes a wall of caveats.
+**Step 4: Fill `PROJECT.md` on day one** — while memory is fresh, write the one-line definition and "what we explicitly will NOT do." This file's value comes from "imprinting clarity at the moment definition exists." Once the project grows, the one-line definition becomes a wall of caveats. Same day, `topics/operations/RUNBOOK.md` §1 gets the commands you already run — or one line saying there's nothing to operate yet (v2.9).
 
 **Step 5: Scan all `⚠️ TODO ⚠️` placeholders**
 
@@ -156,6 +159,18 @@ Don't follow §1.4 as if green-field — but don't run §1.5 either, since there
 5. **`git init` if the project has no git yet**. Existing-material projects sometimes haven't started version control. The decompose-into-brain step creates a clear "before / after structural change" boundary — establish git before this work begins (`git init` + a snapshot commit of the original state) so the decomposition is traceable. The AI may proceed with `git init` without asking — it's a standard engineering default, not a project decision (see Trap 13).
 
 **When this applies**: the project has 2–4 substantial structured docs but no `brain/`-like organization yet. If it has zero docs → §1.4 green-field. If it has 15+ scattered docs with rot → §1.5 full migration.
+
+### 1.4c Handoff first, brain later (a project with no `brain/` asks for a handoff)
+
+Added v2.9 from a project in the maintainers' own workspace: three days old, seventy commits, three windows, no `brain/` — nobody had said "set up project brain," so the skill (correctly, §5.4) never fired. The windows wrote their own continuity: a project `CLAUDE.md`, a `PROGRESS.md` with a "Handoff" section at the top, and a runbook. By the third window the handoff section had been patched in place twice, its heading carried the first shift's date, its first item was long done, and the previous version sat under it "for history" — Trap 21 without a `brain/` to blame.
+
+The friction is the moment to act, and the user's words are the trigger: **a request to hand off / switch windows in a project with no `brain/` activates this skill** (§1.1). The AI:
+
+1. **Says what it sees** — one sentence: this project has no `brain/`, and a handoff patched into a progress file goes stale shift by shift.
+2. **Offers the decomposition** (§1.4b) — the progress file usually maps cleanly: its "handoff" section → `HANDOFF.md`, its "where things stand" → `STATUS.md`, every "we decided / settled on" line → a DECISIONS entry (ask for the rejected alternative), the runbook → `topics/operations/RUNBOOK.md`.
+3. **If the user says not now**: writes the handoff anyway, in the six-section shape (§3.2), as `HANDOFF.md` at the project root — never as a patch to an existing section. When `brain/` arrives, the file moves in unchanged.
+
+What this does **not** do: scaffold without being asked, or treat the existence of a progress file as a trigger. The user asked for a handoff; the skill answers with the best place to put one.
 
 ### 1.5 Existing-project migration (when user says "clean up structure" or "migrate to v2")
 
@@ -224,17 +239,17 @@ brain/
 | `MAP.md` | Structural map, evolves slowly | Occasional | Every new session |
 | `STATUS.md` | Instantaneous state, can be overwritten | Frequent | Every new session |
 | `DECISIONS.md` | Decision log, append-only | Event-driven | Tracing why something is the way it is |
-| `HANDOFF.md` | Cross-window bridge, generated at switch | Per-switch | **New session start** (if exists) |
+| `HANDOFF.md` | Shift report, written at switch | Per-switch | **New session start** (if exists) |
 
 **Why split by time-character?** Because *when* a file gets updated affects maintenance discipline more than *what* it contains. Mixing them forces low-frequency content to be re-edited alongside high-frequency content — the most common mode of doc rot.
 
 **`HANDOFF.md` vs `STATUS.md`:**
 - STATUS = steady-state ("currently working on X, next step Y, blocker Z")
-- HANDOFF = transient at the moment of window-switch — **only contains things that can't be settled into STATUS**: hunches not yet articulated, weird debugging observations, half-tried approaches
+- HANDOFF = **the shift report** (v2.9): what this window saw that STATUS can't carry. Six sections, found by reading 99 real handoffs across 17 projects, which had largely converged on the same shape — this shift / first thing for the next window / procedures found / waiting on others / new traps / still warm. Empty sections are deleted.
 
-If STATUS is freshly overwritten, HANDOFF can be very short (5 lines) or even nearly empty. **HANDOFF is not a backup of STATUS.**
+v2.0–v2.8 defined HANDOFF as "only the still-warm hunches, near-empty if STATUS is fresh." Almost no real handoff looked like that — 5 of 99 came in under 15 lines; the median was 49 and a quarter were longer than STATUS's own cap — because a window switching out has more to say than hunches — what it just did, what the next one should touch first, who it's waiting on, what bit it. Denying that content a shape didn't make it shorter; it made it unstructured. So the discipline is no longer "short." It is **don't write what the next window can look up**: state belongs in STATUS, rationale in DECISIONS, commands and traps in `topics/operations/RUNBOOK.md` (§3.3). What is left is the handoff. (Trap 10, reworded accordingly.)
 
-HANDOFF is consume-and-discard — when the next switch comes, the previous one is archived to `handoffs/YYYY-MM-DD-HHMM.md` and `HANDOFF.md` is overwritten with the latest.
+HANDOFF is consume-and-discard — when the next switch comes, the previous one is archived to `handoffs/YYYY-MM-DD-HHMM.md` and `HANDOFF.md` is overwritten with the latest. **The archive is history, never current** (Trap 21): anything in the outgoing HANDOFF that is still valid is moved into STATUS / DECISIONS / RUNBOOK *before* archiving. A handoff that says "see the previous one, its §3 still applies" has started a chain the next window has to walk, and the one after that has to walk further.
 
 ### 3.3 The 4 topic categories
 
@@ -248,6 +263,8 @@ HANDOFF is consume-and-discard — when the next switch comes, the previous one 
 **The principle**: classification is **by problem-dimension**, not by business module. A single module (say, "payment system") will have its design in `systems/`, deploy logs in `operations/`, pricing in `planning/`, user feedback in `feedback/`. The same module's docs scatter across four directories — but when looking for something, you always know which directory.
 
 **Why not by module?** Modules grow, shrink, get renamed, get merged, get split. The four problem dimensions are far more stable.
+
+**`operations/RUNBOOK.md` — the one topic doc the template pre-registers** (v2.9). Four sections: commands, health check, "when something breaks, look here first" (a symptom → where-to-look table), and numbered, append-only traps. The methodology has always kept its own trap list (§6); projects never had a place for theirs, so across 17 live projects the traps and the hard-won procedures ended up in HANDOFF sections titled "traps" and "how we did it" — and went stale with every switch. The runbook is where a handoff's "new traps" and "procedures found" go (§4.3 step 0), and where STATUS's "How to verify this" line points for what each check reports. A project that genuinely has nothing to operate leaves it at one line saying so; `doctor.sh` doesn't require it.
 
 ### 3.4 Continuity entry points (project instruction file / skill manifest)
 
@@ -489,6 +506,17 @@ Without worktrees, every window shares one working tree **and one staging area**
 - **Retiring a workstream**: archive its STATUS / HANDOFF into `handoffs/<ws>/`, drop its roster row, mark its registry row `retired <date>`, take it out of the instruction file's wake section, and log a DECISIONS entry. Keep the history; don't reuse the name (§3.5's no-rename rule).
 - **Ad-hoc windows don't turn into workstreams by accident.** If the same kind of one-off window keeps getting reopened, that's the signal to add a workstream — deliberately, through the steps above.
 
+#### 3.6.6 Neighbour projects — sibling repos that depend on each other (v2.9, n=1)
+
+§3.5–3.6.5 are about workstreams *inside* one repository. The same frictions show up *between* repositories when several projects in one workspace talk to each other at runtime — in the source case, four: a knowledge store, a perception pipeline that feeds it, a control panel that reads both, and a recorder the pipeline pulls from. Each has its own `brain/` (or none), its own windows, its own service names and id spaces; a week of work produced requests in every direction, and the handoffs started carrying the other projects' *session ids* as addresses — Trap 18 again, one level up. That is the only friction v2.9 writes a rule for; everything else below is §3.6 applied across a repo boundary.
+
+- **A "Neighbour projects" table in MAP §6**: the project, where its `brain/` is, what crosses the boundary in each direction, and how to reach its current window — which is always *its* roster, never a copied id. A single-workstream neighbour keeps a one-row roster for exactly this.
+- **Requests** cross the boundary through the same two ledgers as §3.6.3, keyed by project name instead of workstream. A requester records "Handed to <project>"; the owner, on accepting, records "From <project>" in its own STATUS. Neither edits the other's `brain/`.
+- **Interface facts** — service names, ports, id formats, who to tell before a deploy — are standing facts and live in MAP (§6's dependency list or the neighbour row), not in STATUS or HANDOFF.
+- **Decisions that bind two projects** are logged on both sides, each from its own angle, with the other project named in the trigger context. There is no shared DECISIONS and no parent brain: nested brains are v3 territory and remain out of scope; neighbours are peers.
+
+Validated on one workspace over one week. If a workspace turns out to need a parent brain to hold shared facts, that is the v3 problem, not this one.
+
 #### Boundaries
 
 - **One human, several AI windows.** Not a multi-human team protocol (§5.3).
@@ -506,7 +534,7 @@ Without worktrees, every window shares one working tree **and one staging area**
 
 | Tier | Files | Protocol |
 |---|---|---|
-| **Tier 1 — write, then announce** | `STATUS`, `HANDOFF`, mechanical `MAP` registrations | After completing the work that changed the state, the AI writes directly and **reports what it wrote in the same reply** ("STATUS overwritten: now at X, next Y"). The user reviews via `git diff` / `git log` when they care to; reverting is one command. |
+| **Tier 1 — write, then announce** | `STATUS`, `HANDOFF`, mechanical `MAP` registrations, `RUNBOOK` appends (a numbered trap, a symptom row or a procedure moved there at a handoff — §4.3 step 0, v2.9) | After completing the work that changed the state, the AI writes directly and **reports what it wrote in the same reply** ("STATUS overwritten: now at X, next Y"). The user reviews via `git diff` / `git log` when they care to; reverting is one command. |
 | **Tier 2 — ask, then write** | `DECISIONS`, `PROJECT`, structural `MAP` redesigns | These encode shared commitments ("this is decided" / "this is what the project is"). A wrong write corrupts understanding, not just a file. Gentle inquiry (§4.5) and explicit discussion remain mandatory. |
 
 **Why the change** (v2.0–v2.5 required ask-before-write for everything): the old rule spent the user's attention as the safety mechanism on every routine STATUS overwrite. With git as the review surface, a Tier-1 mistake costs one `git revert` — user attention is the scarcer resource. What stays non-negotiable at every tier is *announcement*: a write the user never hears about is still forbidden.
@@ -525,19 +553,23 @@ Without worktrees, every window shares one working tree **and one staging area**
 | **MAP.md** | New doc added / doc removed → §5 registration | AI sense | **Tier 1** for mechanical registrations (write + announce); **Tier 2** for structural redesign of the map itself |
 | **MAP calibration scan** | User says "MAP calibration" or "tidy up project memory" | User | Run scan per MAP.md last section; `scripts/doctor.sh` automates the mechanical half |
 | **PROJECT.md** | Project definition has drifted (very rare) | Very rare | **Tier 2**: must explicitly discuss before changing |
-| **`topics/*` docs** | When user and AI deliberately write a topic doc | User | **Not in auto-update scope** — topic docs are written intentionally, not maintained passively |
+| **`topics/*` docs** | When user and AI deliberately write a topic doc | User | **Not in auto-update scope** — topic docs are written intentionally, not maintained passively (one exception: the next row) |
+| **`topics/operations/RUNBOOK.md`** (v2.9) | A handoff's "new traps" / "procedures found" land here; an incident adds a symptom row | AI sense, at a handoff or an incident | **Tier 1 for appends** (numbered trap, symptom row, procedure — write + announce). Rewriting its commands or health-check sections is a deliberate topic edit like any other |
 
 ### 4.3 HANDOFF write procedure (avoiding archival timing confusion)
 
-When the user says "switch windows," the **currently-online AI** does three steps:
+When the user says "switch windows" / "hand off" / "shift change," the **currently-online AI** does four steps:
 
-1. **Archive first**: if `brain/HANDOFF.md` already exists (left from previous switch), `git mv` it to `brain/handoffs/<its-last-modified-timestamp>.md`
-2. **Then write the new one**: write a fresh `brain/HANDOFF.md` for the next session
+0. **Settle first** (v2.9): read the existing `brain/HANDOFF.md`. Anything in it that is *still valid* leaves before archiving — open waits into STATUS's ledgers, procedures and traps into `topics/operations/RUNBOOK.md`, anything decided into DECISIONS (Tier 2, ask). The archive must be safe to never open again (Trap 21). Same for this shift's own "new traps" and "procedures found": they go into RUNBOOK now, numbered, and the handoff cites the numbers. All Tier 1 except DECISIONS — write, then announce.
+1. **Archive**: `git mv` the existing `brain/HANDOFF.md` to `brain/handoffs/<its-last-modified-timestamp>.md`
+2. **Then write the new one**: a fresh `brain/HANDOFF.md` in the six-section shape (§3.2), empty sections deleted
 3. **Refresh the auto-memory pointer** (Claude Code only, v2.7, §3.4): rewrite `project-brain-pointer.md` with the new HANDOFF timestamp (and workstream, if multi-workstream) and replace its single index line in `MEMORY.md`. Skip silently in tools without auto memory.
 
-This way `HANDOFF.md` always represents "**state at the most recent window-switch**," and the archive is the historical chain.
+This way `HANDOFF.md` always represents "**the most recent shift's report**," and the archive is history that nothing current depends on.
 
-Multi-workstream: the same three steps on `HANDOFF_<ws>.md` → `handoffs/<ws>/`. In concurrent mode (§3.6) the archive name may carry the outgoing window's name as provenance (`handoffs/web/2026-10-05-1430-web-5.md`), and the outgoing window leaves its roster row alone — the next window claims it on wake.
+Multi-workstream: the same steps on `HANDOFF_<ws>.md` → `handoffs/<ws>/`. In concurrent mode (§3.6) the archive name may carry the outgoing window's name as provenance (`handoffs/web/2026-10-05-1430-web-5.md`), and the outgoing window leaves its roster row alone — the next window claims it on wake.
+
+**No `brain/` yet?** See §1.4c — the handoff is still written, in this shape, so it moves into `brain/` later unchanged.
 
 ### 4.4 The "update the project brain" workflow (judgment division)
 
@@ -641,6 +673,7 @@ If the project is multi-workstream (§3.5), all rules in §4.1-4.6 **still apply
 | **Roster row** (concurrent, v2.8) | — | claim your own workstream's row once the user confirms the wake report (Tier 1, announce); never edit another workstream's row |
 | **Shared files with concurrent windows** (v2.8) | — | MAP / DECISIONS / PROJECT edited in place — re-read, change your one spot, never rewrite the whole file (Trap 20) |
 | **Cross-workstream requests** (v2.8) | — | recorded in your own STATUS only — "Handed to…" when sending, "From…" when accepting (§3.6.3) |
+| **Neighbour projects** (v2.9) | same ledgers, keyed by project name (§3.6.6); never copy another project's session id — find its window through its roster | same |
 
 **The AI's "current workstream" assignment**: don't auto-guess. At session start, identify it from explicit signals or ask the user (per §1.3 multi-workstream branch). Once known, the entire session operates on that workstream's STATUS/HANDOFF. If the user says "switch this window to another workstream," re-read the new workstream's files and don't carry over memory (Trap 14).
 
@@ -716,16 +749,16 @@ While developing the methodology in your own project, first-person language and 
 **Trap 7: DECISIONS without "rejected alternatives" degrades into a worse CHANGELOG**
 DECISIONS' unique value is **the paths not taken**. Without that, it's a worse version of CHANGELOG (which already records "what was done"). Hard discipline: every DECISIONS entry must list rejected alternatives. If you can't, ask yourself if you actually *made a decision* — or just executed something.
 
-**Trap 8: STATUS exceeding 80 lines**
-STATUS is instantaneous. Once over 80 lines, it's encroaching on MAP's territory (structural changes) or DECISIONS' (rationale). Settle the long content into the right file, then overwrite STATUS.
+**Trap 8: STATUS exceeding 80 lines — or ~6,000 characters** *(second measure added in v2.9)*
+STATUS is instantaneous. Once over 80 lines, it's encroaching on MAP's territory (structural changes) or DECISIONS' (rationale). Settle the long content into the right file, then overwrite STATUS. The line cap turned out to be gameable without anyone meaning to: a live project's STATUS sat at 70 lines and 10,500 characters, its longest line 1,300 characters, because done items were struck through rather than removed and history nested under each step as sub-bullets. That is a log, not a state. `doctor.sh` check 2 now reports both measures, whichever trips first.
 
 **Trap 9: MAP rot**
 MAP §5 (topic doc index) drifts most easily — new doc added but not registered, old doc deleted but still listed. Discipline: run a calibration scan (see MAP.md last section) when the user says "MAP calibration" or after a major structural change.
 
-### 6.4 v2 / v2.1 newer traps (theoretical, awaiting more empirical validation)
+### 6.4 v2 / v2.1 newer traps (discipline-only; Trap 10 re-grounded on 99 real handoffs in v2.9, the rest still awaiting more empirical validation)
 
-**Trap 10: Writing HANDOFF as a STATUS backup**
-HANDOFF's unique value is **the can't-yet-be-articulated stuff** — the "I have a hunch but can't say why" content. If STATUS is freshly overwritten, HANDOFF should be very short or near-empty. **Don't pad HANDOFF to look complete** — that's wasted effort.
+**Trap 10: Writing HANDOFF as a STATUS backup** *(reworded in v2.9)*
+The original wording — "HANDOFF should be near-empty when STATUS is fresh" — was rarely honored across 99 real handoffs (5 of 99), and that was the methodology's error, not the projects': a window switching out has more to hand over than hunches (§3.2). The trap is real but the test is different: not "is it short" but **"could the next window have looked this up?"** A line that restates STATUS, retells a procedure that belongs in RUNBOOK, or copies a decision's rationale is the trap. A line that only this window knows is the handoff. Use the six sections; delete the empty ones; don't pad.
 
 **Trap 11: Memory pollution on cross-project switch**
 When `cwd` switches from project A to project B in the same session, the AI tends to mistakenly carry A's blockers / status onto B. Discipline: when `cwd` changes, re-read the new project's MAP/STATUS/HANDOFF; suspend the previous project's mental model.
@@ -791,6 +824,15 @@ One checkout, one staging area, several windows. `git add -A`, `git commit -a`, 
 An AI holding MAP or DECISIONS in context "updates" it by writing the whole file back. Every edit another window made since the read — committed or not — silently disappears. With one window at a time a stale copy is harmless; with three windows writing the same MAP it's data loss that no diff reviewer is looking for.
 
 **Discipline**: shared files (MAP / DECISIONS / PROJECT) are edited in place — re-read right before, change or append your one spot with a targeted edit, never write the full file back. DECISIONS was already append-only; MAP and PROJECT, which do get edited, are edited in place — never written back wholesale.
+
+### 6.8 v2.9 traps
+
+Found by measuring, not by being bitten: v2.9 came from reading 17 live `brain/` folders side by side (§3.2, §3.3), plus one project in the same workspace that had grown a handoff *without* a `brain/` and patched it shift after shift until it contradicted itself (§1.4c). Trap 21 is partly mechanized — `doctor.sh` check 11 flags a HANDOFF that cites an archived handoff as still valid, and a HANDOFF longer than its STATUS once past 40 lines; the rest is discipline.
+
+**Trap 21: The handoff chain — archives cited as current**
+A window writes "the previous HANDOFF's §3 and §5 still apply, go there for the commands." It is true, and it is the start of a chain: the next window has to open two files, the one after that three, and nobody ever moves §3 and §5 to where they belong. The same thing happens, worse, in a project without `brain/`: a PROGRESS file grows a "Handoff" section, each shift patches it in place, and after three shifts the heading says one date, the first item is already done, and the "old handoff" kept below "for history" is being read as current.
+
+**Discipline**: the archive is history that nothing current depends on. Before archiving, move what is still valid out — open waits to STATUS's ledgers, procedures and traps to RUNBOOK, decisions to DECISIONS (§4.3 step 0). A new HANDOFF is written whole, never patched onto the old one. If a handoff is longer than the STATUS it bridges, something in it belongs elsewhere.
 
 ---
 

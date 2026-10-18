@@ -18,7 +18,7 @@
 1. `brain/MAP.md` — 项目地图。回答"这个项目长什么样、文档去哪找？"
 2. `brain/STATUS.md` — 当前状态。回答"现在停在哪、下一步做什么？"
 
-**如果存在 `brain/HANDOFF.md`** —— 也读它。这是上个会话切窗口前留下的、还没落到结构化文件里的"还热乎"的内容。
+**如果存在 `brain/HANDOFF.md`** —— 也读它。这是上一班的交班记录：醒来第一件事、在等谁、还有什么只在上一班脑子里。
 
 读完后简短回报：项目识别 + 当前进度 + 上次卡点。**不要静默动手** —— 确认理解对了再开始干。
 
@@ -54,7 +54,7 @@
 
 ## 更新职责
 
-**核心原则 —— 分级信任**（METHODOLOGY §4.1）：AI 绝不*静默*修改 `brain/` 下的文件。`STATUS` / `HANDOFF` / MAP 的机械登记（包括认领「现在谁在接」那一格）：工作落定后直接写，同一条回复里说清写了什么。`DECISIONS` / `PROJECT` / MAP 的结构性改动：先提议，用户拍板。
+**核心原则 —— 分级信任**（METHODOLOGY §4.1）：AI 绝不*静默*修改 `brain/` 下的文件。`STATUS` / `HANDOFF` / MAP 的机械登记（包括认领「现在谁在接」那一格）/ RUNBOOK 的追加（编号的坑、办法）：工作落定后直接写，同一条回复里说清写了什么。`DECISIONS` / `PROJECT` / MAP 的结构性改动：先提议，用户拍板。
 
 **判断分工**（重要）：
 - 用户决定"**现在该不该记**"
@@ -67,8 +67,8 @@
 - AI 感觉"那段像是决策" → **温柔询问**："这算定下来了吗？要不要追加到 DECISIONS？" —— 不要断言（见 METHODOLOGY §4.5）
 - 模块新增 / 删除 → 提议更新 `brain/MAP.md` 第 2 节
 - 新增文档 / 废弃文档 → 提议更新 `brain/MAP.md` 第 5 节
-- 用户暗示会话结束（"就这样 / 我先走了 / 该切了"）→ 主动起草 `brain/STATUS.md` 让用户审（软上限 80 行）
-- 用户说切窗口 → 写 `brain/HANDOFF.md`，把上一份归档到 `brain/handoffs/YYYY-MM-DD-HHMM.md`；Claude Code 下顺手刷新自动记忆指针（METHODOLOGY §3.4，v2.7）
+- 用户暗示会话结束（"就这样 / 我先走了 / 该切了"）→ 主动起草 `brain/STATUS.md` 让用户审（软上限 80 行 / 约 6000 字）
+- 用户说切窗口 / 交接 / 换班 → 先把旧 `brain/HANDOFF.md` 里仍然有效的挪走（在等的 → STATUS，办法和坑 → `brain/topics/operations/RUNBOOK.md`），归档到 `brain/handoffs/YYYY-MM-DD-HHMM.md`，再按模板六段写新的交班记录；Claude Code 下顺手刷新自动记忆指针（METHODOLOGY §3.4，v2.7）
 - 用户显式说"更新 STATUS / 记一条决策" → 直接做，不要再问
 
 **多工作流**（v2.1）：上面所有涉及 STATUS / HANDOFF / handoffs 的，都按当前窗口所属工作流来 —— `STATUS_<当前>.md` / `HANDOFF_<当前>.md` / `handoffs/<当前>/`。PROJECT / MAP / DECISIONS / topics 共享，不分工作流。详见 METHODOLOGY §3.5 + §4.7。

@@ -18,7 +18,7 @@
 1. `brain/MAP.md` — project map. Answers "what does this project look like, where are docs?"
 2. `brain/STATUS.md` — current state. Answers "where are we, what's next?"
 
-**If `brain/HANDOFF.md` exists** — read it. It's the previous session's still-warm-not-yet-written-down content.
+**If `brain/HANDOFF.md` exists** — read it. It's the last shift's report: first thing to do, what's waiting on others, what's still only in the last window's head.
 
 After reading, give a brief report: project recognized + current progress + last blocker. **Don't silently start working** — confirm understanding first.
 
@@ -54,7 +54,7 @@ After reading, give a brief report: project recognized + current progress + last
 
 ## Update responsibility
 
-**Core principle — tiered trust** (METHODOLOGY §4.1): the AI never *silently* modifies a file in `brain/`. `STATUS` / `HANDOFF` / mechanical `MAP` registrations (including a roster claim): write after the work lands, then announce what was written in the same reply. `DECISIONS` / `PROJECT` / structural `MAP` changes: propose first, user approves.
+**Core principle — tiered trust** (METHODOLOGY §4.1): the AI never *silently* modifies a file in `brain/`. `STATUS` / `HANDOFF` / mechanical `MAP` registrations (including a roster claim) / `RUNBOOK` appends (a numbered trap, a procedure): write after the work lands, then announce what was written in the same reply. `DECISIONS` / `PROJECT` / structural `MAP` changes: propose first, user approves.
 
 **Judgment division** (important):
 - The user decides "**should we record now**"
@@ -67,8 +67,8 @@ Specific rhythm:
 - AI senses "that section felt like a decision" → **gentle inquiry**: "does this count as decided? Want to append to DECISIONS?" — don't assert (see METHODOLOGY §4.5)
 - Module added / removed → propose to update `brain/MAP.md` §2
 - New doc added / deprecated → propose to update `brain/MAP.md` §5
-- User signals end-of-session ("that's it / heading out / time to switch") → proactively draft `brain/STATUS.md` for review (soft cap 80 lines)
-- User says window-switch → write `brain/HANDOFF.md`, archive previous to `brain/handoffs/YYYY-MM-DD-HHMM.md`; in Claude Code, also refresh the auto-memory pointer (METHODOLOGY §3.4, v2.7)
+- User signals end-of-session ("that's it / heading out / time to switch") → proactively draft `brain/STATUS.md` for review (soft cap 80 lines / ~6,000 characters)
+- User says window-switch / hand off / shift change → first move what's still valid out of the old `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`), archive it to `brain/handoffs/YYYY-MM-DD-HHMM.md`, then write the new one as a shift report (the template's six sections); in Claude Code, also refresh the auto-memory pointer (METHODOLOGY §3.4, v2.7)
 - User explicitly says "update STATUS / log a decision" → just do it, don't ask
 
 **Multi-workstream** (v2.1): scope all the above STATUS / HANDOFF / handoffs to the current window's workstream — `STATUS_<current>.md` / `HANDOFF_<current>.md` / `handoffs/<current>/`. PROJECT / MAP / DECISIONS / topics are shared, not per-workstream. See METHODOLOGY §3.5 + §4.7.

@@ -14,7 +14,7 @@ Decide single- or multi-workstream (look at file naming under `brain/`):
 Read these in order:
 1. `brain/MAP.md` — project map (modules, doc index, run instructions)
 2. `brain/STATUS.md` — current state (where we stopped, next step, blockers)
-3. `brain/HANDOFF.md` if it exists — previous session's still-warm thoughts
+3. `brain/HANDOFF.md` if it exists — last shift's report
 
 Then report briefly: project recognized + current progress + last blocker.
 
@@ -28,14 +28,14 @@ Concurrent windows (v2.8 — MAP §6 has a "Who's on it now" roster): also check
 ## Update behavior
 
 Never silently modify a file in `brain/` (tiered trust, METHODOLOGY §4.1):
-- `STATUS` / `HANDOFF` / mechanical `MAP` registrations → write after the work lands, then tell the user what you wrote
+- `STATUS` / `HANDOFF` / mechanical `MAP` registrations / `RUNBOOK` appends → write after the work lands, then tell the user what you wrote
 - `DECISIONS` / `PROJECT` / structural `MAP` changes → propose to the user (with reasoning), wait for approval, then write
 
 Specific triggers:
 - User says "update the project brain" → propose a list with reasons (what to update + why); user picks
 - A decision feels just made → ask "does this count as decided?" — don't assert
 - User signals end-of-session ("that's it / heading out") → draft `brain/STATUS.md` for review
-- User signals window-switch → write `brain/HANDOFF.md`, archive the previous one to `brain/handoffs/YYYY-MM-DD-HHMM.md`
+- User signals window-switch / hand off → move what's still valid out of the old `brain/HANDOFF.md` (waits → STATUS, procedures and traps → `brain/topics/operations/RUNBOOK.md`), archive it to `brain/handoffs/YYYY-MM-DD-HHMM.md`, write the new one as a shift report (six sections)
 
 Multi-workstream (v2.1): scope STATUS / HANDOFF / handoffs to the current workstream. PROJECT / MAP / DECISIONS / topics are shared.
 
