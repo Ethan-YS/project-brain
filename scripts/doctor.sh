@@ -19,7 +19,7 @@
 #   1. brain/ directory structure (required core files exist)
 #   2. STATUS.md(_<workstream>.md) size — soft cap 80 lines or ~6,000 characters, whichever trips first (Trap 8)
 #   3. ⚠️ TODO ⚠️ placeholder count per file
-#   4. DECISIONS.md entries missing "Rejected alternatives" / "被否决"
+#   4. DECISIONS.md entries missing "Rejected alternatives" / "被拒绝的方案" (被否决的方案 etc. also accepted)
 #   5. MAP.md §5 ↔ brain/topics/ file consistency
 #   6. HANDOFF.md last-modified vs git log (stale HANDOFF without archive)
 #   7. Markdown link integrity (relative links resolve; ASCII #anchors exist at target) — Trap 15. handoffs/ is skipped: archives are history (Trap 21)
@@ -152,8 +152,10 @@ echo ""
 # ─────────────────────────────────────────────────────────
 echo "${BOLD}4. DECISIONS entries integrity${RESET}"
 if [[ -f "$BRAIN/DECISIONS.md" ]]; then
-  # Use awk to find each entry heading and check if "Rejected alternatives" or "被否决"
-  # appears before the next entry or EOF. Recognized heading styles:
+  # Use awk to find each entry heading and check if "Rejected alternatives" or its
+  # zh label appears before the next entry or EOF. The zh template says 被拒绝的方案;
+  # live brains also carry 被否决的方案 / 被否决的替代方案 — all four variants pass.
+  # Recognized heading styles:
   #   ### YYYY-MM-DD ...        (v2 template default)
   #   ### DR-NNN / TD-NNN ...   (numbered-decision style)
   missing=$(awk '
@@ -166,7 +168,7 @@ if [[ -f "$BRAIN/DECISIONS.md" ]]; then
       title = $0
       next
     }
-    in_entry && /Rejected alternatives|被否决的方案|被否决的替代方案/ {
+    in_entry && /Rejected alternatives|被(拒绝|否决)的(替代)?方案/ {
       found = 1
     }
     END {
@@ -178,7 +180,7 @@ if [[ -f "$BRAIN/DECISIONS.md" ]]; then
 
   if [[ -n "$missing" ]]; then
     while IFS= read -r line; do
-      critical "DECISIONS entry missing 'Rejected alternatives': $line"
+      critical "DECISIONS entry missing 'Rejected alternatives' / '被拒绝的方案': $line"
     done <<< "$missing"
   else
     # Count actual entries (skip examples in comments)
@@ -262,12 +264,23 @@ if [[ -f "$BRAIN/MAP.md" && -d "$BRAIN/topics" ]]; then
     fi
   done
 
-  # Files registered in MAP §5 but not on disk — resolve path-prefixed
-  # registrations against brain/, brain/topics/, and the project root before
-  # falling back to a basename search inside topics/
+  # Files registered in MAP §5 but not on disk — absolute and ~/ registrations
+  # (a file outside the repo, e.g. a neighbour's doc) are checked as written;
+  # path-prefixed ones resolve against brain/, brain/topics/, and the project
+  # root before falling back to a basename search inside topics/
   if [[ -n "$registered" ]]; then
     while IFS= read -r ref; do
       [[ -z "$ref" ]] && continue
+      case "$ref" in
+        /*|"~/"*)
+          abs="$ref"; [[ "$ref" == "~/"* ]] && abs="$HOME/${ref#"~/"}"
+          if [[ ! -e "$abs" ]]; then
+            warning "MAP §5 references file not found: $ref"
+            stale_count=$((stale_count + 1))
+          fi
+          continue
+          ;;
+      esac
       if [[ -e "$BRAIN/$ref" || -e "$BRAIN/topics/$ref" || -e "$TARGET/$ref" ]]; then
         continue
       fi
@@ -447,10 +460,11 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────────────────
-# Shared helper: MAP §6 workstream section — a ## heading that mentions
-# "Workstream" / "工作流", up to the next ## heading (### subsections such as
-# the "Who's on it now" roster stay inside). 工作流 also means "workflow", so
-# when several headings match, the one whose body mentions STATUS_ files wins.
+# MAP §6 workstream section (check 9) — a ## heading that mentions
+# "Workstream" / "工作流", up to the next ## heading (### subsections stay
+# inside). 工作流 also means "workflow", so when several headings match, the
+# one whose body mentions STATUS_ files wins. Check 10 finds the roster by its
+# column header instead (v2.9.2), so it doesn't depend on this heading.
 # ─────────────────────────────────────────────────────────
 ws_section() {
   [[ -f "$BRAIN/MAP.md" ]] || return 0
@@ -516,30 +530,40 @@ echo ""
 # "Who's on it now". A roster name showing up in an active STATUS / HANDOFF
 # is either provenance (fine) or an address that goes stale at the next
 # switch; the script can't tell which, so it reports info for a human glance.
+# The roster is found by its "current window" column anywhere in MAP.md, not
+# through ws_section: a single-workstream project with neighbours keeps a
+# one-row roster under whatever its §6 is called ("## 6. 邻居项目" has no
+# 工作流 in it). A cell wrapped in parentheses ("(unclaimed)", "（待认领）")
+# is a placeholder, not a window name.
 # ─────────────────────────────────────────────────────────
 echo "${BOLD}10. Window names outside the roster (Trap 18)${RESET}"
-roster=$(ws_section | awk -F'|' '
+roster_rows=$( [[ -f "$BRAIN/MAP.md" ]] && awk -F'|' '
   function clean(x) { gsub(/\*\*|`/, "", x); gsub(/^[ \t]+|[ \t]+$/, "", x); return x }
+  /^[ \t]*```/ { in_code = !in_code; in_table = 0; wcol = 0; next }
+  in_code { next }
   /^[ \t]*\|/ {
     if (!in_table) {                       # header row of a new table
       in_table = 1; wcol = 0
       for (i = 2; i < NF; i++) {
         h = tolower($i)
-        if (h ~ /current window|现在的窗口|当前窗口|窗口名/) { wcol = i; break }
+        if (h ~ /current window|现在的窗口|当前窗口|窗口名/) { wcol = i; print "@@roster@@"; break }
       }
       next
     }
     if ($0 ~ /^[ \t]*\|[-:| \t]+\|[ \t]*$/) next   # separator row
     if (wcol) {
       name = clean($wcol); ws = clean($2)
-      if (name != "" && name !~ /⚠️/ && name !~ /^[-—–]+$/ && name !~ /^[0-9]+$/ && name != ws) print name
+      if (name != "" && name !~ /⚠️/ && name !~ /^[-—–]+$/ && name !~ /^[0-9]+$/ && name !~ /^(\(|（).*(\)|）)$/ && name != ws) print name
     }
     next
   }
   { in_table = 0; wcol = 0 }
-' | sort -u)
-if [[ -z "$roster" ]]; then
-  ok "no \"Who's on it now\" roster in MAP §6 — nothing to check"
+' "$BRAIN/MAP.md" 2>/dev/null)
+roster=$(grep -vxF '@@roster@@' <<< "$roster_rows" | sort -u)
+if [[ "$roster_rows" != *"@@roster@@"* ]]; then
+  ok "no \"Who's on it now\" roster in MAP.md — nothing to check"
+elif [[ -z "$roster" ]]; then
+  ok "roster in MAP.md has no window claimed yet — nothing to check"
 else
   leaks=0
   while IFS= read -r name; do

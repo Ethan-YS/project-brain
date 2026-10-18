@@ -5,6 +5,24 @@ This project's versioning follows the methodology's own evolution, not strict se
 
 ---
 
+## [2.9.2] — 2026-10-18
+
+Doctor false positives, found by running it on a project scaffolded the same day from the zh templates: 12 critical errors, one per DECISIONS entry, every one of which had the field it was "missing". The zh template has said **被拒绝的方案** since v2.5; `doctor.sh` and `README.zh-CN.md` said 被否决的方案. Across the maintainer's live brains the old check 4 raised 153 criticals in 10 projects, 126 of them false, in the 9 projects that use the template's wording. The new check raises 27, all in entries that really have no rejected alternatives.
+
+### Fixed
+
+- **`doctor.sh` check 4** accepts `被(拒绝|否决)的(替代)?方案` alongside `Rejected alternatives` — the template's wording plus the three variants live brains already carry, so no existing project goes red. The critical message names both labels.
+- **`doctor.sh` check 5** checks absolute and `~/` registrations in MAP §5 as written. They used to be prefixed with `brain/` or the project root, so a registered file outside the repo (a neighbour's doc, a shared ledger) was always "not found".
+- **`doctor.sh` check 10** finds the roster by its "current window" / 现在的窗口 column anywhere in MAP.md (outside code fences), not through check 9's §6 heading match. A single-workstream project with neighbours keeps a one-row roster (§3.6.6) and naturally renames §6 to "Neighbour projects" / 邻居项目, a heading without "Workstream" / 工作流, so its roster went unchecked. Cells wrapped in parentheses (`(unclaimed)`, `（待认领）`) count as placeholders, and a roster with no claimed row now says so instead of reporting "no roster".
+
+### Changed
+
+- **One zh wording**: `README.zh-CN.md` now says 被拒绝的方案, matching `templates-zh/brain/DECISIONS.md`. Doctor still accepts 被否决的方案 / 被否决的替代方案, so existing brains don't need edits.
+
+### Why a patch
+
+Doctor and README wording only. No template, scaffold or methodology change; every brain that passed 2.9.1 passes 2.9.2 with the same or fewer observations.
+
 ## [2.9.1] — 2026-10-18
 
 One rule instead of two tiers. Shipped hours after 2.9.0, from a question the maintainer asked while reviewing it: *if there were no skill, I'd say "hand off," you'd write the file, and I'd never know what you wrote — so what is the announcement for?* The honest answer: nothing. `brain/` is read by the next window, not by the user. The write-then-announce half of v2.6's tiered trust was reporting to a reader who doesn't read, and the ask-first half had handed the AI's own judgment back to the user — the exact inversion §4.4's judgment division warns against. One live project had already been running the single rule for six weeks on the user's say-so before the methodology caught up.
