@@ -10,7 +10,7 @@
 
 [English →](./README.md)
 
-**[Sprout Labs](https://ethanflow.com) 出品** — 本地优先的 AI 记忆系统与 Agent 安全研究，由 Ethan（独立产品设计师 & AI Builder，since 2016）独立打造。
+**[Sprout Labs](https://ethanflow.com) 出品** — Ethan 自己的产品线，产品、设计、工程一个人做完。
 [ethanflow.com](https://ethanflow.com) · [LinkedIn](https://www.linkedin.com/in/ethan-ys/) · [@ethanflow_lab](https://x.com/ethanflow_lab) · [GitHub](https://github.com/Ethan-YS)
 
 <p align="center">
@@ -248,7 +248,7 @@ brain/
 
 ## 状态
 
-🌱 v2.9 —— 方法论稳定，140+ stars，维护者日常在用的项目脑有 17 个。v2.9 是第一个靠测量这些项目脑、而不是靠某一个项目的摩擦推出来的版本（见演化故事）。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。外部使用效果还在观察中——维护者日常在用，但其他用户的真实使用反馈还在收集。
+🌱 v2.9 —— 方法论稳定，170+ stars，维护者日常在用的项目脑有 17 个。v2.9 是第一个靠测量这些项目脑、而不是靠某一个项目的摩擦推出来的版本（见演化故事）。v2.4 以一条命令安装的 Claude Code plugin（Sprout Labs marketplace）形式分发。v2.3 加入 `scripts/doctor.sh`（结构体检）和完整填好的示例项目（`examples/small-saas/`）。v2.2 让它能作为 Claude Code skill 安装，加入 Cursor / Copilot / AGENTS.md adapter。外部使用效果还在观察中——维护者日常在用，但其他用户的真实使用反馈还在收集。
 
 ## 作者
 

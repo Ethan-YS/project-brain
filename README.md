@@ -10,7 +10,7 @@
 
 [中文版 →](./README.zh-CN.md)
 
-**Part of [Sprout Labs](https://ethanflow.com)** — Local-first AI memory & agent safety, built independently by Ethan (Independent Product Designer & AI Builder, since 2016).
+**Part of [Sprout Labs](https://ethanflow.com)**, Ethan's own product line. Product, design and engineering by one person.
 [ethanflow.com](https://ethanflow.com) · [LinkedIn](https://www.linkedin.com/in/ethan-ys/) · [@ethanflow_lab](https://x.com/ethanflow_lab) · [GitHub](https://github.com/Ethan-YS)
 
 <p align="center">
@@ -248,7 +248,7 @@ Requirements:
 
 ## Status
 
-🌱 v2.9 — methodology stable, 140+ stars, 17 brains in daily use by the maintainers. v2.9 is the first release driven by measuring those brains rather than by one project's friction (see the evolution story). v2.4 shipped as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. External effectiveness data still pending — battle-tested by the maintainers daily; field reports from other users still being collected.
+🌱 v2.9 — methodology stable, 170+ stars, 17 brains in daily use by the maintainers. v2.9 is the first release driven by measuring those brains rather than by one project's friction (see the evolution story). v2.4 shipped as a one-command Claude Code plugin (the Sprout Labs marketplace). v2.3 added `scripts/doctor.sh` (structural health check) and a fully-filled example project (`examples/small-saas/`). v2.2 introduced the Claude Code skill manifest and adapter templates for Cursor / Copilot / AGENTS.md. External effectiveness data still pending — battle-tested by the maintainers daily; field reports from other users still being collected.
 
 ## Authors
 
